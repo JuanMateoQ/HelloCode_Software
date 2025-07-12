@@ -15,8 +15,5 @@ public class EjercicioCompletar extends Ejercicio {
         return this.partesACompletar;
     }
 
-    public boolean validarRespuestas(ArrayList<String> respuestas) {
-        if(this.validador.validarRespuestas(this, respuestas)) return true;
-        else return false;
-    }
+
 }

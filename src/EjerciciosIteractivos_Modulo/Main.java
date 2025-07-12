@@ -46,31 +46,27 @@ public class Main {
 
         //******************* Ejercicios de Completar
         String enunciado3 = "Declara una variable int llamada int con el nombre de 'edad' y un valor de 18...";
-        String parte1 = "int";
-        String parte2 = "= 18";
-        ArrayList<String> partesACompletar = new ArrayList<>();
-        partesACompletar.add(parte1);
-        partesACompletar.add(parte2);
+        String ejercicioSinCompletar = "int - 18";
+        Estructura estructura = new Estructura(ejercicioSinCompletar, "-");
+
         ArrayList<String> respuesta3 = new ArrayList<>();
         respuesta3.add("edad");
 
-        Ejercicio ejercicioCompletar = new EjercicioCompletar(enunciado3, partesACompletar, respuesta3);
+        Ejercicio ejercicioCompletar = new EjercicioCompletar(enunciado3, estructura.convertirEjercicioEnPartes(), respuesta3);
         leccionTipoDatos.addEjercicio(ejercicioCompletar);
 
         String enunciado4 = "Completa el tipo de variable si se conoce que...";
         //Entre cada parte debe ir una plabra a completar. Tomar en cuenta ese aspecto.
-        String parte3_1 = "";
-        String parte3 = "validador = true;\nif(";
-        String parte4 = ") contador++;";
-        ArrayList<String> partesACompletar2 = new ArrayList<>();
-        partesACompletar2.add(parte3_1);
-        partesACompletar2.add(parte3);
-        partesACompletar2.add(parte4);
+        String  ejercicioSinCompletar2 =
+                        "* validador = true;" +
+                        "\nif(*) contador++;";
+        Estructura estructura2 = new Estructura(ejercicioSinCompletar2, "*");
+
         ArrayList<String> respuesta4 = new ArrayList<>();
         respuesta4.add("boolean");
         respuesta4.add("validador");
 
-        Ejercicio ejercicioCompletar2 = new EjercicioCompletar(enunciado4, partesACompletar2, respuesta4);
+        Ejercicio ejercicioCompletar2 = new EjercicioCompletar(enunciado4, estructura2.convertirEjercicioEnPartes(), respuesta4);
         leccionTipoDatos.addEjercicio(ejercicioCompletar2);
     //____________________________________________________________
 
@@ -117,20 +113,12 @@ public class Main {
         System.out.println(ejercicioEspacios);
         ArrayList<String> respuestas = new ArrayList<>();
         for (int i = 0; i < ejercicioCompletar.getPartesACompletar().size() - 1; i++) {
-            System.out.print("Escriba su(s) respuesta(s) No." + (i+1) + ": ");
+            System.out.print("Escriba su(s) respuesta(s) No." + (i + 1) + ": ");
             //scanner.nextLine(); // 🔥 limpia el \n del buffer
             respuestas.add(scanner.nextLine());
         }
-
-        if(esCorrecto(ejercicioCompletar, respuestas)){
-            System.out.println("Felicidades adivinaste...");
-        }
     }
 
-    private static boolean esCorrecto(EjercicioCompletar ejercicioCompletar, ArrayList<String> respuesta) {
-        if(ejercicioCompletar.validarRespuestas(respuesta)) return true;
-        else return false;
-    }
 
     private static void logicaMostrarEjercicioSeleccion(EjercicioSeleccion ejercicioSeleccion) {
         System.out.println("" + ejercicioSeleccion.getEnunciado());
