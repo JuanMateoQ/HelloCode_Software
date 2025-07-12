@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.demo.CrudController"
+      spacing="20"
+      style="-fx-background-color: linear-gradient(to bottom right, #f5f7fa 0%, #c3cfe2 100%);"
+      stylesheets="@styles.css"
+>
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <!-- Header -->
+    <HBox alignment="CENTER_LEFT" spacing="10">
+        <Label text="👥" style="-fx-font-size: 24px;"/>
+        <VBox>
+            <Label text="Gestión de Usuarios" 
+                   style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+            <Label fx:id="usuarioActualLabel" 
+                   text="Usuario: Admin" 
+                   style="-fx-font-size: 14px; -fx-text-fill: #7f8c8d;"/>
+        </VBox>
+    </HBox>
+
+    <!-- Panel principal -->
+    <HBox spacing="20" VBox.vgrow="ALWAYS">
+        
+        <!-- Lista de usuarios -->
+        <VBox spacing="10" HBox.hgrow="ALWAYS" styleClass="panel">
+            <padding>
+                <Insets top="15" right="15" bottom="15" left="15"/>
+            </padding>
+            
+            <Label text="Usuarios Registrados" 
+                   style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+            
+            <ListView fx:id="listaUsuarios" 
+                      VBox.vgrow="ALWAYS"
+                      style="-fx-background-radius: 5; -fx-border-radius: 5;"/>
+            
+            <HBox spacing="10">
+                <Button text="🔄 Actualizar" 
+                        onAction="#actualizarLista"
+                        style="-fx-background-color: #3498db; -fx-text-fill: white;"
+                        prefWidth="100"/>
+                <Button text="🗑️ Eliminar" 
+                        onAction="#eliminarUsuario"
+                        style="-fx-background-color: #e74c3c; -fx-text-fill: white;"
+                        prefWidth="100"/>
+            </HBox>
+        </VBox>
+
+        <!-- Panel de formulario -->
+        <VBox spacing="15" styleClass="panel" prefWidth="300">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+            
+            <Label text="Agregar/Editar Usuario" 
+                   style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+            
+            <!-- Campos del formulario -->
+            <VBox spacing="8">
+                <Label text="Usuario:" style="-fx-font-weight: bold;"/>
+                <TextField fx:id="nuevoUsuario" 
+                           promptText="Ingrese el usuario"
+                           prefHeight="35"/>
+            </VBox>
+            
+            <VBox spacing="8">
+                <Label text="Contraseña:" style="-fx-font-weight: bold;"/>
+                <PasswordField fx:id="nuevaContrasena" 
+                               promptText="Ingrese la contraseña"
+                               prefHeight="35"/>
+            </VBox>
+            
+            <VBox spacing="8">
+                <Label text="Nombre:" style="-fx-font-weight: bold;"/>
+                <TextField fx:id="nuevoNombre" 
+                           promptText="Ingrese el nombre completo"
+                           prefHeight="35"/>
+            </VBox>
+            
+            <VBox spacing="8">
+                <Label text="Email:" style="-fx-font-weight: bold;"/>
+                <TextField fx:id="nuevoEmail" 
+                           promptText="Ingrese el email"
+                           prefHeight="35"/>
+            </VBox>
+            
+            <!-- Botones de acción -->
+            <VBox spacing="10" style="-fx-padding: 10 0 0 0;">
+                <Button text="➕ Agregar Usuario" 
+                        onAction="#agregarUsuario"
+                        style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold;"
+                        prefHeight="40"/>
+                
+                <Button text="✏️ Editar Usuario" 
+                        onAction="#editarUsuario"
+                        style="-fx-background-color: #f39c12; -fx-text-fill: white; -fx-font-weight: bold;"
+                        prefHeight="40"/>
+                
+                <Button text="❌ Limpiar Campos" 
+                        onAction="#limpiarCampos"
+                        style="-fx-background-color: #95a5a6; -fx-text-fill: white;"
+                        prefHeight="35"/>
+            </VBox>
+        </VBox>
+    </HBox>
+
+    <!-- Mensaje de estado -->
+    <Label fx:id="mensajeLabel" 
+           style="-fx-font-size: 12px; -fx-text-fill: #e74c3c;"
+           alignment="CENTER"/>
+
+</VBox> 

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.*?>
+
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="com.example.demo.SplashController"
+           fx:id="rootPane"
+           stylesheets="@styles.css"
+>
+    <!-- Fondo colorido que ocupa todo -->
+    <Region style="-fx-background-color: linear-gradient(135deg, #ff0080 0%, #ff8c00 25%, #40e0d0 50%, #ee82ee 75%, #ff1493 100%);"
+            StackPane.alignment="CENTER"
+            maxWidth="Infinity" maxHeight="Infinity"/>
+
+    <!-- Contenido centrado -->
+    <VBox alignment="CENTER"
+          spacing="10"
+          StackPane.alignment="CENTER"
+    >
+        <padding>
+            <Insets top="60" right="60" bottom="60" left="60"/>
+        </padding>
+
+        <!-- Logo principal -->
+        <StackPane fx:id="logoContainer" 
+                   style="-fx-background-color: linear-gradient(135deg, #ff8c00, #ff0080, #40e0d0); -fx-background-radius: 120; -fx-effect: dropshadow(gaussian, #ff0080, 30, 0.3, 0, 0); -fx-border-color: #fff; -fx-border-width: 4; -fx-border-radius: 120;"
+                   prefWidth="240" prefHeight="240">
+            <Label text="🚀" style="-fx-font-size: 100px; -fx-text-fill: white; -fx-effect: dropshadow(gaussian, #000, 8, 0.5, 0, 0);"/>
+        </StackPane>
+
+        <!-- Título -->
+        <VBox alignment="CENTER" spacing="10" style="-fx-padding: 40 0 0 0;">
+            <Label text="Sistema de Gestión" 
+                   style="-fx-text-fill: white; -fx-font-size: 32px; -fx-font-weight: bold; -fx-effect: dropshadow(gaussian, #000, 6, 0.5, 0, 0);"
+                   styleClass="title-label"/>
+            
+            <Label text="Versión 2.0" 
+                   style="-fx-text-fill: #fff; -fx-font-size: 16px; -fx-font-style: italic; -fx-effect: dropshadow(gaussian, #000, 3, 0.3, 0, 0);"/>
+        </VBox>
+
+        <!-- Barra de progreso simple -->
+        <VBox alignment="CENTER" spacing="15" style="-fx-padding: 40 0 0 0;">
+            <ProgressBar fx:id="progressBar" 
+                         prefWidth="300" 
+                         prefHeight="10"
+                         style="-fx-accent: linear-gradient(to right, #ff0080, #ff8c00, #40e0d0, #ee82ee, #ff1493); -fx-background-radius: 5; -fx-background-color: #fff2; -fx-border-radius: 5; -fx-border-color: #fff; -fx-border-width: 1;"/>
+            
+            <Label fx:id="statusLabel" 
+                   text="Inicializando..." 
+                   style="-fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-effect: dropshadow(gaussian, #000, 3, 0.3, 0, 0);"
+                   styleClass="status-label"/>
+        </VBox>
+
+        <!-- Footer simple -->
+        <VBox alignment="CENTER" style="-fx-padding: 40 0 0 0;">
+            <Label text="© 2024 Sistema de Gestión" 
+                   style="-fx-text-fill: #fff; -fx-font-size: 12px; -fx-effect: dropshadow(gaussian, #000, 2, 0.2, 0, 0);"/>
+        </VBox>
+    </VBox>
+</StackPane> 

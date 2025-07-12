@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.demo.LoginController"
+      alignment="CENTER"
+      spacing="20"
+      style="-fx-background-color: linear-gradient(to bottom right, #667eea 0%, #764ba2 100%);"
+      stylesheets="@styles.css"
+>
+    <padding>
+        <Insets top="40" right="40" bottom="40" left="40"/>
+    </padding>
+
+    <!-- Logo y título -->
+    <VBox alignment="CENTER" spacing="10">
+        <!-- Icono de usuario usando un círculo con texto -->
+        <StackPane style="-fx-background-color: rgba(255, 255, 255, 0.2); -fx-background-radius: 40;"
+                   prefWidth="80" prefHeight="80">
+            <Label text="👤" style="-fx-font-size: 32px;"/>
+        </StackPane>
+        
+        <Label text="Sistema de Gestión" 
+               style="-fx-text-fill: white; -fx-font-size: 24px; -fx-font-weight: bold;"/>
+        
+        <Label text="Iniciar Sesión" 
+               style="-fx-text-fill: #e0e0e0; -fx-font-size: 16px;"/>
+    </VBox>
+
+    <!-- Panel de login -->
+    <VBox alignment="CENTER" spacing="15" 
+          style="-fx-background-color: rgba(255, 255, 255, 0.9); -fx-background-radius: 10;"
+          styleClass="panel"
+          maxWidth="350">
+        <padding>
+            <Insets top="30" right="30" bottom="30" left="30"/>
+        </padding>
+
+        <!-- Campo Usuario -->
+        <VBox spacing="5">
+            <Label text="Usuario" style="-fx-text-fill: #333; -fx-font-weight: bold;"/>
+            <TextField fx:id="usuarioField" 
+                       promptText="Ingrese su usuario"
+                       prefHeight="40"/>
+        </VBox>
+
+        <!-- Campo Contraseña -->
+        <VBox spacing="5">
+            <Label text="Contraseña" style="-fx-text-fill: #333; -fx-font-weight: bold;"/>
+            <PasswordField fx:id="contrasenaField" 
+                           promptText="Ingrese su contraseña"
+                           prefHeight="40"/>
+        </VBox>
+
+        <!-- Botón de login -->
+        <Button text="Iniciar Sesión" 
+                onAction="#handleLogin"
+                style="-fx-background-color: #667eea; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5;"
+                prefWidth="200" 
+                prefHeight="40"/>
+
+        <!-- Mensaje de error -->
+        <Label fx:id="mensajeLabel" 
+               textFill="red"
+               style="-fx-font-size: 12px;"
+               alignment="CENTER"/>
+    </VBox>
+
+    <!-- Footer -->
+    <Label text="© 2024 Sistema de Gestión - Todos los derechos reservados" 
+           style="-fx-text-fill: rgba(255, 255, 255, 0.7); -fx-font-size: 10px;"/>
+
+</VBox>

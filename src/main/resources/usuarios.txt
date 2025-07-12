@@ -1,0 +1,2 @@
+admin;1234;Administrador;admin@sistema.com
+usuario1;abc;Usuario Normal;usuario1@sistema.com 
