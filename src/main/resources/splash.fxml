@@ -12,8 +12,8 @@
            fx:id="rootPane"
            stylesheets="@styles.css"
 >
-    <!-- Fondo colorido que ocupa todo -->
-    <Region style="-fx-background-color: linear-gradient(135deg, #ff0080 0%, #ff8c00 25%, #40e0d0 50%, #ee82ee 75%, #ff1493 100%);"
+    <!-- Fondo colorido que ocupa todo (color sólido para compatibilidad) -->
+    <Region style="-fx-background-color: #ff0080;"
             StackPane.alignment="CENTER"
             maxWidth="Infinity" maxHeight="Infinity"/>
 
@@ -62,4 +62,4 @@
                    style="-fx-text-fill: #fff; -fx-font-size: 12px; -fx-effect: dropshadow(gaussian, #000, 2, 0.2, 0, 0);"/>
         </VBox>
     </VBox>
-</StackPane> 
+</StackPane>
