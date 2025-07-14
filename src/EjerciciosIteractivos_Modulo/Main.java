@@ -94,13 +94,8 @@ public class Main {
                 if (ejercicio instanceof EjercicioCompletar ) {
                     logicaMostrarEjercicioCompletar((EjercicioCompletar) ejercicio);
                 }
-
-
             }
-
-
         }
-
     }
 
     private static void logicaMostrarEjercicioCompletar(EjercicioCompletar ejercicioCompletar) {
