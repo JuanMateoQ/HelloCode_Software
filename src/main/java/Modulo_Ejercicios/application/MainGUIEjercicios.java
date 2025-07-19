@@ -9,6 +9,7 @@ public class MainGUIEjercicios extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/Modulo_Ejercicios/views/SeleccionMultiple-view.fxml"));
+        //FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/Modulo_Ejercicios/views/CompletarCodigo.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         stage.setTitle("EntradaAplicativo");
         stage.setScene(scene);

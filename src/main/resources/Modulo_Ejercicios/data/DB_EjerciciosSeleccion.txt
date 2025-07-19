@@ -27,4 +27,6 @@
 ¿Cómo se manejan excepciones en Python?|try/catch,try/except,catch/except,handle|try/except|AVANZADO|PYTHON
 ¿Cuál es el prototipo de la función principal en C para programas estándar?|int main(),void main(),main(),start()|int main()|BASICO|C
 ¿Cómo se hace una conexión a base de datos en PHP?|mysqli_connect(),db_connect(),connect_db(),open_db()|mysqli_connect()|INTERMEDIO|PHP
-¿Qué palabra clave se usa para interfaces en Java?|interface,class,implements,extends|interface|INTERMEDIO|JAVA
+¿Qué palabra clave se usa para interfaces en Java?|interface,class,implements,extends|interface|INTERMEDIO|JAVAHOLA COMO ESTA|bien|mal|BASICO|JAVA
+HOLA COMO ESTA|bien|mal|BASICO|JAVA
+HOLA COMO ESTA|bien|mal|BASICO|JAVA
