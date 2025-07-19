@@ -61,13 +61,14 @@ public class Main {
         while (seleccionUsuario != 111) {
             mostrarMenuLecciones(cursoBasico);
             seleccionUsuario = inputScanner.nextInt();
-            
+            inputScanner.nextLine();
             if (seleccionUsuario >= 0 && seleccionUsuario < cursoBasico.getLecciones().size()) {
                 ejecutarLeccionSeleccionada(cursoBasico, seleccionUsuario);
             } else if (seleccionUsuario != 111) {
                 System.out.println("Opción no válida. Por favor, seleccione una lección válida.");
             }
         }
+
     }
 
     /**
@@ -160,10 +161,12 @@ public class Main {
         System.out.println("\nEste ejercicio tiene " + ejercicio.obtenerNumeroPartesFaltantes() + " parte(s) por completar.");
         
         ArrayList<Respuesta> respuestasUsuario = new ArrayList<>();
-        
+
+        //para limpiar el salto de línea pendiente
+
         for (int i = 0; i < ejercicio.obtenerNumeroPartesFaltantes(); i++) {
             System.out.print("Complete la parte " + (i + 1) + ": ");
-            String respuestaUsuario = inputScanner.next();
+            String respuestaUsuario = inputScanner.nextLine();
             respuestasUsuario.add(new RespuestaString(respuestaUsuario));
         }
         

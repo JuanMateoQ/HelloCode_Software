@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.ColorAdjust?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="366.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <ImageView fitHeight="720.0" fitWidth="372.0" layoutX="-1.0" pickOnBounds="true">
+         <image>
+            <Image url="@../imagenes/fondo.jpg" />
+         </image>
+      </ImageView>
+      <BorderPane layoutX="-2.0" layoutY="82.0" prefHeight="373.0" prefWidth="372.0">
+         <center>
+            <GridPane BorderPane.alignment="CENTER">
+              <columnConstraints>
+                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints maxHeight="119.0" minHeight="10.0" prefHeight="51.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="226.0" minHeight="10.0" prefHeight="70.0" valignment="CENTER" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
+                     <children>
+                        <AnchorPane fx:id="PanelInstruccionEjercicio" layoutX="16.0" layoutY="12.0" prefHeight="200.0" prefWidth="336.0">
+                           <children>
+                              <Text fx:id="TextInstruccion" layoutX="17.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Instrucción" wrappingWidth="329.13671875">
+                                 <font>
+                                    <Font name="System Bold" size="24.0" />
+                                 </font>
+                              </Text>
+                              <AnchorPane fx:id="PanelEjercicio" layoutX="17.0" layoutY="45.0" prefHeight="130.0" prefWidth="301.0" style="-fx-background-color: rgb(215, 227, 227);">
+                                 <children>
+                                    <Label fx:id="Ejercicio" layoutX="23.0" layoutY="14.0" prefHeight="68.0" prefWidth="256.0" text="Ejercicio">
+                                       <font>
+                                          <Font size="20.0" />
+                                       </font>
+                                    </Label>
+                                    <TextField fx:id="textEntrada" layoutX="23.0" layoutY="82.0" opacity="0.0" prefHeight="25.0" prefWidth="238.0" />
+                                 </children>
+                              </AnchorPane>
+                           </children>
+                        </AnchorPane>
+                     </children>
+                  </AnchorPane>
+                  <Text fx:id="TexTipo" strokeType="OUTSIDE" strokeWidth="0.0" text="Completa el código correctamente:" wrappingWidth="333.13671875">
+                     <font>
+                        <Font name="System Bold" size="20.0" />
+                     </font>
+                  </Text>
+               </children>
+            </GridPane>
+         </center>
+      </BorderPane>
+      <AnchorPane layoutX="1.0" prefHeight="84.0" prefWidth="372.0">
+         <children>
+            <Text layoutX="151.0" layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="JAVA">
+               <font>
+                  <Font size="25.0" />
+               </font>
+            </Text>
+            <ImageView fitHeight="27.0" fitWidth="27.0" layoutX="303.0" layoutY="2.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../imagenes/icon_vidas.png" />
+               </image>
+            </ImageView>
+            <Text fx:id="TexVida" layoutX="335.0" layoutY="20.0" strokeType="OUTSIDE" strokeWidth="0.0" text="5">
+               <font>
+                  <Font name="System Bold" size="19.0" />
+               </font>
+            </Text>
+            <ImageView fitHeight="25.0" fitWidth="27.0" layoutX="269.0" layoutY="2.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../imagenes/icon_pistas.png" />
+               </image>
+            </ImageView>
+            <ProgressBar fx:id="ProgressBar" layoutX="79.0" layoutY="42.0" prefWidth="200.0" progress="0.29" style="-fx-background-color: rgb(6, 26, 59);">
+               <effect>
+                  <ColorAdjust brightness="0.02" hue="0.16" />
+               </effect>
+            </ProgressBar>
+            <Button layoutX="14.0" layoutY="12.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="27.0">
+               <graphic>
+                  <ImageView fx:id="btnRegresar" fitHeight="18.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../imagenes/fondo.jpg" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+         </children>
+      </AnchorPane>
+      <Button fx:id="btnComprobar" layoutX="114.0" layoutY="611.0" mnemonicParsing="false" style="-fx-background-radius: 15; -fx-background-color: #061A3B; -fx-cursor: hand;" text="Comprobar" textFill="WHITE">
+         <font>
+            <Font size="22.0" />
+         </font>
+      </Button>
+   </children>
+</AnchorPane>

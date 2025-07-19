@@ -10,6 +10,7 @@ public class EjercicioCompletarCodigo extends EjercicioBase {
     private String codigoIncompleto;
     private ArrayList<String> partesFaltantes;
     private ArrayList<String> respuestasEsperadas;
+    private String[] partesDelCodigoIncompleto;
 
     /**
      * Constructor privado para usar con Builder
@@ -19,8 +20,20 @@ public class EjercicioCompletarCodigo extends EjercicioBase {
                                    NivelDificultad nivelDificultad, Lenguaje lenguaje) {
         super(instruccion, respuestasEsperadas, nivelDificultad, lenguaje);
         this.codigoIncompleto = codigoIncompleto;
+        generarPartesDelCodigo(codigoIncompleto, "____");
         this.partesFaltantes = partesFaltantes;
         this.respuestasEsperadas = respuestasEsperadas;
+    }
+
+    private void generarPartesDelCodigo(String codigoIncompleto, String bandera) {
+        this.partesDelCodigoIncompleto = codigoIncompleto.split("\\Q" + bandera + "\\E");
+        for (int i = 0; i < partesDelCodigoIncompleto.length; i++) {
+            partesDelCodigoIncompleto[i] = partesDelCodigoIncompleto[i].trim(); // elimina espacios al inicio y final
+        }
+
+    }
+    public ArrayList<String> obtenerPartesDelCodigoIncompleto() {
+        return new ArrayList<>(java.util.Arrays.asList(partesDelCodigoIncompleto));
     }
 
     /**
@@ -70,8 +83,10 @@ public class EjercicioCompletarCodigo extends EjercicioBase {
         //Convertir las respuestas del usuario a strings para comparación
         ArrayList<String> respuestasUsuarioStrings = new ArrayList<>();
         for (Respuesta respuesta : respuestasUsuario) {
-            respuestasUsuarioStrings.add(respuesta.getRespuesta().toString().trim());
+            respuestasUsuarioStrings.add(respuesta.getRespuesta().toString().replaceAll("\\s+", ""));
+            System.out.println(respuestasUsuarioStrings.get(respuestasUsuarioStrings.size() - 1));
         }
+
         
         //Comparar cada respuesta del usuario con la respuesta esperada correspondiente
         for (int i = 0; i < respuestasEsperadas.size(); i++) {
