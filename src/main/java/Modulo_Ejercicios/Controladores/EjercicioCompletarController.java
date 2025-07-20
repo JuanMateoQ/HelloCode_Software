@@ -1,10 +1,7 @@
 package Modulo_Ejercicios.Controladores;
 
 import Modulo_Ejercicios.DataBase.EjercicioRepository;
-import Modulo_Ejercicios.exercises.EjercicioCompletarCodigo;
-import Modulo_Ejercicios.exercises.Respuesta;
-import Modulo_Ejercicios.exercises.RespuestaString;
-import Modulo_Ejercicios.exercises.ResultadoDeEvaluacion;
+import Modulo_Ejercicios.exercises.*;
 import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -50,7 +47,13 @@ public class EjercicioCompletarController implements Initializable {
 
     @FXML Button btnSiguiente;
 
-    private int vidas = 5;
+    @FXML Label labelRetroalimentacion;
+
+    @FXML Label labelBien;
+
+    @FXML Text txtLenguaje;
+
+    private int vidas = 15;
     private int ejercicioActual = 0;
     private List<EjercicioCompletarCodigo> ejerciciosCompletarCodigo;
 
@@ -62,6 +65,8 @@ public class EjercicioCompletarController implements Initializable {
 
         // Inicializamos el progreso en 0
         ProgressBar.setProgress(0);
+
+        //txtLenguaje.setText("xxxxxxx");
 
         // Configurar la acción del botón Comprobar
         btnComprobar.setOnAction(event -> comprobarCodigo());
@@ -78,6 +83,7 @@ public class EjercicioCompletarController implements Initializable {
             // Mostrar instrucciones y código incompleto
             TextInstruccion.setText(ejercicio.getInstruccion());
             Ejercicio.setText(ejercicio.obtenerCodigoIncompleto());
+            txtLenguaje.setText("" + ejercicio.getLenguaje() + "");
 
             // Restablecer vidas para cada ejercicio
             //TexVida.setText(String.valueOf(vidas));
@@ -100,6 +106,7 @@ public class EjercicioCompletarController implements Initializable {
             // Si la respuesta es correcta
             TexVida.setText(String.valueOf(vidas));
             AvisoCorrecto.setVisible(true);
+            labelBien.setVisible(true);
 
 
 
@@ -120,6 +127,10 @@ public class EjercicioCompletarController implements Initializable {
             }
 
             AvisoIncorrecto.setVisible(true);
+            String respuestasCorrectas = String.join("", ejercicio.obtenerRespuestasEsperadas());
+            labelRetroalimentacion.setText("La respuesta correcta es: " + respuestasCorrectas);
+            labelRetroalimentacion.setVisible(true);
+
 
 
         }
@@ -137,6 +148,10 @@ public class EjercicioCompletarController implements Initializable {
 
         AvisoCorrecto.setVisible(false);
         AvisoIncorrecto.setVisible(false);
+        labelRetroalimentacion.setVisible(false);
+        labelBien.setVisible(false);
+
+
 
         ejercicioActual++;
 

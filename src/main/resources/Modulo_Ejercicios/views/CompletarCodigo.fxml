@@ -38,6 +38,16 @@
                                     </TextArea>
                                  </children>
                               </AnchorPane>
+                              <Label fx:id="AvisoCorrecto" alignment="TOP_CENTER" layoutX="98.0" layoutY="233.0" prefHeight="46.0" prefWidth="156.0" style="-fx-background-color: rgb(115, 241, 5); -fx-background-radius: 40;" text="Correcto" textAlignment="CENTER" textFill="WHITE" visible="false">
+                                 <font>
+                                    <Font size="25.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="AvisoIncorrecto" alignment="TOP_CENTER" layoutX="98.0" layoutY="233.0" prefHeight="46.0" prefWidth="156.0" style="-fx-background-color: rgb(177, 0, 2); -fx-background-radius: 40;" text="Incorrecto" textAlignment="CENTER" textFill="WHITE" visible="false">
+                                 <font>
+                                    <Font size="25.0" />
+                                 </font>
+                              </Label>
                            </children>
                         </AnchorPane>
                      </children>
@@ -53,9 +63,9 @@
       </BorderPane>
       <AnchorPane layoutX="1.0" prefHeight="84.0" prefWidth="372.0">
          <children>
-            <Text layoutX="151.0" layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="JAVA">
+            <Text fx:id="txtLenguaje" layoutX="139.0" layoutY="25.0" strokeType="OUTSIDE" strokeWidth="0.0" text="JAVA" textAlignment="CENTER">
                <font>
-                  <Font size="25.0" />
+                  <Font name="System Bold" size="25.0" />
                </font>
             </Text>
             <ImageView fitHeight="27.0" fitWidth="27.0" layoutX="303.0" layoutY="2.0" pickOnBounds="true" preserveRatio="true">
@@ -85,21 +95,24 @@
             <Font size="22.0" />
          </font>
       </Button>
-      <Label fx:id="AvisoCorrecto" alignment="TOP_CENTER" layoutX="100.0" layoutY="472.0" prefHeight="46.0" prefWidth="156.0" style="-fx-background-color: rgb(115, 241, 5); -fx-background-radius: 40;" text="Correcto" textAlignment="CENTER" textFill="WHITE" visible="false">
-         <font>
-            <Font size="25.0" />
-         </font>
-      </Label>
-      <Label fx:id="AvisoIncorrecto" alignment="TOP_CENTER" layoutX="100.0" layoutY="472.0" prefHeight="46.0" prefWidth="156.0" style="-fx-background-color: rgb(177, 0, 2); -fx-background-radius: 40;" text="Incorrecto" textAlignment="CENTER" textFill="WHITE" visible="false">
-         <font>
-            <Font size="25.0" />
-         </font>
-      </Label>
       <TextArea fx:id="Avisos" layoutX="63.0" layoutY="458.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="132.0" prefWidth="250.0" text="Avisos" visible="false" wrapText="true">
          <font>
             <Font name="System Bold" size="18.0" />
          </font>
       </TextArea>
-      <Button fx:id="btnSiguiente" disable="true" layoutX="143.0" layoutY="506.0" mnemonicParsing="false" opacity="0.0" style="-fx-background-radius: 40;" text="Siguiente &gt;" />
+      <Label fx:id="labelRetroalimentacion" layoutX="14.0" layoutY="508.0" prefHeight="153.0" prefWidth="338.0" style="-fx-background-color: rgb(23, 23, 23); -fx-background-radius: 30;" text="ParabraCorrecta" textAlignment="JUSTIFY" textFill="WHITE" visible="false" wrapText="true">
+         <font>
+            <Font size="19.0" />
+         </font>
+      </Label>
+      <Label fx:id="labelBien" layoutX="16.0" layoutY="514.0" prefHeight="153.0" prefWidth="338.0" style="-fx-background-color: rgb(23, 23, 23); -fx-background-radius: 30;" text="¡Muy bien, sigue así!" textAlignment="JUSTIFY" textFill="WHITE" visible="false" wrapText="true">
+         <font>
+            <Font size="19.0" />
+         </font>
+      </Label>
+      <Button fx:id="btnSiguiente" disable="true" layoutX="113.0" layoutY="634.0" mnemonicParsing="false" opacity="0.0" prefHeight="46.0" prefWidth="141.0" style="-fx-background-radius: 40;" text="Siguiente &gt;">
+         <font>
+            <Font size="20.0" />
+         </font></Button>
    </children>
 </AnchorPane>
