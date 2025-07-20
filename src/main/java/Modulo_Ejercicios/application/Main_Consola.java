@@ -17,7 +17,7 @@ import java.util.Scanner;
 import java.util.List;
 
 //Fernando Huilca y Mateo Quisilema
-public class Main {
+public class Main_Consola {
 
     private static Scanner inputScanner = new Scanner(System.in); //Scanner para entrada del usuario
     
