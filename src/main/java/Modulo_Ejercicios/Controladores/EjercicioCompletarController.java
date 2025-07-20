@@ -1,81 +1,171 @@
 package Modulo_Ejercicios.Controladores;
 
+import MetodosGlobales.MetodosFrecuentes;
+import Modulo_Ejercicios.DataBase.EjercicioRepository;
+import Modulo_Ejercicios.exercises.EjercicioCompletarCodigo;
+import Modulo_Ejercicios.exercises.Respuesta;
+import Modulo_Ejercicios.exercises.RespuestaString;
+import Modulo_Ejercicios.exercises.ResultadoDeEvaluacion;
+import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.TextField;
-import javafx.scene.image.ImageView;
+import javafx.fxml.Initializable;
+import javafx.scene.control.*;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
+import javafx.util.Duration;
 
-public class EjercicioCompletarController {
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
 
-    // FXML elements are associated with this controller
-
-    @FXML
-    private Text TexTipo; // Text for displaying instruction
-
-    @FXML
-    private Text TexVida; // Text for displaying number of lives
-
-    @FXML
-    private ProgressBar ProgressBar; // Progress bar for showing progress
+public class EjercicioCompletarController implements Initializable {
 
     @FXML
-    private Button btnComprobar; // Button to check the entered code
+    private Text TexTipo;
 
     @FXML
-    private Button btnRegresar; // Button to go back
+    private Text TexVida;
 
     @FXML
-    private ImageView btnRegresarImage; // Image for the go back button icon
+    private ProgressBar ProgressBar;
 
     @FXML
-    private TextField textEntrada; // Input field for the code
+    private Button btnComprobar;
 
     @FXML
-    private Label Ejercicio; // Label for the exercise instruction
+    private TextField textEntrada;
 
     @FXML
-    private Text TextInstruccion; // Text for instructions
+    private TextArea Ejercicio;
 
     @FXML
-    private ImageView fondoImageView; // Background image for the scene
+    private Text TextInstruccion;
 
     @FXML
-    private ImageView tecladoImageView; // Image for the keyboard
+    private Label AvisoCorrecto;
 
-    // Initialize method that runs when the controller is initialized
-    public void initialize() {
-        // Set up default values or event handlers
-        TexTipo.setText("Completa el código correctamente:");
-        TexVida.setText("5");  // Example: setting number of lives to 5
-        ProgressBar.setProgress(0.29);  // Set the progress bar to a default value
-        Ejercicio.setText("Ejercicio");
+    @FXML
+    private Label AvisoIncorrecto;
 
-        // Button actions
+    @FXML TextArea Avisos;
+
+    @FXML Button btnSiguiente;
+
+    private int vidas = 5;
+    private int ejercicioActual = 0;
+    private List<EjercicioCompletarCodigo> ejerciciosCompletarCodigo;
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        // Cargar ejercicios desde el repositorio
+        ejerciciosCompletarCodigo = EjercicioRepository.cargarEjerciciosCompletarCodigo();
+        cargarEjercicioActual();
+
+        // Inicializamos el progreso en 0
+        ProgressBar.setProgress(0);
+
+        // Configurar la acción del botón Comprobar
         btnComprobar.setOnAction(event -> comprobarCodigo());
-        btnRegresar.setOnAction(event -> regresar());
+
+        // Configurar la acción del botón "Siguiente"
+        btnSiguiente.setOnAction(event -> avanzarSiguienteEjercicio());
     }
 
-    // Method to handle the "Comprobar" button action
-    private void comprobarCodigo() {
-        // Logic to check the code entered by the user
-        String input = textEntrada.getText();
-        if (input.equals("correctCode")) {
-            // Handle correct code entry
-            TexVida.setText("4");  // Decrease life by 1
-            ProgressBar.setProgress(0.5);  // Update progress bar
-        } else {
-            // Handle incorrect code entry
-            TexVida.setText("4");  // Decrease life by 1
+
+    private void cargarEjercicioActual() {
+        if (ejercicioActual < ejerciciosCompletarCodigo.size()) {
+            EjercicioCompletarCodigo ejercicio = ejerciciosCompletarCodigo.get(ejercicioActual);
+
+            // Mostrar instrucciones y código incompleto
+            TextInstruccion.setText(ejercicio.getInstruccion());
+            Ejercicio.setText(ejercicio.obtenerCodigoIncompleto());
+
+            // Restablecer vidas para cada ejercicio
+            //TexVida.setText(String.valueOf(vidas));
         }
     }
 
-    // Method to handle the "Regresar" button action
-    private void regresar() {
-        // Logic to handle the "back" action
-        System.out.println("Regresando...");
-        // You could close the window or navigate back to another screen
+    // Método para comprobar el código ingresado
+    private void comprobarCodigo() {
+        String input = textEntrada.getText();
+        ArrayList<Respuesta> respuestasUsuario = new ArrayList<>();
+
+        // Añadir la respuesta del usuario
+        respuestasUsuario.add(new RespuestaString(input));
+
+        // Evaluar las respuestas
+        EjercicioCompletarCodigo ejercicio = ejerciciosCompletarCodigo.get(ejercicioActual);
+        ResultadoDeEvaluacion resultado = ejercicio.evaluarRespuestas(respuestasUsuario);
+
+        if (resultado.getPorcentajeDeAcerto() == 100) {
+            // Si la respuesta es correcta
+            TexVida.setText(String.valueOf(vidas));
+            AvisoCorrecto.setVisible(true);
+
+
+
+        } else {
+            // Si la respuesta es incorrecta
+            if (vidas > 1) {
+                vidas--;
+                TexVida.setText(String.valueOf(vidas));
+            } else {
+                TexVida.setText("0");
+                Avisos.setText("¡Se han agotado tus vidas!");
+                Avisos.setVisible(true);
+                PauseTransition pauseAvisos = new PauseTransition(Duration.seconds(2));
+                pauseAvisos.setOnFinished(event -> Avisos.setVisible(false));
+                pauseAvisos.play();
+                terminarEjecucion();
+                return;
+            }
+
+            AvisoIncorrecto.setVisible(true);
+
+
+        }
+
+        // Limpiar el TextField
+        textEntrada.clear();
+        //avanzarSiguienteEjercicio();
+
+        btnSiguiente.setDisable(false);
+        btnSiguiente.setOpacity(1.0);
+    }
+
+    // Método para avanzar al siguiente ejercicio
+    private void avanzarSiguienteEjercicio() {
+
+        AvisoCorrecto.setVisible(false);
+        AvisoIncorrecto.setVisible(false);
+
+        ejercicioActual++;
+
+        // Actualizar la barra de progreso en función de los ejercicios completados
+        double progreso = (double) ejercicioActual / ejerciciosCompletarCodigo.size();
+        ProgressBar.setProgress(progreso);
+
+        if (ejercicioActual < ejerciciosCompletarCodigo.size()) {
+            cargarEjercicioActual();
+        } else {
+            // Si se completaron todos los ejercicios
+            System.out.println("¡Todos los ejercicios completados!");
+            btnComprobar.setDisable(true);
+
+            MetodosFrecuentes.cambiarVentana((Stage) btnSiguiente.getScene().getWindow(), "/Modulo_Ejercicios/views/SeleccionMultiple-view.fxml", "Menu Principal");
+            //terminarEjecucion();
+        }
+
+        btnSiguiente.setDisable(true);
+        btnSiguiente.setOpacity(0.0);
+
+    }
+
+    // Método para finalizar la ejecución
+    private void terminarEjecucion() {
+        btnComprobar.setDisable(true);
+
+
     }
 }

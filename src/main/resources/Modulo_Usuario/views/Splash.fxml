@@ -29,16 +29,16 @@
                 <Insets top="60" right="40" bottom="60" left="40"/>
             </padding>
 
-            <!-- Logo principal -->
+            <!-- Logo principal con texto HC -->
             <StackPane fx:id="logoContainer" 
                        style="-fx-background-color: linear-gradient(135deg, #A6B1E1, #DCD6F7, #CACFD6); -fx-background-radius: 120; -fx-effect: dropshadow(gaussian, #A6B1E1, 30, 0.3, 0, 0); -fx-border-color: #fff; -fx-border-width: 4; -fx-border-radius: 120;"
                        prefWidth="180" prefHeight="180">
-                <Label text="🚀" style="-fx-font-size: 80px; -fx-text-fill: #424874;"/>
+                <Label text="HC" style="-fx-font-size: 72px; -fx-font-weight: bold; -fx-text-fill: #424874; -fx-font-family: 'Arial Black';"/>
             </StackPane>
 
             <!-- Título -->
             <VBox alignment="CENTER" spacing="10" style="-fx-padding: 30 0 0 0;">
-                <Label text="Sistema de Gestión" 
+                <Label text="Hello Code Software" 
                        style="-fx-text-fill: #DCD6F7; -fx-font-size: 28px; -fx-font-weight: bold;"/>
                 
                 <Label text="Versión 2.0" 
@@ -59,7 +59,7 @@
 
             <!-- Footer simple -->
             <VBox alignment="CENTER" style="-fx-padding: 30 0 0 0;">
-                <Label text="© 2024 Sistema de Gestión" 
+                <Label text="© 2024 Hello Code Software" 
                        style="-fx-text-fill: #D6E5E3; -fx-font-size: 11px;"/>
             </VBox>
         </VBox>

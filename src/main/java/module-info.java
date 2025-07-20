@@ -24,4 +24,5 @@ module Modulo_Ejercicios {
     exports Modulo_Ejercicios.DataBase;
     exports Modulo_Usuario.Clases;
     exports Modulo_Usuario.Controladores;
+    exports Modulo_Usuario.application;
 } 

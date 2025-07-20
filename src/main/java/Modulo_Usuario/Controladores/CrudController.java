@@ -4,8 +4,11 @@ import Modulo_Usuario.Clases.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -326,6 +329,27 @@ public class CrudController {
         listaUsuarios.getSelectionModel().clearSelection();
         mostrarCamposEspecificos();
         mostrarMensaje("Campos limpiados", "info");
+    }
+
+    @FXML
+    public void regresarAlHome() {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/Modulo_Usuario/views/home.fxml"));
+            Scene scene = new Scene(fxmlLoader.load(), 360, 720);
+
+            Stage stage = new Stage();
+            stage.setTitle("Hello Code Software - Panel Principal");
+            stage.setScene(scene);
+            stage.setResizable(false);
+            stage.show();
+
+            // Cerrar la pantalla actual
+            Stage thisStage = (Stage) listaUsuarios.getScene().getWindow();
+            thisStage.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            mostrarMensaje("Error al regresar al home: " + e.getMessage(), "error");
+        }
     }
 
     private void mostrarMensaje(String mensaje, String tipo) {

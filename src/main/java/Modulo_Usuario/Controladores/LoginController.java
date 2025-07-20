@@ -1,6 +1,6 @@
 package Modulo_Usuario.Controladores;
 
-import Modulo_Usuario.Clases.Usuario ;
+import Modulo_Usuario.Clases.Usuario;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -82,7 +82,7 @@ public class LoginController {
                 Scene scene = new Scene(fxmlLoader.load(), 360, 720);
 
                 Stage stage = new Stage();
-                stage.setTitle("Inicio");
+                stage.setTitle("Hello Code Software - Panel Principal");
                 stage.setScene(scene);
                 stage.setResizable(false);
                 stage.show();
@@ -97,6 +97,26 @@ public class LoginController {
             mensajeLabel.setText("Credenciales incorrectas");
             // Limpiar campo de contraseña
             contrasenaField.clear();
+        }
+    }
+
+    @FXML
+    public void irARegistro(ActionEvent event) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/Modulo_Usuario/views/register.fxml"));
+            Scene scene = new Scene(fxmlLoader.load(), 360, 720);
+
+            Stage stage = new Stage();
+            stage.setTitle("Hello Code Software - Registro de Usuario");
+            stage.setScene(scene);
+            stage.setResizable(false);
+            stage.show();
+
+            Stage thisStage = (Stage) usuarioField.getScene().getWindow();
+            thisStage.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            mensajeLabel.setText("Error cargando pantalla de registro: " + e.getMessage());
         }
     }
 }
