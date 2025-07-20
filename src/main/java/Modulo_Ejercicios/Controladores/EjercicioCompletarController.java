@@ -48,6 +48,8 @@ public class EjercicioCompletarController implements Initializable {
 
     @FXML TextArea Avisos;
 
+    @FXML Button btnSiguiente;
+
     private int vidas = 5;
     private int ejercicioActual = 0;
     private List<EjercicioCompletarCodigo> ejerciciosCompletarCodigo;
@@ -63,6 +65,9 @@ public class EjercicioCompletarController implements Initializable {
 
         // Configurar la acción del botón Comprobar
         btnComprobar.setOnAction(event -> comprobarCodigo());
+
+        // Configurar la acción del botón "Siguiente"
+        btnSiguiente.setOnAction(event -> avanzarSiguienteEjercicio());
     }
 
 
@@ -95,9 +100,9 @@ public class EjercicioCompletarController implements Initializable {
             // Si la respuesta es correcta
             TexVida.setText(String.valueOf(vidas));
             AvisoCorrecto.setVisible(true);
-            PauseTransition pauseCorrecto = new PauseTransition(Duration.seconds(0.5));
-            pauseCorrecto.setOnFinished(event -> AvisoCorrecto.setVisible(false));
-            pauseCorrecto.play();
+
+
+
         } else {
             // Si la respuesta es incorrecta
             if (vidas > 1) {
@@ -107,7 +112,7 @@ public class EjercicioCompletarController implements Initializable {
                 TexVida.setText("0");
                 Avisos.setText("¡Se han agotado tus vidas!");
                 Avisos.setVisible(true);
-                PauseTransition pauseAvisos = new PauseTransition(Duration.seconds(1));
+                PauseTransition pauseAvisos = new PauseTransition(Duration.seconds(2));
                 pauseAvisos.setOnFinished(event -> Avisos.setVisible(false));
                 pauseAvisos.play();
                 terminarEjecucion();
@@ -115,20 +120,24 @@ public class EjercicioCompletarController implements Initializable {
             }
 
             AvisoIncorrecto.setVisible(true);
-            PauseTransition pauseIncorrecto = new PauseTransition(Duration.seconds(0.5));
-            pauseIncorrecto.setOnFinished(event -> AvisoIncorrecto.setVisible(false));
-            pauseIncorrecto.play();
 
 
         }
 
         // Limpiar el TextField
         textEntrada.clear();
-        avanzarSiguienteEjercicio();
+        //avanzarSiguienteEjercicio();
+
+        btnSiguiente.setDisable(false);
+        btnSiguiente.setOpacity(1.0);
     }
 
     // Método para avanzar al siguiente ejercicio
     private void avanzarSiguienteEjercicio() {
+
+        AvisoCorrecto.setVisible(false);
+        AvisoIncorrecto.setVisible(false);
+
         ejercicioActual++;
 
         // Actualizar la barra de progreso en función de los ejercicios completados
@@ -143,6 +152,10 @@ public class EjercicioCompletarController implements Initializable {
             btnComprobar.setDisable(true);
             terminarEjecucion();
         }
+
+        btnSiguiente.setDisable(true);
+        btnSiguiente.setOpacity(0.0);
+
     }
 
     // Método para finalizar la ejecución
