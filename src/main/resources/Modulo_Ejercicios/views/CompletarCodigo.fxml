@@ -109,12 +109,12 @@
          <font>
             <Font size="20.0" />
          </font></Button>
-      <Label fx:id="AvisoCorrecto" alignment="TOP_CENTER" layoutX="99.0" layoutY="443.0" prefHeight="46.0" prefWidth="160.0" style="-fx-background-color: rgb(115, 241, 5); -fx-background-radius: 40;" text="Correcto" textAlignment="CENTER" textFill="WHITE" visible="false">
+      <Label fx:id="AvisoCorrecto" alignment="TOP_CENTER" layoutX="99.0" layoutY="443.0" prefHeight="46.0" prefWidth="160.0" style="-fx-background-color: rgb(178, 250, 164); -fx-background-radius: 40;" text="Correcto" textAlignment="CENTER" textFill="WHITE" visible="false">
          <font>
             <Font size="25.0" />
          </font>
       </Label>
-      <Label fx:id="AvisoIncorrecto" alignment="TOP_CENTER" layoutX="99.0" layoutY="443.0" prefHeight="46.0" prefWidth="161.0" style="-fx-background-color: rgb(177, 0, 2); -fx-background-radius: 40;" text="Incorrecto" textAlignment="CENTER" textFill="WHITE" visible="false">
+      <Label fx:id="AvisoIncorrecto" alignment="TOP_CENTER" layoutX="99.0" layoutY="443.0" prefHeight="46.0" prefWidth="161.0" style="-fx-background-color: rgb(247, 112, 105); -fx-background-radius: 40;" text="Incorrecto" textAlignment="CENTER" textFill="WHITE" visible="false">
          <font>
             <Font size="25.0" />
          </font>

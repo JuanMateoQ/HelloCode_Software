@@ -68,6 +68,8 @@ public class EjercicioCompletarController implements Initializable {
         // Inicializamos el progreso en 0
         ProgressBar.setProgress(0);
 
+        TexVida.setText(String.valueOf(vidas));
+
         //txtLenguaje.setText("xxxxxxx");
 
         // Configurar la acción del botón Comprobar
@@ -120,12 +122,12 @@ public class EjercicioCompletarController implements Initializable {
             } else {
                 TexVida.setText("0");
                 Avisos.setText("¡Se han agotado tus vidas!");
-                MetodosFrecuentes.cambiarVentana((Stage)btnComprobar.getScene().getWindow(), "/Modulo_Usuario/views/home.fxml", "Ventana Home...");
                 Avisos.setVisible(true);
                 PauseTransition pauseAvisos = new PauseTransition(Duration.seconds(2));
                 pauseAvisos.setOnFinished(event -> Avisos.setVisible(false));
-                pauseAvisos.play();
                 terminarEjecucion();
+                pauseAvisos.play();
+
                 return;
             }
 
@@ -167,7 +169,6 @@ public class EjercicioCompletarController implements Initializable {
         } else {
             // Si se completaron todos los ejercicios
             System.out.println("¡Todos los ejercicios completados!");
-            MetodosFrecuentes.cambiarVentana((Stage)btnComprobar.getScene().getWindow(), "/Modulo_Usuario/views/home.fxml", "Ventana Home...");
             btnComprobar.setDisable(true);
             terminarEjecucion();
         }
@@ -180,5 +181,7 @@ public class EjercicioCompletarController implements Initializable {
     // Método para finalizar la ejecución
     private void terminarEjecucion() {
         btnComprobar.setDisable(true);
+        MetodosFrecuentes.cambiarVentana((Stage)btnComprobar.getScene().getWindow(), "/Modulo_Usuario/views/home.fxml", "Ventana Home...");
+
     }
 }
