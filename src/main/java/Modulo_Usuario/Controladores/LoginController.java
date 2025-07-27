@@ -80,25 +80,29 @@ public class LoginController {
 
         if (usuarioEncontrado != null) {
             try {
-                String fxmlDestino;
-                if (usuarioEncontrado.getRol() == Roles.ADMIN_USUARIO) {
-                    fxmlDestino = "/Modulo_Usuario/views/homeUsuario.fxml";
+                // Si es usuario normal, va a homeUsuario.fxml
+                if (usuarioEncontrado.getRol() == Roles.USUARIO) {
+                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/Modulo_Usuario/views/homeUsuario.fxml"));
+                    Parent root = fxmlLoader.load();
+                    HomeUsuarioController homeController = fxmlLoader.getController();
+                    homeController.setUsuario(usuarioEncontrado);
+                    Scene scene = new Scene(root, 360, 640);
+                    Stage stage = new Stage();
+                    stage.setTitle("Hello Code Software - Panel Usuario");
+                    stage.setScene(scene);
+                    stage.setResizable(false);
+                    stage.show();
                 } else {
-                    fxmlDestino = "/Modulo_Usuario/views/home.fxml";
+                    // Cualquier otro rol va a home.fxml
+                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/Modulo_Usuario/views/home.fxml"));
+                    Parent root = fxmlLoader.load();
+                    Scene scene = new Scene(root, 360, 640);
+                    Stage stage = new Stage();
+                    stage.setTitle("Hello Code Software - Panel Admin");
+                    stage.setScene(scene);
+                    stage.setResizable(false);
+                    stage.show();
                 }
-                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fxmlDestino));
-                Parent root = fxmlLoader.load();
-                // Pasar usuario para mostrar XP real
-                HomeUsuarioController homeController = fxmlLoader.getController();
-                homeController.setUsuario(usuarioEncontrado);
-                Scene scene = new Scene(root, 360, 640);
-
-                Stage stage = new Stage();
-                stage.setTitle("Hello Code Software - Panel Principal");
-                stage.setScene(scene);
-                stage.setResizable(false);
-                stage.show();
-
                 Stage thisStage = (Stage) usuarioField.getScene().getWindow();
                 thisStage.close();
             } catch (Exception e) {
