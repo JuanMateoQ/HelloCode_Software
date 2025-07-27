@@ -33,7 +33,7 @@ public class EjercicioSeleccionController implements Initializable {
     }
 
     // Variables para el sistema de vidas
-    private int vidasActuales = 3;
+    private int vidasActuales = 20;
     private final int VIDAS_MAXIMAS = 3;
 
     @FXML
@@ -243,7 +243,6 @@ public class EjercicioSeleccionController implements Initializable {
         }
     }
 
-    // Método para limpiar selecciones
     public void limpiarSelecciones() {
         opcionesSeleccionadas.clear();
         for (Button btn : botonesOpciones) {
@@ -254,7 +253,6 @@ public class EjercicioSeleccionController implements Initializable {
         actualizarVisibilidadBotonComprobar();
     }
 
-    // Método para permitir solo selección única
     public void setSeleccionUnica(boolean seleccionUnica) {
         if (seleccionUnica) {
             // Modificar el comportamiento para permitir solo una selección
