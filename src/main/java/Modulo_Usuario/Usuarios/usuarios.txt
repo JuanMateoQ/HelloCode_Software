@@ -1,0 +1,4 @@
+usuario1;pass1;Juan;juan@email.com;100;ADMIN_USUARIO
+comunidad1;pass2;Ana;ana@email.com;200;ADMIN_USUARIO
+admin1;adminpass;Carlos;carlos@email.com;300;ADMIN_GESTION_CONTENIDO
+Luis;123456;luis23;lagh@yahoo.com;0;ADMIN_USUARIO
