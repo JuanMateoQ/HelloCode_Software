@@ -1,7 +1,6 @@
 package Modulo_Ejercicios.Controladores;
 
 import MetodosGlobales.MetodosFrecuentes;
-import Modulo_Ejercicios.DataBase.EjercicioRepository;
 import Modulo_Ejercicios.exercises.EjercicioCompletarCodigo;
 import Modulo_Ejercicios.exercises.Respuesta;
 import Modulo_Ejercicios.exercises.RespuestaString;
@@ -48,124 +47,302 @@ public class EjercicioCompletarController implements Initializable {
     @FXML
     private Label AvisoIncorrecto;
 
-    @FXML TextArea Avisos;
+    @FXML
+    TextArea Avisos;
 
-    @FXML Button btnSiguiente;
+    @FXML
+    Button btnSiguiente;
 
-    private int vidas = 5;
-    private int ejercicioActual = 0;
-    private List<EjercicioCompletarCodigo> ejerciciosCompletarCodigo;
+    @FXML
+    Label labelRetroalimentacion;
+
+    @FXML
+    Label labelBien;
+
+    @FXML
+    Text txtLenguaje;
+
+    // Variables del sistema de vidas y ejercicios
+    private int vidasActuales = 15;
+    private final int VIDAS_MAXIMAS = 15;
+    // private int ejercicioActual = 0; // COMENTADO: No usado para ejercicios individuales
+    // private int totalEjercicios = 0; // COMENTADO: No usado para ejercicios individuales
+    /**
+     * COMENTADO: Campo usado para listas de ejercicios, no necesario para ejercicios individuales
+     */
+    // private List<EjercicioCompletarCodigo> ejerciciosCompletarCodigo;
+    private EjercicioCompletarCodigo ejercicioIndividual; // Un solo ejercicio
+    private List<Boolean> respuestasCorrectasUsuario = new ArrayList<>();
+
+
+    /**
+     * Configura un ejercicio individual de completar código
+     * Optimizado para ejercicios con UNA sola respuesta esperada
+     */
+    public void setEjercicio(EjercicioCompletarCodigo ejercicio) {
+        this.ejercicioIndividual = ejercicio;
+        this.respuestasCorrectasUsuario.clear();
+        
+        if (ejercicio != null) {
+            cargarEjercicio(ejercicio);
+            // Configurar la barra de progreso para un solo ejercicio
+            ProgressBar.setProgress(0);
+            actualizarVidasUI();
+        }
+    }
+
+    /**
+     * Carga un ejercicio individual en la interfaz
+     */
+    private void cargarEjercicio(EjercicioCompletarCodigo ejercicio) {
+        // Establecer la instrucción
+        if (TextInstruccion != null) {
+            TextInstruccion.setText(ejercicio.getInstruccion());
+        }
+        
+        // Establecer el contenido del ejercicio
+        if (Ejercicio != null) {
+            Ejercicio.setText(ejercicio.obtenerCodigoIncompleto());
+        }
+        
+        // Limpiar el campo de entrada
+        if (textEntrada != null) {
+            textEntrada.clear();
+        }
+        
+        // Ocultar avisos
+        if (AvisoCorrecto != null) {
+            AvisoCorrecto.setVisible(false);
+        }
+        if (AvisoIncorrecto != null) {
+            AvisoIncorrecto.setVisible(false);
+        }
+        if (labelRetroalimentacion != null) {
+            labelRetroalimentacion.setVisible(false);
+        }
+        if (labelBien != null) {
+            labelBien.setVisible(false);
+        }
+        if (Avisos != null) {
+            Avisos.setVisible(false);
+        }
+        
+        // Asegurar que el botón siguiente esté oculto al cargar un nuevo ejercicio
+        if (btnSiguiente != null) {
+            btnSiguiente.setDisable(true);
+            btnSiguiente.setOpacity(0.0);
+        }
+        
+        // Asegurar que el botón comprobar esté habilitado
+        if (btnComprobar != null) {
+            btnComprobar.setDisable(false);
+        }
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Cargar ejercicios desde el repositorio
-        ejerciciosCompletarCodigo = EjercicioRepository.cargarEjerciciosCompletarCodigo();
-        cargarEjercicioActual();
 
-        // Inicializamos el progreso en 0
+        // cargarEjercicioActual(); // COMENTADO: No necesario, se usa setEjercicio() para ejercicios individuales
+
+        // Inicializar UI
         ProgressBar.setProgress(0);
+        actualizarVidasUI();
 
-        // Configurar la acción del botón Comprobar
+        // Configurar eventos de botones
         btnComprobar.setOnAction(event -> comprobarCodigo());
-
-        // Configurar la acción del botón "Siguiente"
-        btnSiguiente.setOnAction(event -> avanzarSiguienteEjercicio());
-    }
-
-
-    private void cargarEjercicioActual() {
-        if (ejercicioActual < ejerciciosCompletarCodigo.size()) {
-            EjercicioCompletarCodigo ejercicio = ejerciciosCompletarCodigo.get(ejercicioActual);
-
-            // Mostrar instrucciones y código incompleto
-            TextInstruccion.setText(ejercicio.getInstruccion());
-            Ejercicio.setText(ejercicio.obtenerCodigoIncompleto());
-
-            // Restablecer vidas para cada ejercicio
-            //TexVida.setText(String.valueOf(vidas));
-        }
-    }
-
-    // Método para comprobar el código ingresado
-    private void comprobarCodigo() {
-        String input = textEntrada.getText();
-        ArrayList<Respuesta> respuestasUsuario = new ArrayList<>();
-
-        // Añadir la respuesta del usuario
-        respuestasUsuario.add(new RespuestaString(input));
-
-        // Evaluar las respuestas
-        EjercicioCompletarCodigo ejercicio = ejerciciosCompletarCodigo.get(ejercicioActual);
-        ResultadoDeEvaluacion resultado = ejercicio.evaluarRespuestas(respuestasUsuario);
-
-        if (resultado.getPorcentajeDeAcerto() == 100) {
-            // Si la respuesta es correcta
-            TexVida.setText(String.valueOf(vidas));
-            AvisoCorrecto.setVisible(true);
-
-
-
-        } else {
-            // Si la respuesta es incorrecta
-            if (vidas > 1) {
-                vidas--;
-                TexVida.setText(String.valueOf(vidas));
-            } else {
-                TexVida.setText("0");
-                Avisos.setText("¡Se han agotado tus vidas!");
-                Avisos.setVisible(true);
-                PauseTransition pauseAvisos = new PauseTransition(Duration.seconds(2));
-                pauseAvisos.setOnFinished(event -> Avisos.setVisible(false));
-                pauseAvisos.play();
-                terminarEjecucion();
-                return;
-            }
-
-            AvisoIncorrecto.setVisible(true);
-
-
-        }
-
-        // Limpiar el TextField
-        textEntrada.clear();
-        //avanzarSiguienteEjercicio();
-
-        btnSiguiente.setDisable(false);
-        btnSiguiente.setOpacity(1.0);
-    }
-
-    // Método para avanzar al siguiente ejercicio
-    private void avanzarSiguienteEjercicio() {
-
-        AvisoCorrecto.setVisible(false);
-        AvisoIncorrecto.setVisible(false);
-
-        ejercicioActual++;
-
-        // Actualizar la barra de progreso en función de los ejercicios completados
-        double progreso = (double) ejercicioActual / ejerciciosCompletarCodigo.size();
-        ProgressBar.setProgress(progreso);
-
-        if (ejercicioActual < ejerciciosCompletarCodigo.size()) {
-            cargarEjercicioActual();
-        } else {
-            // Si se completaron todos los ejercicios
-            System.out.println("¡Todos los ejercicios completados!");
-            btnComprobar.setDisable(true);
-
-            MetodosFrecuentes.cambiarVentana((Stage) btnSiguiente.getScene().getWindow(), "/Modulo_Ejercicios/views/SeleccionMultiple-view.fxml", "Menu Principal");
-            //terminarEjecucion();
-        }
-
+        btnSiguiente.setOnAction(event -> cerrarVentanaYAvanzar());
+        
+        // Inicialmente ocultar el botón siguiente
         btnSiguiente.setDisable(true);
         btnSiguiente.setOpacity(0.0);
-
     }
 
-    // Método para finalizar la ejecución
+    /**
+     * Actualiza la UI de las vidas
+     */
+    private void actualizarVidasUI() {
+        if (TexVida != null) {
+            TexVida.setText(String.valueOf(vidasActuales));
+        }
+    }
+
+    /**
+     * Carga el ejercicio actual en la interfaz
+     * COMENTADO: Este método se usa para listas de ejercicios, 
+     * no para ejercicios individuales manejados por LeccionUIController
+     */
+    /*
+    private void cargarEjercicioActual() {
+        if (ejerciciosCompletarCodigo != null && ejercicioActual < ejerciciosCompletarCodigo.size()) {
+            EjercicioCompletarCodigo ejercicio = ejerciciosCompletarCodigo.get(ejercicioActual);
+
+            // Mostrar instrucciones y código incompleto usando los métodos de la clase
+            TextInstruccion.setText(ejercicio.getInstruccion());
+            Ejercicio.setText(ejercicio.obtenerCodigoIncompleto());
+            txtLenguaje.setText(ejercicio.getLenguaje().toString());
+
+            // Limpiar mensajes anteriores
+            ocultarMensajesFeedback();
+        }
+    }
+    */
+
+    /**
+     * Oculta todos los mensajes de feedback
+     * COMENTADO: No se usa más con la nueva lógica de ejercicios individuales
+     */
+    /*
+    private void ocultarMensajesFeedback() {
+        AvisoCorrecto.setVisible(false);
+        AvisoIncorrecto.setVisible(false);
+        labelRetroalimentacion.setVisible(false);
+        labelBien.setVisible(false);
+        Avisos.setVisible(false);
+    }
+    */
+
+
+    private void comprobarCodigo() {
+        String input = textEntrada.getText().trim();
+        
+        if (input.isEmpty()) {
+            mostrarMensajeError("Por favor, ingresa una respuesta antes de comprobar.");
+            return;
+        }
+
+        ArrayList<Respuesta> respuestasUsuario = new ArrayList<>();
+        respuestasUsuario.add(new RespuestaString(input));
+
+        if (ejercicioIndividual != null) {
+            ResultadoDeEvaluacion resultado = ejercicioIndividual.evaluarRespuestas(respuestasUsuario);
+
+            if (resultado.getPorcentajeDeAcerto() == 100) {
+                // Respuesta correcta
+                respuestasCorrectasUsuario.add(true);
+                mostrarFeedbackCorrecto();
+                
+            } else {
+                // Respuesta incorrecta
+                respuestasCorrectasUsuario.add(false);
+                //reducirVida();
+                
+                if (vidasActuales > 0) {
+                    mostrarFeedbackIncorrecto(ejercicioIndividual);
+                } else {
+                    mostrarGameOver();
+                    return;
+                }
+            }
+
+            // Mostrar botón siguiente SIEMPRE después de comprobar
+            btnSiguiente.setDisable(false);
+            btnSiguiente.setOpacity(1.0);
+            btnComprobar.setDisable(true); // Deshabilitar comprobar para evitar múltiples clics
+
+            // Limpiar el TextField para permitir nuevo intento
+            textEntrada.clear();
+        }
+    }
+
+    //Muestra feedback para respuesta correcta
+    private void mostrarFeedbackCorrecto() {
+        // Ocultar mensajes de error previos
+        if (AvisoIncorrecto != null) {
+            AvisoIncorrecto.setVisible(false);
+        }
+        if (labelRetroalimentacion != null) {
+            labelRetroalimentacion.setVisible(false);
+        }
+        if (Avisos != null) {
+            Avisos.setVisible(false);
+        }
+        
+        // Mostrar feedback positivo
+        if (AvisoCorrecto != null) {
+            AvisoCorrecto.setVisible(true);
+        }
+        if (labelBien != null) {
+            labelBien.setVisible(true);
+        }
+        
+    }
+
+    //Muestra feedback para respuesta incorrecta
+    private void mostrarFeedbackIncorrecto(EjercicioCompletarCodigo ejercicio) {
+        // Ocultar mensajes de correcto previos
+        if (AvisoCorrecto != null) {
+            AvisoCorrecto.setVisible(false);
+        }
+        if (labelBien != null) {
+            labelBien.setVisible(false);
+        }
+        
+        // Mostrar feedback de error
+        if (AvisoIncorrecto != null) {
+            AvisoIncorrecto.setVisible(true);
+        }
+        
+        // Obtener LA respuesta esperada (sabemos que es una sola)
+        ArrayList<String> respuestasEsperadas = ejercicio.obtenerRespuestasEsperadas();
+        String respuestaCorrecta = respuestasEsperadas.isEmpty() ? "No disponible" : respuestasEsperadas.get(0);
+        
+        if (labelRetroalimentacion != null) {
+            labelRetroalimentacion.setText("La respuesta correcta es: " + respuestaCorrecta);
+            labelRetroalimentacion.setVisible(true);
+        }
+        
+    }
+
+
+    private void reducirVida() {
+        vidasActuales--;
+        actualizarVidasUI();
+    }
+
+    //Cierra la ventana actual y avanza al siguiente ejercicio en la secuencia
+    private void cerrarVentanaYAvanzar() {
+        try {
+            // Llamar al LeccionUIController para avanzar al siguiente ejercicio
+            Nuevo_Modulo_Leccion.controllers.LeccionUIController.avanzarAlSiguienteEjercicio();
+            
+            if (btnComprobar != null && btnComprobar.getScene() != null) {
+                btnComprobar.getScene().getWindow().hide();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void mostrarGameOver() {
+        Avisos.setText("¡Se han agotado tus vidas!");
+        Avisos.setVisible(true);
+        
+        PauseTransition pauseAvisos = new PauseTransition(Duration.seconds(3));
+        pauseAvisos.setOnFinished(event -> {
+            Avisos.setVisible(false);
+            terminarEjecucion();
+        });
+        pauseAvisos.play();
+    }
+
+    private void mostrarMensajeError(String mensaje) {
+        Avisos.setText(mensaje);
+        Avisos.setVisible(true);
+        
+        PauseTransition pause = new PauseTransition(Duration.seconds(2));
+        pause.setOnFinished(event -> Avisos.setVisible(false));
+        pause.play();
+    }
+
+    /**
+     * Finaliza la ejecución y regresa al home
+     */
     private void terminarEjecucion() {
         btnComprobar.setDisable(true);
-
-
+        MetodosFrecuentes.cambiarVentana(
+            (Stage) btnComprobar.getScene().getWindow(), 
+            "/Modulo_Usuario/views/homeUsuario.fxml", 
+            "Ventana Home..."
+        );
     }
 }

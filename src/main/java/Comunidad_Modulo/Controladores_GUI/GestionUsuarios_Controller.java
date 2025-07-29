@@ -5,9 +5,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import Comunidad_Modulo.controladores.ContextoSistema;
-import Comunidad_Modulo.integracion.IModuloUsuarios;
 import Modulo_Usuario.Clases.UsuarioComunidad;
-import Modulo_Usuario.Clases.NivelJava;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -16,38 +14,43 @@ import java.util.List;
 public class GestionUsuarios_Controller implements Initializable {
     
     // FXML Components que realmente existen en el archivo FXML
-    @FXML private TextField txtNombreUsuario;
-    @FXML private ComboBox<NivelJava> comboNivelJava;
-    @FXML private Button btnCrearUsuario;
     @FXML private Button btnListarUsuarios;
-    @FXML private TextField txtIndiceUsuario;
-    @FXML private Button btnConectarUsuario;
-    @FXML private Button btnDesconectarUsuario;
-    @FXML private TextArea txtListaUsuarios;
+    @FXML private TextField txtIndiceUsuario;  // Ahora para seleccionar comunidades
+    @FXML private Button btnConectarUsuario;   // Conectarme a comunidad
+    @FXML private Button btnDesconectarUsuario; // Desconectarme de comunidad
+    @FXML private TextArea txtComunidades;   // Ahora mostrará comunidades disponibles
     @FXML private TextArea txtInformacion;
     @FXML private Button btnVolver;
-    
-    private IModuloUsuarios moduloUsuarios;
     
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // Configurar e inicializar el módulo de usuarios si no existe
         inicializarModuloUsuarios();
         
-        // Obtener referencia al módulo de usuarios
-        this.moduloUsuarios = ContextoSistema.getInstancia().getModuloUsuarios();
-        
-        // Configurar ComboBox de niveles
-        configurarComboBox();
-        
-        // Deshabilitar creación de usuarios (se maneja desde Modulo_Usuario)
-        deshabilitarCreacionUsuarios();
-        
         // Configurar áreas de texto
         configurarAreasTexto();
         
+        // Configurar etiquetas y textos para el nuevo flujo
+        configurarInterfazParaConexionUsuario();
+        
         // Cargar información inicial
-        actualizarInformacionUsuarios();
+        actualizarInformacionSistema();
+    }
+    
+    /**
+     * Configura la interfaz para que el usuario actual pueda conectarse a comunidades
+     */
+    private void configurarInterfazParaConexionUsuario() {
+        
+        // Configurar tooltip explicativo
+        Tooltip tooltipConectar = new Tooltip("Unirse a una nueva comunidad o activar una comunidad existente");
+        btnConectarUsuario.setTooltip(tooltipConectar);
+        
+        Tooltip tooltipDesconectar = new Tooltip("Salir permanentemente de una comunidad");
+        btnDesconectarUsuario.setTooltip(tooltipDesconectar);
+        
+        // Configurar placeholder para el campo de índice
+        txtIndiceUsuario.setPromptText("Número de comunidad");
     }
     
     /**
@@ -76,163 +79,174 @@ public class GestionUsuarios_Controller implements Initializable {
             }
         }
     }
-    
-    private void configurarComboBox() {
-        // Cargar niveles Java disponibles
-        comboNivelJava.setItems(FXCollections.observableArrayList(NivelJava.values()));
-        comboNivelJava.getSelectionModel().selectFirst();
-    }
+
     
     private void configurarAreasTexto() {
         // Configurar área de información como solo lectura
         txtInformacion.setEditable(false);
         txtInformacion.setWrapText(true);
-        txtInformacion.setStyle("-fx-background-color: #f4f4f4; -fx-border-color: #cccccc;");
-        
+
         // Configurar área de lista de usuarios como solo lectura
-        txtListaUsuarios.setEditable(false);
-        txtListaUsuarios.setWrapText(true);
-        txtListaUsuarios.setStyle("-fx-background-color: #f9f9f9; -fx-border-color: #cccccc;");
+        txtComunidades.setEditable(false);
+        txtComunidades.setWrapText(true);
     }
-    
-    private void deshabilitarCreacionUsuarios() {
-        // Deshabilitar campos de creación
-        txtNombreUsuario.setDisable(true);
-        comboNivelJava.setDisable(true);
-        btnCrearUsuario.setDisable(true);
-        
-        // Agregar tooltip explicativo
-        Tooltip tooltip = new Tooltip("La creación de usuarios se maneja desde el Módulo de Usuarios");
-        btnCrearUsuario.setTooltip(tooltip);
-        
-        // Configurar placeholder
-        txtNombreUsuario.setPromptText("Creación deshabilitada - usar Módulo de Usuarios");
-        
-        // Mostrar mensaje informativo inicial
-        txtInformacion.setText("=== GESTIÓN DE USUARIOS ===\n\n" +
-                              "La creación de usuarios se maneja desde el Módulo de Usuarios principal.\n" +
-                              "Aquí puede visualizar el usuario actual y gestionar conexiones.");
-    }
-    
-    @FXML
-    private void crearUsuario() {
-        // Mostrar mensaje informativo
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Información");
-        alert.setHeaderText("Creación de usuarios deshabilitada");
-        alert.setContentText("La creación de usuarios se maneja desde el Módulo de Usuarios principal. " +
-                           "Use la interfaz principal del sistema para crear nuevos usuarios.");
-        alert.showAndWait();
-    }
-    
+
+
     @FXML
     private void listarUsuarios() {
-        actualizarInformacionUsuarios();
-        mostrarMensajeExito("Lista de usuarios actualizada");
+        actualizarInformacionSistema();
+        mostrarListaComunidadesDisponibles();
+        mostrarMensajeExito("Lista de comunidades actualizada");
     }
     
     @FXML
     private void conectarUsuario() {
         try {
+            // Obtener el usuario actual desde SesionManager
+            MetodosGlobales.SesionManager sesion = MetodosGlobales.SesionManager.getInstancia();
+            
+            if (!sesion.hayUsuarioAutenticado()) {
+                mostrarMensajeError("No hay usuario autenticado. Inicie sesión primero.");
+                return;
+            }
+            
+            UsuarioComunidad usuarioActual = sesion.getUsuarioComunidad();
+            if (usuarioActual == null) {
+                mostrarMensajeError("Error al obtener información del usuario.");
+                return;
+            }
+            
+            // Obtener el índice de la comunidad
             String indiceTexto = txtIndiceUsuario.getText().trim();
             if (indiceTexto.isEmpty()) {
-                mostrarMensajeError("Por favor ingrese el número del usuario a conectar");
+                mostrarMensajeError("Por favor ingrese el número de la comunidad a la que desea conectarse");
                 return;
             }
 
-            int indice = Integer.parseInt(indiceTexto);
+            int indiceComunidad = Integer.parseInt(indiceTexto);
+            ContextoSistema contexto = ContextoSistema.getInstancia();
+            List<Comunidad_Modulo.modelo.Comunidad> comunidades = contexto.getComunidades();
             
-            // Obtener la lista de usuarios
-            if (moduloUsuarios instanceof Comunidad_Modulo.integracion.ModuloUsuariosReal) {
-                Comunidad_Modulo.integracion.ModuloUsuariosReal moduloReal = 
-                    (Comunidad_Modulo.integracion.ModuloUsuariosReal) moduloUsuarios;
-                
-                List<UsuarioComunidad> todosUsuarios = moduloReal.obtenerTodosLosUsuarios();
-                
-                if (indice < 1 || indice > todosUsuarios.size()) {
-                    mostrarMensajeError("Número de usuario inválido. Use un número entre 1 y " + todosUsuarios.size());
-                    return;
-                }
-                
-                UsuarioComunidad usuario = todosUsuarios.get(indice - 1);
-                ContextoSistema contexto = ContextoSistema.getInstancia();
-                
-                // Verificar si hay una comunidad activa
-                if (contexto.getComunidadActual() == null) {
-                    mostrarMensajeError("No hay comunidad activa. Cree una comunidad primero en 'Gestionar Comunidad'");
-                    return;
-                }
-                
-                // Conectar usuario a la comunidad
-                contexto.getComunidadActual().conectarUsuario(usuario);
-                contexto.agregarUsuario(usuario);
-                
-                mostrarMensajeExito("Usuario '" + usuario.getNombre() + "' conectado a la comunidad '" + 
-                                  contexto.getComunidadActual().getNombre() + "'");
-                
-                // Actualizar información
-                actualizarInformacionUsuarios();
-                
-            } else {
-                mostrarMensajeError("Funcionalidad no disponible con módulo simulado");
+            if (comunidades.isEmpty()) {
+                mostrarMensajeError("No hay comunidades disponibles. Cree una comunidad primero.");
+                return;
             }
+            
+            if (indiceComunidad < 1 || indiceComunidad > comunidades.size()) {
+                mostrarMensajeError("Número de comunidad inválido. Use un número entre 1 y " + comunidades.size());
+                return;
+            }
+            
+            // Obtener la comunidad seleccionada
+            Comunidad_Modulo.modelo.Comunidad comunidadSeleccionada = comunidades.get(indiceComunidad - 1);
+            
+            // Verificar si ya está conectado a esta comunidad
+            boolean yaEsMiembro = comunidadSeleccionada.getUsuariosMiembros().stream()
+                    .anyMatch(u -> u.getUsername().equals(usuarioActual.getUsername()));
+            
+            if (yaEsMiembro) {
+                // Si ya es miembro, simplemente activar la comunidad y conectar
+                contexto.setComunidadActual(comunidadSeleccionada);
+                
+                // Asegurar que esté conectado activamente
+                if (!comunidadSeleccionada.getUsuariosConectados().stream()
+                        .anyMatch(u -> u.getUsername().equals(usuarioActual.getUsername()))) {
+                    comunidadSeleccionada.conectarUsuario(usuarioActual);
+                }
+                
+                mostrarMensajeExito("¡Comunidad activada! 🎯\n" +
+                                  "'" + comunidadSeleccionada.getNombre() + "' es ahora tu comunidad activa.\n" +
+                                  "✅ Estado: MIEMBRO ACTIVO");
+            } else {
+                // Si no es miembro, unirse a la comunidad
+                contexto.conectarUsuarioAComunidad(usuarioActual, comunidadSeleccionada);
+                
+                // Establecer esta comunidad como activa automáticamente
+                contexto.setComunidadActual(comunidadSeleccionada);
+                
+                mostrarMensajeExito("¡Perfecto! Te has unido a la comunidad '" + 
+                                  comunidadSeleccionada.getNombre() + "'.\n" +
+                                  "✅ Ahora eres MIEMBRO ACTIVO de esta comunidad.\n" +
+                                  "🎯 Esta comunidad está establecida como tu comunidad activa.");
+            }
+            
+            // Actualizar información
+            actualizarInformacionSistema();
             
         } catch (NumberFormatException e) {
             mostrarMensajeError("Por favor ingrese un número válido");
         } catch (Exception e) {
-            mostrarMensajeError("Error al conectar usuario: " + e.getMessage());
+            mostrarMensajeError("Error al conectarse a la comunidad: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
     @FXML 
     private void desconectarUsuario() {
         try {
-            String indiceTexto = txtIndiceUsuario.getText().trim();
-            if (indiceTexto.isEmpty()) {
-                mostrarMensajeError("Por favor ingrese el número del usuario a desconectar");
+            // Obtener el usuario actual desde SesionManager
+            MetodosGlobales.SesionManager sesion = MetodosGlobales.SesionManager.getInstancia();
+            
+            if (!sesion.hayUsuarioAutenticado()) {
+                mostrarMensajeError("No hay usuario autenticado. Inicie sesión primero.");
                 return;
             }
-
-            int indice = Integer.parseInt(indiceTexto);
             
-            // Obtener la lista de usuarios
-            if (moduloUsuarios instanceof Comunidad_Modulo.integracion.ModuloUsuariosReal) {
-                Comunidad_Modulo.integracion.ModuloUsuariosReal moduloReal = 
-                    (Comunidad_Modulo.integracion.ModuloUsuariosReal) moduloUsuarios;
-                
-                List<UsuarioComunidad> todosUsuarios = moduloReal.obtenerTodosLosUsuarios();
-                
-                if (indice < 1 || indice > todosUsuarios.size()) {
-                    mostrarMensajeError("Número de usuario inválido. Use un número entre 1 y " + todosUsuarios.size());
-                    return;
-                }
-                
-                UsuarioComunidad usuario = todosUsuarios.get(indice - 1);
-                ContextoSistema contexto = ContextoSistema.getInstancia();
-                
-                // Verificar si hay una comunidad activa
-                if (contexto.getComunidadActual() == null) {
-                    mostrarMensajeError("No hay comunidad activa para desconectar usuarios");
-                    return;
-                }
-                
-                // Desconectar usuario de la comunidad
-                contexto.getComunidadActual().desconectarUsuario(usuario);
-                
-                mostrarMensajeExito("Usuario '" + usuario.getNombre() + "' desconectado de la comunidad '" + 
-                                  contexto.getComunidadActual().getNombre() + "'");
-                
-                // Actualizar información
-                actualizarInformacionUsuarios();
-                
-            } else {
-                mostrarMensajeError("Funcionalidad no disponible con módulo simulado");
+            UsuarioComunidad usuarioActual = sesion.getUsuarioComunidad();
+            if (usuarioActual == null) {
+                mostrarMensajeError("Error al obtener información del usuario actual.");
+                return;
             }
             
-        } catch (NumberFormatException e) {
-            mostrarMensajeError("Por favor ingrese un número válido");
+            ContextoSistema contexto = ContextoSistema.getInstancia();
+            
+            // Buscar en qué comunidades es miembro el usuario
+            List<Comunidad_Modulo.modelo.Comunidad> comunidadesMiembro = new java.util.ArrayList<>();
+            for (Comunidad_Modulo.modelo.Comunidad comunidad : contexto.getComunidades()) {
+                if (comunidad.getUsuariosMiembros().stream()
+                        .anyMatch(u -> u.getUsername().equals(usuarioActual.getUsername()))) {
+                    comunidadesMiembro.add(comunidad);
+                }
+            }
+            
+            if (comunidadesMiembro.isEmpty()) {
+                mostrarMensajeError("No eres miembro de ninguna comunidad");
+                return;
+            }
+            
+            // Si hay un índice especificado, salir de esa comunidad específica
+            String indiceTexto = txtIndiceUsuario.getText().trim();
+            if (!indiceTexto.isEmpty()) {
+                try {
+                    int indiceComunidad = Integer.parseInt(indiceTexto);
+                    if (indiceComunidad >= 1 && indiceComunidad <= comunidadesMiembro.size()) {
+                        Comunidad_Modulo.modelo.Comunidad comunidadASalir = comunidadesMiembro.get(indiceComunidad - 1);
+                        contexto.desconectarUsuarioDeComunidad(usuarioActual, comunidadASalir);
+                        mostrarMensajeExito("Has salido de la comunidad '" + 
+                                          comunidadASalir.getNombre() + "'");
+                    } else {
+                        mostrarMensajeError("Número de comunidad inválido para salir");
+                        return;
+                    }
+                } catch (NumberFormatException e) {
+                    mostrarMensajeError("Por favor ingrese un número válido para la comunidad");
+                    return;
+                }
+            } else {
+                // Si no hay índice, salir de todas las comunidades
+                for (Comunidad_Modulo.modelo.Comunidad comunidad : comunidadesMiembro) {
+                    contexto.desconectarUsuarioDeComunidad(usuarioActual, comunidad);
+                }
+                mostrarMensajeExito("Has salido de todas las comunidades (" + 
+                                  comunidadesMiembro.size() + " comunidades)");
+            }
+            
+            // Actualizar información
+            actualizarInformacionSistema();
+            
         } catch (Exception e) {
-            mostrarMensajeError("Error al desconectar usuario: " + e.getMessage());
+            mostrarMensajeError("Error al desconectarse: " + e.getMessage());
+            e.printStackTrace();
         }
     }    @FXML
     private void volver() {
@@ -248,108 +262,130 @@ public class GestionUsuarios_Controller implements Initializable {
         }
     }
     
-    private void actualizarInformacionUsuarios() {
+    /**
+     * Actualiza la información del sistema mostrando el usuario actual y su estado
+     */
+    private void actualizarInformacionSistema() {
         try {
             ContextoSistema contexto = ContextoSistema.getInstancia();
-            UsuarioComunidad usuarioActual = moduloUsuarios.obtenerUsuarioActual();
+            MetodosGlobales.SesionManager sesion = MetodosGlobales.SesionManager.getInstancia();
             
-            StringBuilder info = new StringBuilder("=== INFORMACIÓN DEL SISTEMA ===\n\n");
+            StringBuilder info = new StringBuilder("Mis Comunidades\n\n");
             
-            // Mostrar estadísticas del sistema
-            info.append("📊 ESTADÍSTICAS:\n");
-            info.append("• Total usuarios registrados: ").append(contexto.getTotalUsuarios()).append("\n");
-            info.append("• Total comunidades: ").append(contexto.getTotalComunidades()).append("\n");
-            info.append("• Total moderadores: ").append(contexto.getModeradores().size()).append("\n\n");
-            
-            // Información de comunidad activa
-            if (contexto.getComunidadActual() != null) {
-                info.append("🏘️ COMUNIDAD ACTIVA:\n");
-                info.append("• Nombre: ").append(contexto.getComunidadActual().getNombre()).append("\n");
-                info.append("• Descripción: ").append(contexto.getComunidadActual().getDescripcion()).append("\n");
-                info.append("• Usuarios conectados: ").append(contexto.getComunidadActual().getUsuariosConectados().size()).append("\n\n");
-            } else {
-                info.append("⚠️ COMUNIDAD ACTIVA:\n");
-                info.append("No hay comunidad activa.\n");
-                info.append("Los usuarios no se pueden conectar sin una comunidad activa.\n\n");
-            }
-            
-            // Información del usuario actual
-            if (usuarioActual != null) {
-                info.append("👤 USUARIO ACTUAL:\n");
+            // Información del usuario actual autenticado
+            if (sesion.hayUsuarioAutenticado()) {
+                UsuarioComunidad usuarioActual = sesion.getUsuarioComunidad();
+                info.append("Mi Info:\n");
                 info.append("   • Nombre: ").append(usuarioActual.getNombre()).append("\n");
                 info.append("   • Username: ").append(usuarioActual.getUsername()).append("\n");
                 info.append("   • Email: ").append(usuarioActual.getEmail() != null && !usuarioActual.getEmail().isEmpty() ? 
                            usuarioActual.getEmail() : "No especificado").append("\n");
                 info.append("   • Nivel Java: ").append(usuarioActual.getNivelJava()).append("\n");
-                info.append("   • Reputación: ").append(usuarioActual.getReputacion()).append(" puntos\n");
-                info.append("   • ID Usuario: ").append(usuarioActual.getIdUsuario()).append("\n\n");
+                info.append("   • Reputación: ").append(usuarioActual.getReputacion()).append(" puntos\n\n");
+                
+                // Mostrar comunidades a las que está conectado
+                List<Comunidad_Modulo.modelo.Comunidad> comunidadesConectadas = new java.util.ArrayList<>();
+                for (Comunidad_Modulo.modelo.Comunidad comunidad : contexto.getComunidades()) {
+                    if (comunidad.getUsuariosConectados().stream()
+                            .anyMatch(u -> u.getUsername().equals(usuarioActual.getUsername()))) {
+                        comunidadesConectadas.add(comunidad);
+                    }
+                }
+                
+                info.append("🏘️ Comunidades Conectadas:\n");
+                if (comunidadesConectadas.isEmpty()) {
+                    info.append("   • No estás conectado a ninguna comunidad\n");
+                    info.append("   • ¿Buscas una comunidad? Pulsa 'Ver Comunidades' para verlas todas\n");
+                } else {
+                    for (int i = 0; i < comunidadesConectadas.size(); i++) {
+                        Comunidad_Modulo.modelo.Comunidad comunidad = comunidadesConectadas.get(i);
+                        info.append("   ").append(i + 1).append(". ").append(comunidad.getNombre())
+                            .append(" (").append(comunidad.getUsuariosConectados().size()).append(" usuarios)\n");
+                    }
+                }
+                info.append("\n");
+                
+            } else {
+                info.append("⚠️ Mi Info:\n");
+                info.append("No hay usuario autenticado.\n");
+                info.append("Inicie sesión en el sistema principal primero.\n\n");
             }
             
-            info.append("💡 Consejo: Use los números de la lista para conectar/desconectar usuarios.");
+            info.append("💡 Instrucciones:\n");
+            info.append("1. Use 'Comunidades' para listar las comunidades disponibles\n");
+            info.append("2. Ingrese el número de la comunidad en el campo\n");
+            info.append("3. Use 'Unirse' para unirse a una nueva o activar una existente\n");
+            info.append("4. Use 'Abandonar' para abandonar permanentemente una comunidad\n");
+            info.append("5. Solo puede tener una comunidad activa a la vez");
             
             txtInformacion.setText(info.toString());
             
-            // Mostrar lista detallada de usuarios con estado de conexión
-            mostrarListaUsuariosConEstado(contexto);
+            // Actualizar la lista de comunidades disponibles
+            mostrarListaComunidadesDisponibles();
             
         } catch (Exception e) {
-            mostrarMensajeError("Error al cargar información del usuario: " + e.getMessage());
+            mostrarMensajeError("Error al cargar información del sistema: " + e.getMessage());
             e.printStackTrace();
         }
     }
     
     /**
-     * Muestra la lista de usuarios con su estado de conexión a la comunidad
+     * Muestra la lista de comunidades disponibles para conectarse
      */
-    private void mostrarListaUsuariosConEstado(ContextoSistema contexto) {
+    private void mostrarListaComunidadesDisponibles() {
         try {
-            StringBuilder listaUsuarios = new StringBuilder("📋 USUARIOS REGISTRADOS\n");
-            listaUsuarios.append("========================\n\n");
+            ContextoSistema contexto = ContextoSistema.getInstancia();
+            MetodosGlobales.SesionManager sesion = MetodosGlobales.SesionManager.getInstancia();
             
-            if (moduloUsuarios instanceof Comunidad_Modulo.integracion.ModuloUsuariosReal) {
-                Comunidad_Modulo.integracion.ModuloUsuariosReal moduloReal = 
-                    (Comunidad_Modulo.integracion.ModuloUsuariosReal) moduloUsuarios;
-                
-                List<UsuarioComunidad> todosUsuarios = moduloReal.obtenerTodosLosUsuarios();
-                listaUsuarios.append("Total: ").append(todosUsuarios.size()).append(" usuario(s)\n\n");
-                
-                for (int i = 0; i < todosUsuarios.size(); i++) {
-                    UsuarioComunidad usuario = todosUsuarios.get(i);
-                    listaUsuarios.append(String.format("%d. Usuario: %s (Nivel: %s, Reputación: %d)\n", 
-                                       (i + 1), 
-                                       usuario.getNombre() != null ? usuario.getNombre() : usuario.getUsername(),
-                                       usuario.getNivelJava(), 
-                                       usuario.getReputacion()));
-                    
-                    listaUsuarios.append("   ID: ").append(usuario.getIdUsuario()).append("\n");
-                    listaUsuarios.append("   Amigos: ").append(usuario.getAmigos().size()).append("\n");
-                    
-                    // Verificar estado de conexión a la comunidad
-                    boolean estaConectado = false;
-                    if (contexto.getComunidadActual() != null) {
-                        estaConectado = contexto.getComunidadActual().getUsuariosConectados()
-                                      .stream()
-                                      .anyMatch(u -> u.getUsername().equals(usuario.getUsername()));
-                    }
-                    
-                    listaUsuarios.append("   Estado: ");
-                    if (estaConectado) {
-                        listaUsuarios.append("✅ Conectado a '")
-                                   .append(contexto.getComunidadActual().getNombre())
-                                   .append("'");
-                    } else {
-                        listaUsuarios.append("❌ Desconectado");
-                    }
-                    listaUsuarios.append("\n\n");
-                }
+            StringBuilder listaComunidades = new StringBuilder("🏘️ Comunidades Disponibles\n");
+
+            List<Comunidad_Modulo.modelo.Comunidad> comunidades = contexto.getComunidades();
+            
+            if (comunidades.isEmpty()) {
+                listaComunidades.append("No hay comunidades creadas.\n");
+                listaComunidades.append("Vaya a 'Gestionar Comunidad' para crear una nueva.\n\n");
             } else {
-                listaUsuarios.append("No hay información de usuarios disponible (módulo simulado)\n");
+                listaComunidades.append("Total: ").append(comunidades.size()).append(" comunidad(es)\n\n");
+                
+                for (int i = 0; i < comunidades.size(); i++) {
+                    Comunidad_Modulo.modelo.Comunidad comunidad = comunidades.get(i);
+                    listaComunidades.append(String.format("%d. %s\n", (i + 1), comunidad.getNombre()));
+                    listaComunidades.append("   Descripción: ").append(comunidad.getDescripcion()).append("\n");
+                    listaComunidades.append("   Miembros totales: ").append(comunidad.getUsuariosMiembros().size()).append("\n");
+                    listaComunidades.append("   Usuarios activos: ").append(comunidad.getUsuariosConectados().size()).append("\n");
+                    listaComunidades.append("   Moderador: ").append(comunidad.getModerador().getNombre()).append("\n");
+                    
+                    // Verificar si el usuario actual es miembro de esta comunidad
+                    boolean esMiembro = false;
+                    boolean estaConectado = false;
+                    if (sesion.hayUsuarioAutenticado()) {
+                        UsuarioComunidad usuarioActual = sesion.getUsuarioComunidad();
+                        esMiembro = comunidad.getUsuariosMiembros().stream()
+                                  .anyMatch(u -> u.getUsername().equals(usuarioActual.getUsername()));
+                        estaConectado = comunidad.getUsuariosConectados().stream()
+                                      .anyMatch(u -> u.getUsername().equals(usuarioActual.getUsername()));
+                    }
+                    
+                    listaComunidades.append("   Estado: ");
+                    if (esMiembro) {
+                        if (estaConectado) {
+                            listaComunidades.append("✅ Miembro Activo");
+                        } else {
+                            listaComunidades.append("👤 Miembro");
+                        }
+                    } else {
+                        listaComunidades.append("❌ No Miembro");
+                    }
+                    listaComunidades.append("\n\n");
+                }
             }
             
-            txtListaUsuarios.setText(listaUsuarios.toString());
+            listaComunidades.append("💡 Tip: Use el número de la comunidad para conectarse o desconectarse");
+
+            txtComunidades.setText(listaComunidades.toString());
             
         } catch (Exception e) {
-            txtListaUsuarios.setText("Error al cargar lista de usuarios: " + e.getMessage());
+            txtComunidades.setText("Error al cargar lista de comunidades: " + e.getMessage());
         }
     }
     
@@ -374,7 +410,7 @@ public class GestionUsuarios_Controller implements Initializable {
         javafx.animation.Timeline timeline = new javafx.animation.Timeline(
             new javafx.animation.KeyFrame(javafx.util.Duration.seconds(4), e -> {
                 txtInformacion.setStyle("-fx-background-color: #f4f4f4; -fx-border-color: #cccccc;");
-                actualizarInformacionUsuarios();
+                actualizarInformacionSistema();
             })
         );
         timeline.play();

@@ -1,5 +1,8 @@
 package Modulo_Usuario.Controladores;
 
+import Gamificacion_Modulo.clases.Main;
+import MetodosGlobales.MetodosFrecuentes;
+import Modulo_Usuario.Clases.Usuario;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -10,8 +13,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import Modulo_Usuario.Clases.Usuario;
-import Modulo_Usuario.Controladores.PerfilController;
 
 public class HomeUsuarioController {
     
@@ -29,45 +30,56 @@ public class HomeUsuarioController {
     @FXML private Button btnHome;
     @FXML private Button btnPerfil2;
     @FXML private Button btnConfiguracion;
+    @FXML private Button btnHomeUsuario;
 
     @FXML
     public void initialize() {
         // Se mostrará el XP cuando se llame a setUsuario()
         // Marcar como activo el botón Home por defecto
-        marcarBotonActivo(btnHome);
+        marcarBotonActivo(btnHomeUsuario);
     }
 
     @FXML
     private void irARanking(ActionEvent event) {
-        mostrarMensaje("Ranking", "Funcionalidad de ranking próximamente");
+        try {
+            // PASO 1: Inicializar el backend del módulo de gamificación
+            Main.inicializarDesdeModuloExterno();
+            // Cargar Ranking.fxml
+            Main.cambiarEscena("/Gamificacion_Modulo/fxml/Ranking.fxml");
+        } catch (Exception e) {
+            System.err.println("Error al navegar a Ranking: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     @FXML
     private void irAComunidad(ActionEvent event) {
-        mostrarMensaje("Comunidad", "Funcionalidad de comunidad próximamente");
+        MetodosFrecuentes.cambiarVentana((Stage) btnComunidad.getScene().getWindow(), "/Modulo_Comunidad/Views/Comunidad.fxml", "Comunidad");
+        //mostrarMensaje("Comunidad", "Funcionalidad de comunidad próximamente");
     }
 
     @FXML
     private void irAHome(ActionEvent event) {
-        // Abrir módulo de usuario (perfil)
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Modulo_Usuario/views/perfil.fxml"));
-            Parent root = loader.load();
-            PerfilController pc = loader.getController();
-            pc.setUsuario(usuario);
-            Scene scene = new Scene(root, 360, 640);
-            Stage stage = new Stage();
-            stage.setTitle("Perfil de Usuario");
-            stage.setScene(scene);
-            stage.setResizable(false);
-            stage.show();
-            // cerrar la actual
-            Stage thisStage = (Stage) btnHome.getScene().getWindow();
-            thisStage.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-            mostrarError("Error abriendo perfil: " + e.getMessage());
-        }
+        // Abrir la ruta
+//        try {
+//            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Modulo_Usuario/views/perfil.fxml"));
+//            Parent root = loader.load();
+//            PerfilController pc = loader.getController();
+//            pc.setUsuario(usuario);
+//            Scene scene = new Scene(root, 360, 640);
+//            Stage stage = new Stage();
+//            stage.setTitle("Perfil de Usuario");
+//            stage.setScene(scene);
+//            stage.setResizable(false);
+//            stage.show();
+//            // cerrar la actual
+//            Stage thisStage = (Stage) btnHome.getScene().getWindow();
+//            thisStage.close();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            mostrarError("Error abriendo perfil: " + e.getMessage());
+//        }
+        mostrarMensaje("Ruta", "Funcionalidad de la ruta pronto será mostrada");
     }
 
     @FXML
@@ -91,22 +103,25 @@ public class HomeUsuarioController {
     @FXML
     private void irAPerfil(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Modulo_Usuario/views/perfil.fxml"));
-            Parent root = loader.load();
-            PerfilController pc = loader.getController();
-            pc.setUsuario(usuario);
-            Scene scene = new Scene(root, 360, 640);
+            // PASO 1: Inicializar el backend del módulo de gamificación
+            Main.inicializarDesdeModuloExterno();
+
+            // PASO 2: Cargar la interfaz gráfica
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/Gamificacion_Modulo/fxml/PerfilUsuario.fxml"));
+            Scene scene = new Scene(fxmlLoader.load(), 360, 720);
+
             Stage stage = new Stage();
-            stage.setTitle("Perfil de Usuario");
+            stage.setTitle("Hello Code Software - Gamificación");
             stage.setScene(scene);
             stage.setResizable(false);
             stage.show();
-            // cerrar la actual
-            Stage thisStage = (Stage) btnPerfil2.getScene().getWindow();
+
+            // Cerrar la pantalla actual
+            Stage thisStage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
             thisStage.close();
         } catch (Exception e) {
             e.printStackTrace();
-            mostrarError("Error abriendo perfil: " + e.getMessage());
+            mostrarError("Error al abrir el módulo de gamificación: " + e.getMessage());
         }
     }
 
@@ -160,6 +175,10 @@ public class HomeUsuarioController {
     private void onMouseExitedSalir(javafx.scene.input.MouseEvent event) {
         Button btn = (Button) event.getSource();
         btn.setStyle(btn.getStyle().replace("#c0392b", "#e74c3c") + "; -fx-scale-x: 1.0; -fx-scale-y: 1.0;");
+    }
+    @FXML
+    void irAHomeUsuario(ActionEvent event) {
+        MetodosFrecuentes.cambiarVentana((Stage) btnHomeUsuario.getScene().getWindow(), "/Modulo_Usuario/views/homeUsuario.fxml", "Perfil de Usuario");
     }
 
     private void marcarBotonActivo(Button botonActivo) {

@@ -1,14 +1,16 @@
 package Modulo_Usuario.Controladores;
 
 
+import MetodosGlobales.MetodosFrecuentes;
+import MetodosGlobales.SesionManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.stage.Stage;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 
 
 public class HomeController {
@@ -34,6 +36,7 @@ public class HomeController {
             // Cerrar la pantalla actual
             Stage thisStage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
             thisStage.close();
+            //mostrarMensaje("Módulo Lecciones", "Este módulo estará disponible próximamente.");
         } catch (Exception e) {
             e.printStackTrace();
             mostrarError("Error al abrir el módulo de usuarios: " + e.getMessage());
@@ -42,45 +45,41 @@ public class HomeController {
 
     @FXML
     private void abrirEjercicios(MouseEvent event) {
-
-        // Aquí puedes cargar el módulo de ejercicios cuando lo tengas
-        mostrarMensaje("Módulo Ejercicios", "Este módulo estará disponible próximamente.");
-
-    }
-
-    @FXML
-    private void abrirReportes(MouseEvent event) {
         try {
-            // PASO 1: Inicializar el backend del módulo de gamificación
-            System.out.println(">>> Navegando al módulo de gamificación...");
-            Gamificacion_Modulo.Main.inicializarDesdeModuloExterno();
-
-            // PASO 2: Cargar la interfaz gráfica
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/Gamificacion_Modulo/fxml/PerfilUsuario.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/Modulo_Ejercicios/views/CrudEjercicios.fxml"));
             Scene scene = new Scene(fxmlLoader.load(), 360, 720);
 
             Stage stage = new Stage();
-            stage.setTitle("Hello Code Software - Gamificación");
+            stage.setTitle("Hello Code Software - Gestión de Ejercicios");
             stage.setScene(scene);
             stage.setResizable(false);
             stage.show();
-
-            System.out.println(">>> Módulo de gamificación abierto con " +
-                    Gamificacion_Modulo.Main.getUsuarios().size() + " usuarios cargados");
 
             // Cerrar la pantalla actual
             Stage thisStage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
             thisStage.close();
         } catch (Exception e) {
             e.printStackTrace();
-            mostrarError("Error al abrir el módulo de gamificación: " + e.getMessage());
+            mostrarError("Error al abrir el módulo de ejercicios: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void abrirReportes(MouseEvent event) {
+        try {
+            System.out.println(">>> Abriendo panel de administración...");
+            Gamificacion_Modulo.clases.Main.inicializarDesdeModuloExterno();
+            Gamificacion_Modulo.controllers_admin.AdminMainController.mostrarVentanaAdmin();
+        } catch (Exception e) {
+            System.err.println("Error al abrir panel de administración: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
     @FXML
     private void abrirComunidad(MouseEvent event) {
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/Modulo_Comunidad/Views/Comunidad.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/Modulo_Comunidad/Views/Admin/AdminComunidad.fxml"));
             Scene scene = new Scene(fxmlLoader.load(), 360, 640);
 
             Stage stage = new Stage();
@@ -93,6 +92,7 @@ public class HomeController {
             // Cerrar la pantalla actual
             Stage thisStage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
             thisStage.close();
+
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -104,20 +104,25 @@ public class HomeController {
     @FXML
 
     private void mostrarPerfil(ActionEvent event) {
-
+        cambiarVentana(event, "/Modulo_Usuario/views/perfil.fxml", "Perfil de Usuario");
         // Aquí puedes mostrar información del perfil del usuario
-        mostrarMensaje("Perfil de Usuario", "Funcionalidad de perfil estará disponible próximamente.");
+        //mostrarMensaje("Perfil de Usuario", "Funcionalidad de perfil estará disponible próximamente.");
     }
 
     @FXML
     private void cerrarSesion(ActionEvent event) {
+        cambiarVentana(event, "/Modulo_Usuario/views/login.fxml", "Hello Code Software - Iniciar Sesión");
+    }
+
+    private void cambiarVentana(ActionEvent event, String rutaFXML, String titulo) {
         try {
+            SesionManager.getInstancia().cerrarSesion();
             // Volver a la pantalla de login
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/Modulo_Usuario/views/login.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(rutaFXML));
             Scene scene = new Scene(fxmlLoader.load(), 360, 720);
 
             Stage stage = new Stage();
-            stage.setTitle("Hello Code Software - Iniciar Sesión");
+            stage.setTitle(titulo);
             stage.setScene(scene);
             stage.setResizable(false);
             stage.show();

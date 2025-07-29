@@ -22,4 +22,16 @@ public enum TipoTema {
     public String toString() {
         return descripcion;
     }
+    
+    /**
+     * Convierte una descripción de vuelta al enum
+     */
+    public static TipoTema fromDescripcion(String descripcion) {
+        for (TipoTema tema : TipoTema.values()) {
+            if (tema.getDescripcion().equals(descripcion)) {
+                return tema;
+            }
+        }
+        throw new IllegalArgumentException("Descripción de tema no válida: " + descripcion);
+    }
 }

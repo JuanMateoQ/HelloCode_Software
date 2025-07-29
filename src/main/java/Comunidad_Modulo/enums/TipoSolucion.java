@@ -19,4 +19,16 @@ public enum TipoSolucion {
     public String toString() {
         return descripcion;
     }
+    
+    /**
+     * Convierte una descripción a su enum correspondiente
+     */
+    public static TipoSolucion fromDescripcion(String descripcion) {
+        for (TipoSolucion tipo : TipoSolucion.values()) {
+            if (tipo.getDescripcion().equals(descripcion)) {
+                return tipo;
+            }
+        }
+        return CODIGO; // Valor por defecto
+    }
 }

@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane fx:id="adminMainPane" prefHeight="720.0" prefWidth="360.0" stylesheets="@../../styles/styles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Gamificacion_Modulo.GUI.admin.AdminMainController">
+<BorderPane fx:id="adminMainPane" prefHeight="720.0" prefWidth="360.0" stylesheets="@../../styles/styles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Gamificacion_Modulo.controllers_admin.AdminMainController">
    <top>
       <!-- Header -->
       <VBox styleClass="header" spacing="10">

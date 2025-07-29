@@ -8,7 +8,7 @@
 <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" 
             prefHeight="720.0" prefWidth="360.0" stylesheets="@../../styles/styles.css"
             xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="Gamificacion_Modulo.GUI.admin.AsignarDesafioController">
+            fx:controller="Gamificacion_Modulo.controllers_admin.AsignarDesafioController">
    <VBox fx:id="mainVBox" spacing="12">
       <padding>
          <Insets top="15" left="15" right="15" bottom="15"/>

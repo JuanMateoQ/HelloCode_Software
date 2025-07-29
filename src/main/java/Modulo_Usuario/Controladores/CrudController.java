@@ -1,7 +1,6 @@
 package Modulo_Usuario.Controladores;
 
 import Modulo_Usuario.Clases.*;
-import Modulo_Usuario.Clases.Roles;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -51,7 +50,7 @@ public class CrudController {
     private void configurarComboBoxes() {
         // Configurar tipos de usuario
         ObservableList<String> tiposUsuario = FXCollections.observableArrayList(
-           "Usuario Básico", "Usuario Comunidad", "Usuario Administrador", "Usuario Temporal"
+           "Usuario Básico", "Usuario Comunidad", "Usuario Temporal"
         );
         tipoUsuarioCombo.setItems(tiposUsuario);
         tipoUsuarioCombo.getSelectionModel().selectFirst();
@@ -227,7 +226,7 @@ public class CrudController {
                 return new UsuarioComunidad(username, password, nombre, email, username, nivelJava, reputacion);
 
             case "Usuario Administrador":
-                Roles rol = rolAdminCombo != null ? rolAdminCombo.getValue() : Roles.ADMIN_USUARIO;
+                Roles rol = rolAdminCombo != null ? rolAdminCombo.getValue() : Roles.ADMINISTRADOR;
                 Boolean esSuperAdmin = esSuperAdminCheck.isSelected();
                 return new UsuarioAdministrador(username, password, nombre, email, username, rol, esSuperAdmin);
 

@@ -1,21 +1,26 @@
 package Modulo_Usuario.Controladores;
 
-import Modulo_Usuario.Clases.Usuario;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+
+import MetodosGlobales.SesionManager;
 import Modulo_Usuario.Clases.Roles;
+import Modulo_Usuario.Clases.Usuario;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
 
 public class LoginController {
     @FXML private TextField usuarioField;
@@ -52,6 +57,7 @@ public class LoginController {
             }
 
             System.out.println("Usuarios cargados: " + usuarios.size());
+            SesionManager.getInstancia().guardarUsuarios(usuarios);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -80,6 +86,7 @@ public class LoginController {
 
         if (usuarioEncontrado != null) {
             try {
+                SesionManager.getInstancia().iniciarSesion(usuarioEncontrado);
                 // Si es usuario normal, va a homeUsuario.fxml
                 if (usuarioEncontrado.getRol() == Roles.USUARIO) {
                     FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/Modulo_Usuario/views/homeUsuario.fxml"));
