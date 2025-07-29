@@ -42,7 +42,7 @@ public class PerfilController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Modulo_Usuario/views/homeUsuario.fxml"));
             Parent root = loader.load();
             // Pasar el mismo usuario al HomeUsuarioController
-            Modulo_Usuario.Controladores.HomeUsuarioController homeCtrl = loader.getController();
+            HomeUsuarioController homeCtrl = loader.getController();
             homeCtrl.setUsuario(this.usuario);
             Scene scene = new Scene(root, 360, 640);
             Stage stage = new Stage();

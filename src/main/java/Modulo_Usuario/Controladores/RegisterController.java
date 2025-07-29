@@ -1,5 +1,6 @@
 package Modulo_Usuario.Controladores;
 
+import Modulo_Usuario.Clases.Roles;
 import Modulo_Usuario.Clases.Usuario;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -100,8 +101,8 @@ public class RegisterController {
             }
         }
 
-        // Crear nuevo usuario
-        Usuario nuevoUsuario = new Usuario(username, password, nombre, email);
+        // Crear nuevo usuario con rol USUARIO y xp inicial 0
+        Usuario nuevoUsuario = new Usuario(username, password, nombre, email, 0, Roles.USUARIO);
         
         // Guardar usuario
         if (guardarUsuario(nuevoUsuario)) {
@@ -194,4 +195,4 @@ public class RegisterController {
             mensajeLabel.setText("Error al cargar pantalla de login: " + e.getMessage());
         }
     }
-} 
+}

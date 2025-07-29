@@ -8,7 +8,7 @@
 <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" 
             prefHeight="720.0" prefWidth="360.0" stylesheets="@../../styles/styles.css"
             xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="Gamificacion_Modulo.GUI.admin.CrearLogroController">
+            fx:controller="Gamificacion_Modulo.controllers_admin.CrearLogroController">
    <VBox fx:id="mainVBox" spacing="12">
       <padding>
          <Insets top="15" left="15" right="15" bottom="15"/>
@@ -45,25 +45,12 @@
             <Insets top="12" left="12" right="12" bottom="12"/>
          </padding>
          <Label text="🎯 Criterios de Desbloqueo" styleClass="section-title"/>
-         <Label text="Define cuándo se desbloquea este logro" styleClass="field-label"/>
+         <Label text="Define cuántos puntos debe obtener el usuario para desbloquear este logro" styleClass="field-label"/>
          
          <VBox spacing="6">
-            <RadioButton fx:id="rbDesafios" text="Por completar desafíos"/>
             <HBox spacing="8" alignment="CENTER_LEFT">
-               <Label text="   Cantidad de desafíos:" styleClass="field-label"/>
-               <Spinner fx:id="spinnerDesafios" prefWidth="70"/>
-            </HBox>
-            
-            <RadioButton fx:id="rbPuntos" text="Por obtener puntos"/>
-            <HBox spacing="8" alignment="CENTER_LEFT">
-               <Label text="   Puntos requeridos:" styleClass="field-label"/>
-               <Spinner fx:id="spinnerPuntos" prefWidth="70"/>
-            </HBox>
-            
-            <RadioButton fx:id="rbLogros" text="Por obtener otros logros"/>
-            <HBox spacing="8" alignment="CENTER_LEFT">
-               <Label text="   Cantidad de logros:" styleClass="field-label"/>
-               <Spinner fx:id="spinnerLogros" prefWidth="70"/>
+               <Label text="Puntos requeridos:" styleClass="field-label"/>
+               <Spinner fx:id="spinnerPuntosRequeridos" prefWidth="100"/>
             </HBox>
          </VBox>
       </VBox>

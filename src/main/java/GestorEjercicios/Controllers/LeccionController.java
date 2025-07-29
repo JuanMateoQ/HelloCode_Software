@@ -1,5 +1,9 @@
 package GestorEjercicios.Controllers;
 
+import GestorEjercicios.model.GestorLecciones;
+import GestorEjercicios.strategy.FabricaEstrategiasLeccion;
+import GestorEjercicios.enums.TipoLeccion;
+import GestorEjercicios.model.Leccion;
 import Modulo_Ejercicios.DataBase.EjercicioRepository;
 import Modulo_Ejercicios.exercises.EjercicioSeleccion;
 import Modulo_Ejercicios.exercises.Lenguaje;
@@ -9,28 +13,38 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.stage.Stage;
 
 import java.util.List;
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 public class LeccionController {
     @FXML private Button btnPython;
     @FXML private Button btnJava;
-    @FXML private Button btnCpp; // Si tienes botón para C
-    @FXML private Button btnPhp; // Si tienes botón para PHP
+    @FXML private Button btnCpp;
+    @FXML private Button btnPhp;
     @FXML private Button btnBasico;
     @FXML private Button btnIntermedio;
     @FXML private Button btnAvanzado;
     @FXML private Button btnContinuar;
+    @FXML private ComboBox<String> comboTipoLeccion;
 
     private Lenguaje lenguajeSeleccionado;
     private NivelDificultad dificultadSeleccionada;
 
+    // Instancia del GestorLecciones
+    private GestorLecciones gestorLecciones;
+
     @FXML
     public void initialize() {
+        // Inicializar el gestor de lecciones
+        gestorLecciones = new GestorLecciones();
+
         configurarBotonesLenguaje();
         configurarBotonesDificultad();
+        configurarComboBoxTipoLeccion();
         configurarBotonContinuar();
     }
 
@@ -41,28 +55,86 @@ public class LeccionController {
         if (btnPhp != null) btnPhp.setOnAction(e -> seleccionarLenguaje(Lenguaje.PHP));
     }
 
+    private void configurarBotonContinuar() {
+        btnContinuar.setOnAction(e -> crearYMostrarLeccion());
+    }
+
     private void configurarBotonesDificultad() {
         btnBasico.setOnAction(e -> seleccionarDificultad(NivelDificultad.BASICO));
         btnIntermedio.setOnAction(e -> seleccionarDificultad(NivelDificultad.INTERMEDIO));
         btnAvanzado.setOnAction(e -> seleccionarDificultad(NivelDificultad.AVANZADO));
     }
 
-    private void configurarBotonContinuar() {
-        btnContinuar.setOnAction(e -> crearYMostrarLeccion());
+    private void configurarComboBoxTipoLeccion() {
+        comboTipoLeccion.getItems().addAll("Normal", "Diagnóstico", "Prueba");
+        comboTipoLeccion.setOnAction(e -> seleccionarTipoLeccion());
+    }
+
+    private void seleccionarTipoLeccion() {
+        String tipoSeleccionado = comboTipoLeccion.getValue();
+        TipoLeccion tipoLeccion = null;
+
+        switch (tipoSeleccionado) {
+            case "Normal":
+                tipoLeccion = TipoLeccion.NORMAL;
+                break;
+            case "Diagnóstico":
+                tipoLeccion = TipoLeccion.DIAGNOSTICO;
+                break;
+            case "Prueba":
+                tipoLeccion = TipoLeccion.PRUEBA;
+                break;
+            default:
+                System.out.println("Tipo de lección no válido");
+                return;
+        }
+
+        // Crear la estrategia correspondiente usando la fábrica
+        // La estrategia se aplicará automáticamente en la lección
+        FabricaEstrategiasLeccion.crearEstrategia(tipoLeccion);
+
+        // Obtener los ejercicios de la base de datos (List<EjercicioSeleccion>)
+        List<EjercicioSeleccion> ejercicios = EjercicioRepository.cargarEjerciciosSeleccion().stream()
+                .filter(e -> e.getLenguaje() == lenguajeSeleccionado && e.getNivel() == dificultadSeleccionada)
+                .collect(Collectors.toList());
+
+        // Crear la lección con la lista de EjercicioSeleccion y valores de experiencia/conocimiento
+        int experiencia = 0, conocimiento = 0;
+        switch (tipoLeccion) {
+            case NORMAL:
+                experiencia = 15;
+                conocimiento = 5;
+                break;
+            case PRUEBA:
+                experiencia = 30;
+                conocimiento = 0;
+                break;
+            case DIAGNOSTICO:
+                experiencia = 0;
+                conocimiento = 0; // Se calcula al finalizar
+                break;
+        }
+        Leccion leccion = new Leccion((int) (Math.random() * 1000), "Lección de " + tipoSeleccionado + " - " + dificultadSeleccionada + " - " + lenguajeSeleccionado, ejercicios, tipoLeccion, experiencia, conocimiento);
+
+        // Agregar la lección al gestor
+        gestorLecciones.agregarLeccion(leccion);
+
+        // Imprimir todas las lecciones para verificar que la lección se agregó correctamente
+        gestorLecciones.imprimirLecciones();
+        // Mostrar la lección
+        mostrarLeccion(leccion);
     }
 
     private void seleccionarLenguaje(Lenguaje lenguaje) {
         this.lenguajeSeleccionado = lenguaje;
         resetearEstilosBotonesLenguaje();
         resaltarBotonSeleccionado(lenguaje);
-        System.out.println("Lenguaje seleccionado: " + lenguaje);
     }
 
     private void seleccionarDificultad(NivelDificultad dificultad) {
         this.dificultadSeleccionada = dificultad;
         resetearEstilosBotonesDificultad();
         resaltarBotonDificultadSeleccionado(dificultad);
-        System.out.println("Dificultad seleccionada: " + dificultad);
     }
 
     private void resetearEstilosBotonesLenguaje() {
@@ -99,37 +171,35 @@ public class LeccionController {
     private void resaltarBotonDificultadSeleccionado(NivelDificultad dificultad) {
         String estiloSeleccionado = "-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 10;";
         switch (dificultad) {
+            case PRINCIPIANTE:
             case BASICO:
                 btnBasico.setStyle(estiloSeleccionado);
                 break;
             case INTERMEDIO:
                 btnIntermedio.setStyle(estiloSeleccionado);
                 break;
+            case EXPERTO:
             case AVANZADO:
                 btnAvanzado.setStyle(estiloSeleccionado);
                 break;
         }
     }
 
-    private void crearYMostrarLeccion() {
-        if (lenguajeSeleccionado == null || dificultadSeleccionada == null) {
-            System.out.println("Por favor selecciona lenguaje y dificultad.");
-            return;
-        }
-        List<EjercicioSeleccion> ejerciciosSeleccion = EjercicioRepository.cargarEjerciciosSeleccion().stream()
-            .filter(e -> e.getLenguaje() == lenguajeSeleccionado && e.getNivel() == dificultadSeleccionada)
-            .collect(Collectors.toList());
-
-        if (ejerciciosSeleccion.isEmpty()) {
-            System.out.println("No hay ejercicios de selección múltiple para los criterios seleccionados.");
-            return;
-        }
-
+    private void mostrarLeccion(Leccion leccion) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Modulo_Ejercicios/views/SeleccionMultiple-view.fxml"));
             Parent root = loader.load();
             Modulo_Ejercicios.Controladores.EjercicioSeleccionController controller = loader.getController();
-            controller.setEjercicios(ejerciciosSeleccion);
+            // Usar el método correcto para obtener ejercicios de la lección
+            // Necesitamos extraer los ejercicios originales de los adaptadores
+            List<EjercicioSeleccion> ejerciciosSeleccion = new ArrayList<>();
+            for (GestorEjercicios.adaptadores.AdaptadorEjercicios adaptador : leccion.getEjercicios()) {
+                if (adaptador instanceof GestorEjercicios.adaptadores.AdaptadorEjercicioSeleccion) {
+                    // Cast seguro y extraer el ejercicio original
+                    ejerciciosSeleccion.add(((GestorEjercicios.adaptadores.AdaptadorEjercicioSeleccion) adaptador).obtenerEjercicioOriginal());
+                }
+            }
+            //controller.setEjercicios(ejerciciosSeleccion);
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
             stage.setTitle("Ejercicios Selección Múltiple");
@@ -145,7 +215,6 @@ public class LeccionController {
         currentStage.close();
     }
 
-    // Método público para configurar lección con valores predefinidos
     public void configurarLeccionConValores(Lenguaje lenguaje, NivelDificultad nivel) {
         this.lenguajeSeleccionado = lenguaje;
         this.dificultadSeleccionada = nivel;
@@ -153,6 +222,36 @@ public class LeccionController {
         crearYMostrarLeccion();
     }
 
+    // Método para continuar y crear la lección
+    private void crearYMostrarLeccion() {
+        if (lenguajeSeleccionado == null || dificultadSeleccionada == null) {
+            System.out.println("Por favor selecciona lenguaje y dificultad.");
+            return;
+        }
+
+        List<EjercicioSeleccion> ejerciciosSeleccion = EjercicioRepository.cargarEjerciciosSeleccion().stream()
+                .filter(e -> e.getLenguaje() == lenguajeSeleccionado && e.getNivel() == dificultadSeleccionada)
+                .collect(Collectors.toList());
+
+        if (ejerciciosSeleccion.isEmpty()) {
+            System.out.println("No hay ejercicios de selección múltiple para los criterios seleccionados.");
+            return;
+        }
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Modulo_Ejercicios/views/SeleccionMultiple-view.fxml"));
+            Parent root = loader.load();
+            Modulo_Ejercicios.Controladores.EjercicioSeleccionController controller = loader.getController();
+            //controller.setEjercicios(ejerciciosSeleccion);
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Ejercicios Selección Múltiple");
+            stage.show();
+            cerrarVentanaActual();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     private void actualizarEstilosBotones() {
         limpiarEstilosBotones();
         if (lenguajeSeleccionado != null) {

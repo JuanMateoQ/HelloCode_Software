@@ -1,7 +1,6 @@
 package Modulo_Usuario.Controladores;
 
 import Modulo_Usuario.Clases.*;
-import Modulo_Usuario.Clases.Roles;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -213,7 +212,7 @@ public class CrudController {
     private Usuario crearUsuarioSegunTipo(String username, String password, String nombre, String email, String tipo) {
         switch (tipo) {
             case "Usuario Básico":
-                Roles rolBasico = Roles.ADMIN_USUARIO;
+                Roles rolBasico = Roles.USUARIO;
                 return new Usuario(username, password, nombre, email, 0, rolBasico);
 
             case "Usuario Comunidad":

@@ -8,9 +8,9 @@ import javafx.stage.Stage;
 public class MainGUIUsuario extends Application {
     @Override
     public void start(Stage stage) throws Exception {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/Modulo_Usuario/views/login.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 360, 720);
-        stage.setTitle("Hello Code Software - Iniciar Sesión");
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/Modulo_Usuario/views/Splash.fxml"));
+        Scene scene = new Scene(fxmlLoader.load());
+        stage.setTitle("EntradaAplicativo");
         stage.setScene(scene);
         stage.show();
     }

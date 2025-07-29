@@ -1,6 +1,7 @@
 package Modulo_Ejercicios.DataBase;
 
 import Modulo_Ejercicios.exercises.EjercicioSeleccion;
+import Modulo_Ejercicios.exercises.EjercicioBase;
 import Modulo_Ejercicios.exercises.EjercicioCompletarCodigo;
 import Modulo_Ejercicios.exercises.NivelDificultad;
 import Modulo_Ejercicios.exercises.Lenguaje;
@@ -35,6 +36,7 @@ public class EjercicioRepository {
                     }
                 }
             }
+            System.out.println("RepositorioEjecicios: Carga de ejercicios selección exitosa.");
         } catch (IOException e) {
             System.out.println("Error al cargar ejercicios de selección: " + e.getMessage());
         }
@@ -59,6 +61,7 @@ public class EjercicioRepository {
                     }
                 }
             }
+            System.out.println("RepositorioEjecicios: Carga de ejercicios completar código exitosa.");
         } catch (IOException e) {
             System.out.println("Error al cargar ejercicios de completar código: " + e.getMessage());
         }
@@ -204,4 +207,22 @@ public class EjercicioRepository {
                ejercicio.getNivel() + "|" +
                ejercicio.getLenguaje();
     }
+
+
+
+    public static List<EjercicioBase> cargarTodosLosEjercicios() {
+        List<EjercicioBase> ejercicios = new ArrayList<>();
+
+        // Cargar ejercicios de selección
+        List<EjercicioSeleccion> seleccion = cargarEjerciciosSeleccion();
+        ejercicios.addAll(seleccion);
+
+        // Cargar ejercicios de completar código
+        List<EjercicioCompletarCodigo> completar = cargarEjerciciosCompletarCodigo();
+        ejercicios.addAll(completar);
+
+        return ejercicios;
+    }
+
+
 } 

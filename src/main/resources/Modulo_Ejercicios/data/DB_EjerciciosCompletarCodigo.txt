@@ -21,3 +21,73 @@ Completa el foreach para iterar sobre un array $nombres:|foreach(____ as $nombre
 Completa la declaración de una clase en Java:|public class ____ {\n}|Persona|Persona|BASICO|JAVA
 Completa la definición de un constructor en Java:|public Persona(String nombre) {\n    this.nombre = ____;\n}|nombre|nombre|INTERMEDIO|JAVA
 Completa la instrucción para importar Scanner en Java:|import java.util.____;|Scanner|Scanner|BASICO|JAVA
+Completa la declaración de una lista:|mi_lista = [1, 2, ____]|3|3|PRINCIPIANTE|PYTHON
+Completa la declaración de la función main:|int ____() {|main|main|PRINCIPIANTE|C
+Completa la declaración de un puntero a entero:|int *____;|ptr|ptr|INTERMEDIO|C
+Completa la definición de una función:|def mi_funcion(____):|param|param|INTERMEDIO|PYTHON
+Completa la forma de verificar si una variable está definida:|if (____($var)) {|isset|isset|AVANZADO|PHP
+Completa la declaración de una lista:|mi_lista = [1, 2, ____]|3|3|PRINCIPIANTE|PYTHON
+Completa la importación de la librería math:|import ____|math|math|INTERMEDIO|PYTHON
+Completa la declaración de una lista:|mi_lista = [1, 2, ____]|3|3|PRINCIPIANTE|PYTHON
+Completa la condición de un if:|if (numero ____ 10) {|>|>|INTERMEDIO|JAVA
+Completa la forma de acceder a un elemento de un arreglo:|$arr[____];|0|0|INTERMEDIO|PHP
+Completa la instrucción para imprimir en consola:|____("Hola mundo")|print|print|PRINCIPIANTE|PYTHON
+Completa la declaración de una función:|function suma($a, $b) { return $a + $____; }|b|b|INTERMEDIO|PHP
+Completa el uso de malloc:|int *arr = (int *) ____ (n * sizeof(int));|malloc|malloc|AVANZADO|C
+Completa la declaración de una clase en Java:|public class ____ {\n}|Persona|Persona|BASICO|JAVA
+Completa el uso de printf:|____("Hola mundo\n");|printf|printf|BASICO|C
+Completa el uso de un decorador:|@____|staticmethod|staticmethod|EXPERTO|PYTHON
+Completa la declaración de una función:|def mi_funcion(____):|param|param|INTERMEDIO|PYTHON
+Completa la condición en un bucle while:|while (i ____ 10) {|<|<|INTERMEDIO|C
+Completa el uso de namespaces:|namespace ____;|App\\Controllers|App\\Controllers|EXPERTO|PHP
+Completa la definición de una estructura:|struct Persona { char nombre[50]; int edad; }; ____ Persona;|struct|struct|EXPERTO|C
+Completa la forma correcta de crear un objeto de tipo Scanner:|Scanner sc = new Scanner(____);|System.in|System.in|INTERMEDIO|JAVA
+Completa la definición de un constructor en Java:|public Persona(String nombre) {\n    this.nombre = ____;\n}|nombre|nombre|INTERMEDIO|JAVA
+Completa la forma de declarar una variable:|$____ = 5;|numero|numero|PRINCIPIANTE|PHP
+Completa la forma de acceder a un elemento de un arreglo:|$arr[____];|0|0|INTERMEDIO|PHP
+Completa la instrucción para imprimir en consola:|____("Hola mundo")|print|print|PRINCIPIANTE|PYTHON
+Completa la instrucción para liberar memoria:|____(arr);|free|free|AVANZADO|C
+Completa la declaración de la función main:|int ____() {|main|main|PRINCIPIANTE|C
+Completa la instrucción para iniciar una etiqueta PHP:|____ php|<?php|<?php|PRINCIPIANTE|PHP
+Completa la forma de declarar una variable entera en Java:|int numero = ____;|10|10|PRINCIPIANTE|JAVA
+Completa el uso de printf:|____("Hola mundo\n");|printf|printf|BASICO|C
+Completa la instrucción para importar Scanner en Java:|import java.util.____;|Scanner|Scanner|BASICO|JAVA
+Completa la anotación para sobreescribir un método:|@____|Override|Override|EXPERTO|JAVA
+Completa la definición de una clase en PHP:|class Persona { public $____; }|nombre|nombre|AVANZADO|PHP
+Completa la declaración de una lista:|mi_lista = [1, 2, ____]|3|3|PRINCIPIANTE|PYTHON
+Completa la estructura de un método main:|public static void ____ main(String[] args) {|void|void|PRINCIPIANTE|JAVA
+Completa el bucle for:|for i in ____(5):|range|range|BASICO|PYTHON
+Completa la forma correcta de abrir un archivo en Python:|with open("archivo.txt", "r") as ____:|f|f|AVANZADO|PYTHON
+Completa la forma de declarar una clase en PHP:|class ____ { }|Usuario|Usuario|BASICO|PHP
+Completa la instrucción para lanzar una excepción:|throw new ____Exception("Error");|Runtime|Runtime|AVANZADO|JAVA
+Completa la declaración de una variable en C:|int ____ = 10;|x|x|PRINCIPIANTE|C
+Completa la definición de una estructura en C:|struct ____ { int edad; };|Persona|Persona|AVANZADO|C
+Completa el uso de la librería para entrada/salida en C:|#include <____.h>|stdio|stdio|PRINCIPIANTE|C
+Completa la definición de una clase en Java:|public class ____ {|Persona|Persona|BASICO|JAVA
+Completa la forma de imprimir texto en PHP:|____ "Hola mundo";|echo|echo|BASICO|PHP
+Completa el uso de una función anónima en PHP:|$saludo = function($nombre) { return "Hola " . $____; };|nombre|nombre|AVANZADO|PHP
+Completa la verificación de tipo en Python:|if isinstance(x, ____):|int|int|INTERMEDIO|PYTHON
+Completa el uso de la librería math en Python:|import ____|math|math|INTERMEDIO|PYTHON
+Completa el uso de un arreglo en C:|int arr[____];|10|10|BASICO|C
+Completa la forma de declarar un atributo en Java:|private String ____;|nombre|nombre|BASICO|JAVA
+Completa el uso de comentarios en Python:|____ Esto es un comentario|#|#|PRINCIPIANTE|PYTHON
+Completa el uso del operador ternario en PHP:|$resultado = ($a > $b) ? $a : $____;|b|b|INTERMEDIO|PHP
+Completa la llamada a una función en C:|resultado = suma(a, ____);|b|b|INTERMEDIO|C
+Completa el uso del operador lógico en Java:|if (a > 0 ____ b < 10) {|&&|&&|INTERMEDIO|JAVA
+Completa la declaración de una constante en PHP:|define("PI", ____);|3.14|3.14|BASICO|PHP
+Completa el uso de importaciones múltiples en Java:|import java.util.*; import java.____;|io|io|AVANZADO|JAVA
+Completa la creación de una lista en Python:|mi_lista = list(____)|range(5)|range(5)|INTERMEDIO|PYTHON
+Completa la inicialización de un arreglo en C:|int arr[] = {1, 2, ____};|3|3|PRINCIPIANTE|C
+Completa el uso de una excepción en Java:|try { ... } catch(____ e) {}|Exception|Exception|INTERMEDIO|JAVA
+Completa la creación de una función flecha en PHP:|$suma = fn($a, $b) => $a + $____;|b|b|INTERMEDIO|PHP
+Completa el uso de require en PHP:|____ 'archivo.php';|require|require|BASICO|PHP
+Completa la definición de un método en Java:|public void ____() {}|mostrar|mostrar|BASICO|JAVA
+Completa el uso de un switch en C:|switch (____) {|opcion|opcion|INTERMEDIO|C
+Completa el uso de elif en Python:|elif x ____ 10:|==|==|BASICO|PYTHON
+Completa el uso de typeof en PHP:|echo gettype($____);|variable|variable|INTERMEDIO|PHP
+Completa el acceso a una propiedad en Java:|persona.____;|nombre|nombre|BASICO|JAVA
+Completa el retorno de una función en C:|return ____;|0|0|PRINCIPIANTE|C
+Completa el uso de do-while en C:|do { ... } while(____);|condicion|condicion|AVANZADO|C
+Completa la conversión de string a entero en Python:|int("____")|123|123|BASICO|PYTHON
+Completa el uso de una clase abstracta en Java:|public abstract class ____ {|Animal|Animal|AVANZADO|JAVA
+Completa la asignación de múltiples variables en Python:|a, b = 1, ____|2|2|BASICO|PYTHON

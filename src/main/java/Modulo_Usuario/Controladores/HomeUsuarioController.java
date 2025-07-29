@@ -1,5 +1,7 @@
 package Modulo_Usuario.Controladores;
 
+import Gamificacion_Modulo.clases.Main;
+import Modulo_Usuario.Clases.Usuario;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -10,8 +12,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import Modulo_Usuario.Clases.Usuario;
-import Modulo_Usuario.Controladores.PerfilController;
 
 public class HomeUsuarioController {
     
@@ -39,7 +39,15 @@ public class HomeUsuarioController {
 
     @FXML
     private void irARanking(ActionEvent event) {
-        mostrarMensaje("Ranking", "Funcionalidad de ranking próximamente");
+        try {
+            // PASO 1: Inicializar el backend del módulo de gamificación
+            Gamificacion_Modulo.clases.Main.inicializarDesdeModuloExterno();
+            // Cargar Ranking.fxml
+            Main.cambiarEscena("/Gamificacion_Modulo/fxml/Ranking.fxml");
+        } catch (Exception e) {
+            System.err.println("Error al navegar a Ranking: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -91,22 +99,25 @@ public class HomeUsuarioController {
     @FXML
     private void irAPerfil(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Modulo_Usuario/views/perfil.fxml"));
-            Parent root = loader.load();
-            PerfilController pc = loader.getController();
-            pc.setUsuario(usuario);
-            Scene scene = new Scene(root, 360, 640);
+            // PASO 1: Inicializar el backend del módulo de gamificación
+            Gamificacion_Modulo.clases.Main.inicializarDesdeModuloExterno();
+
+            // PASO 2: Cargar la interfaz gráfica
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/Gamificacion_Modulo/fxml/PerfilUsuario.fxml"));
+            Scene scene = new Scene(fxmlLoader.load(), 360, 720);
+
             Stage stage = new Stage();
-            stage.setTitle("Perfil de Usuario");
+            stage.setTitle("Hello Code Software - Gamificación");
             stage.setScene(scene);
             stage.setResizable(false);
             stage.show();
-            // cerrar la actual
-            Stage thisStage = (Stage) btnPerfil2.getScene().getWindow();
+
+            // Cerrar la pantalla actual
+            Stage thisStage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
             thisStage.close();
         } catch (Exception e) {
             e.printStackTrace();
-            mostrarError("Error abriendo perfil: " + e.getMessage());
+            mostrarError("Error al abrir el módulo de gamificación: " + e.getMessage());
         }
     }
 

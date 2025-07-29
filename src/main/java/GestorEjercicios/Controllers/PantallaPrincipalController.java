@@ -3,7 +3,6 @@ package GestorEjercicios.Controllers;
 import GestorEjercicios.enums.LenguajeProgramacion;
 import GestorEjercicios.enums.NivelDificultad;
 import GestorEjercicios.enums.TipoLeccion;
-import GestorEjercicios.model.GestorProgreso;
 import GestorEjercicios.model.Leccion;
 import Modulo_Ejercicios.exercises.Lenguaje;
 import javafx.fxml.FXML;
@@ -16,6 +15,10 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.ArrayList;
 
+/**
+ * Controlador principal de la pantalla principal del Gestor de Ejercicios
+ * Maneja la navegación entre lecciones y la configuración del sistema
+ */
 public class PantallaPrincipalController {
     
     @FXML
@@ -39,15 +42,12 @@ public class PantallaPrincipalController {
     @FXML
     private Button btnSalirReal; // Botón real de salir en la barra inferior
     
-    // Variables para el progreso de lecciones
+    // Variables para el progreso de lecciones (sin persistencia)
     private static LenguajeProgramacion lenguajeConfigurado;
     private static NivelDificultad nivelConfigurado;
     private static TipoLeccion tipoConfigurado;
     private static int leccionActual = 1;
     private static boolean primeraLeccionCompletada = false;
-    
-    // Sistema de persistencia de progreso
-    private static GestorProgreso gestorProgreso = new GestorProgreso();
     
     @FXML
     public void initialize() {
@@ -55,6 +55,9 @@ public class PantallaPrincipalController {
         actualizarEstadoBotones();
     }
     
+    /**
+     * Configura las acciones de todos los botones de la interfaz
+     */
     private void configurarBotones() {
         // Botón "1" - Primera lección (siempre configuración)
         btnSalir.setOnAction(e -> iniciarPrimeraLeccion());
@@ -78,11 +81,16 @@ public class PantallaPrincipalController {
         btnSalirReal.setOnAction(e -> salirAplicacion());
     }
     
+    /**
+     * Inicia la primera lección (siempre va a configuración)
+     */
     private void iniciarPrimeraLeccion() {
-        // Siempre ir a configuración para la primera lección
         navegarACrearLeccion();
     }
     
+    /**
+     * Inicia una lección específica verificando el progreso
+     */
     private void iniciarLeccion(int numeroLeccion) {
         if (!primeraLeccionCompletada) {
             System.out.println("Debes completar la primera lección antes de continuar");
@@ -99,6 +107,9 @@ public class PantallaPrincipalController {
         crearYMostrarLeccion();
     }
     
+    /**
+     * Crea y muestra una lección con la configuración actual
+     */
     private void crearYMostrarLeccion() {
         try {
             // Crear lección usando el controlador de lección existente
@@ -131,6 +142,9 @@ public class PantallaPrincipalController {
         }
     }
     
+    /**
+     * Navega a la pantalla de configuración de lección
+     */
     private void navegarACrearLeccion() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Modulo_GestorEjercicios/Views/CrearLeccion.fxml"));
@@ -153,7 +167,9 @@ public class PantallaPrincipalController {
         }
     }
     
-    // Método público para guardar la configuración desde CrearLeccion
+    /**
+     * Guarda la configuración de la lección (sin persistencia)
+     */
     public static void guardarConfiguracion(LenguajeProgramacion lenguaje, NivelDificultad nivel, TipoLeccion tipo) {
         lenguajeConfigurado = lenguaje;
         nivelConfigurado = nivel;
@@ -161,26 +177,20 @@ public class PantallaPrincipalController {
         primeraLeccionCompletada = true;
         leccionActual = 1;
         
-        // Guardar configuración en el sistema de persistencia
-        gestorProgreso.guardarConfiguracion(lenguaje, nivel, tipo);
-        
         System.out.println("Configuración guardada: " + lenguaje + ", " + nivel + ", " + tipo);
     }
     
-    // Método público para marcar lección completada
+    /**
+     * Marca la lección actual como completada
+     */
     public static void marcarLeccionCompletada() {
-        // Guardar progreso en el sistema de persistencia
-        if (leccionActual <= 5) {
-            // Crear una lección temporal para guardar el progreso
-            Leccion leccionTemp = new Leccion(leccionActual, "Lección " + leccionActual, new ArrayList<>());
-            gestorProgreso.guardarLeccionCompletada(leccionActual, leccionTemp, 100.0);
-        }
-        
         leccionActual++;
         System.out.println("Lección " + (leccionActual - 1) + " completada. Siguiente: " + leccionActual);
     }
     
-    // Método público para reiniciar progreso
+    /**
+     * Reinicia el progreso del usuario
+     */
     public static void reiniciarProgreso() {
         leccionActual = 1;
         primeraLeccionCompletada = false;
@@ -190,6 +200,9 @@ public class PantallaPrincipalController {
         System.out.println("Progreso reiniciado");
     }
     
+    /**
+     * Actualiza el estado visual de los botones según el progreso
+     */
     private void actualizarEstadoBotones() {
         // Marcar lecciones completadas según el progreso
         if (leccionActual > 1) {
@@ -215,20 +228,31 @@ public class PantallaPrincipalController {
         }
     }
     
+    /**
+     * Cierra la aplicación
+     */
     private void salirAplicacion() {
         System.exit(0);
     }
     
+    /**
+     * Centra la ventana en la pantalla
+     */
     private void centrarVentana(Stage stage) {
         stage.centerOnScreen();
     }
     
+    /**
+     * Cierra la ventana actual
+     */
     private void cerrarVentanaActual() {
         Stage currentStage = (Stage) btnCrearLeccion.getScene().getWindow();
         currentStage.close();
     }
 
-    // Agrega los métodos de mapeo:
+    /**
+     * Mapea el enum de lenguaje del GestorEjercicios al del Modulo_Ejercicios
+     */
     private Lenguaje mapearLenguaje(LenguajeProgramacion lp) {
         switch (lp) {
             case JAVA: return Lenguaje.JAVA;
@@ -237,6 +261,10 @@ public class PantallaPrincipalController {
             default: return Lenguaje.JAVA;
         }
     }
+    
+    /**
+     * Mapea el enum de nivel de dificultad del GestorEjercicios al del Modulo_Ejercicios
+     */
     private Modulo_Ejercicios.exercises.NivelDificultad mapearNivel(NivelDificultad nd) {
         switch (nd) {
             case BASICO: return Modulo_Ejercicios.exercises.NivelDificultad.BASICO;
