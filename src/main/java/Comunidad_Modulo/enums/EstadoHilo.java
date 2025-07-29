@@ -19,4 +19,16 @@ public enum EstadoHilo {
     public String toString() {
         return descripcion;
     }
+    
+    /**
+     * Convierte una descripción a su enum correspondiente
+     */
+    public static EstadoHilo fromDescripcion(String descripcion) {
+        for (EstadoHilo estado : EstadoHilo.values()) {
+            if (estado.getDescripcion().equals(descripcion)) {
+                return estado;
+            }
+        }
+        return ABIERTO; // Valor por defecto
+    }
 }

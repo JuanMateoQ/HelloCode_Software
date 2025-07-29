@@ -26,7 +26,7 @@ public class mainDemostracion {
 
         //Llamas a una clase que tiene un metodo estático que te permite mostrar cualquier lección, en este caso mostraré
         // la lección 0 del arreglo que te mandé, pero puedes mostar cualquier lección
-        LeccionUIController.mostrarUnaLeccion(listLecciones.get(0),new Stage(), "/Modulo_Ejercicios/views/SeleccionMultiple-view.fxml");
+        LeccionUIController.mostrarUnaLeccion(listLecciones.get(0),new Stage(), "/Nuevo_Modulo_Leccion/views/ejemploDeUso.fxml");
         // ESTE MÉTODO SE TIENE QUE USAR DESDE UNA VENTANA YA ABIERTA SI NO VA A DAR ERRORES PUES JAVAFX NECESITA ESO
         // USEN EL MainGUIDemo ahi si vale correctamente.
     }

@@ -1,7 +1,5 @@
 package Gamificacion_Modulo.controllers;
 
-import java.util.List;
-
 import Gamificacion_Modulo.clases.Desafio;
 import Gamificacion_Modulo.clases.DesafioMensual;
 import Gamificacion_Modulo.clases.DesafioSemanal;
@@ -66,7 +64,8 @@ public class PerfilUsuarioController {
     @FXML
     private Button adminBtn;
     
-    private int estudianteActualIndex = 0;
+    // Ya no necesitamos índice porque siempre mostramos el usuario logueado
+    // private int estudianteActualIndex = 0;
 
 
     //TODO: BORRAR LOS PRINTLN DE DEBUG CUANDO SE HAYA TERMINADO EL DESARROLLO, TAMBIEN CORREGIR EL MAIN. PARA METODOS GLOBALES
@@ -105,12 +104,12 @@ public class PerfilUsuarioController {
         }
     }
 
-    // Método para cambiar de estudiante
+    // Método para cambiar de estudiante (ya no necesario, siempre mostramos el usuario logueado)
     @FXML
     private void cambiarEstudiante() {
         if (estudianteSelector != null && estudianteSelector.getSelectionModel().getSelectedIndex() >= 0) {
-            estudianteActualIndex = estudianteSelector.getSelectionModel().getSelectedIndex();
-            System.out.println(">>> Cambiando a estudiante: " + estudianteSelector.getValue());
+            // Ya no cambiamos índice, siempre es el usuario logueado
+            System.out.println(">>> Usuario seleccionado (siempre el logueado): " + estudianteSelector.getValue());
             actualizarDatosPerfil();
         }
     }
@@ -145,19 +144,19 @@ public class PerfilUsuarioController {
         // Método para mostrar progreso de desafíos
     @FXML
     private void verProgresoDesafios() {
-        System.out.println(">>> Mostrando progreso de desafíos");
+        System.out.println(">>> Mostrando progreso de desafíos del usuario logueado");
         try {
             StringBuilder mensaje = new StringBuilder();
             mensaje.append("📋 PROGRESO DE DESAFÍOS\n");
             mensaje.append("========================\n\n");
             
-            if (!Main.getProgresos().isEmpty() && estudianteActualIndex < Main.getProgresos().size()) {
-                ProgresoEstudiante progreso = Main.getProgresos().get(estudianteActualIndex);
-                
+            ProgresoEstudiante progresoLogueado = Main.getProgresoUsuarioLogueado();
+            
+            if (progresoLogueado != null) {
                 int semanalesActivos = 0;
                 int mensualesActivos = 0;
                 
-                for (Desafio desafio : progreso.getDesafiosActivos()) {
+                for (Desafio desafio : progresoLogueado.getDesafiosActivos()) {
                     if (desafio instanceof DesafioSemanal) {
                         semanalesActivos++;
                     } else if (desafio instanceof DesafioMensual) {
@@ -168,15 +167,15 @@ public class PerfilUsuarioController {
                 mensaje.append("🎯 DESAFÍOS ACTIVOS:\n");
                 mensaje.append("   Semanales: ").append(semanalesActivos).append("\n");
                 mensaje.append("   Mensuales: ").append(mensualesActivos).append("\n");
-                mensaje.append("   Total activos: ").append(progreso.getDesafiosActivos().size()).append("\n\n");
+                mensaje.append("   Total activos: ").append(progresoLogueado.getDesafiosActivos().size()).append("\n\n");
                 
-                mensaje.append("📊 TOTAL DESAFÍOS COMPLETADOS: ").append(progreso.getDesafiosCompletados()).append("\n\n");
+                mensaje.append("📊 TOTAL DESAFÍOS COMPLETADOS: ").append(progresoLogueado.getDesafiosCompletados()).append("\n\n");
                 
                 // Mostrar detalles de desafíos activos
-                if (!progreso.getDesafiosActivos().isEmpty()) {
+                if (!progresoLogueado.getDesafiosActivos().isEmpty()) {
                     mensaje.append("📋 DETALLE DE DESAFÍOS ACTIVOS:\n");
                     int contadorDesafios = 1;
-                    for (Desafio desafio : progreso.getDesafiosActivos()) {
+                    for (Desafio desafio : progresoLogueado.getDesafiosActivos()) {
                         String tipo = desafio instanceof DesafioSemanal ? "Semanal" : "Mensual";
                         String progreso_str = "";
                         String nombreDesafio = "";
@@ -200,7 +199,7 @@ public class PerfilUsuarioController {
                     }
                 }
             } else {
-                mensaje.append("No hay datos de progreso disponibles.");
+                mensaje.append("No hay datos de progreso disponibles para el usuario logueado.");
             }
             
             mostrarAlerta("Progreso de Desafíos", mensaje.toString());
@@ -214,20 +213,20 @@ public class PerfilUsuarioController {
     // Método para mostrar progreso de logros
     @FXML
     private void verProgresoLogros() {
-        System.out.println(">>> Mostrando progreso de logros");
+        System.out.println(">>> Mostrando progreso de logros del usuario logueado");
         try {
             StringBuilder mensaje = new StringBuilder();
             mensaje.append("🏆 PROGRESO DE LOGROS\n");
             mensaje.append("=====================\n\n");
             
-            if (!Main.getProgresos().isEmpty() && estudianteActualIndex < Main.getProgresos().size()) {
-                ProgresoEstudiante progreso = Main.getProgresos().get(estudianteActualIndex);
-                
-                mensaje.append("🎖️ LOGROS OBTENIDOS (").append(progreso.getLogros().size()).append("):\n");
-                if (progreso.getLogros().isEmpty()) {
+            ProgresoEstudiante progresoLogueado = Main.getProgresoUsuarioLogueado();
+            
+            if (progresoLogueado != null) {
+                mensaje.append("🎖️ LOGROS OBTENIDOS (").append(progresoLogueado.getLogros().size()).append("):\n");
+                if (progresoLogueado.getLogros().isEmpty()) {
                     mensaje.append("   Aún no has obtenido ningún logro.\n\n");
                 } else {
-                    for (Logro logro : progreso.getLogros()) {
+                    for (Logro logro : progresoLogueado.getLogros()) {
                         mensaje.append("   ✅ ").append(logro.getNombre())
                                .append(" (+").append(logro.getPuntos()).append(" pts)\n");
                         mensaje.append("      ").append(logro.getDescripcion()).append("\n\n");
@@ -237,17 +236,17 @@ public class PerfilUsuarioController {
 
                 mensaje.append("🏅 LOGROS DISPONIBLES (").append(Main.getLogrosDisponibles().size()).append("):\n");
                 for (Logro logro : Main.getLogrosDisponibles()) {
-                    boolean obtenido = progreso.getLogros().contains(logro);
+                    boolean obtenido = progresoLogueado.getLogros().contains(logro);
                     String estado = obtenido ? "✅" : "❌";
                     mensaje.append("   ").append(estado).append(" ").append(logro.getNombre())
                            .append(" (+").append(logro.getPuntos()).append(" pts)\n");
                     mensaje.append("      ").append(logro.getDescripcion()).append("\n\n");
                 }
                 
-                int puntosLogros = progreso.getLogros().stream().mapToInt(Logro::getPuntos).sum();
+                int puntosLogros = progresoLogueado.getLogros().stream().mapToInt(Logro::getPuntos).sum();
                 mensaje.append("💰 PUNTOS TOTALES POR LOGROS: ").append(puntosLogros);
             } else {
-                mensaje.append("No hay datos de progreso disponibles.");
+                mensaje.append("No hay datos de progreso disponibles para el usuario logueado.");
             }
             
             mostrarAlerta("Progreso de Logros", mensaje.toString());
@@ -276,55 +275,62 @@ public class PerfilUsuarioController {
 
     public void actualizarDatosPerfil() {
         try {
-            List<Usuario> usuarios = Main.getUsuarios();
-            List<ProgresoEstudiante> progresos = Main.getProgresos();
+            // Obtener el usuario logueado y su progreso
+            Usuario usuarioLogueado = Main.getUsuarioLogueado();
+            ProgresoEstudiante progresoLogueado = Main.getProgresoUsuarioLogueado();
             
-            System.out.println(">>> Actualizando perfil - Usuarios: " + usuarios.size() + ", Índice actual: " + estudianteActualIndex);
-            
-            // Actualizar ComboBox si los datos han cambiado
-            if (estudianteSelector != null && 
-                (estudianteSelector.getItems().isEmpty() || estudianteSelector.getItems().size() != usuarios.size())) {
-                cargarEstudiantesEnComboBox();
-            }
-            
-            if (!usuarios.isEmpty() && !progresos.isEmpty() && 
-                estudianteActualIndex < usuarios.size() && estudianteActualIndex < progresos.size()) {
-                
-                Usuario usuario = usuarios.get(estudianteActualIndex);
-                ProgresoEstudiante progreso = progresos.get(estudianteActualIndex);
-                
-                System.out.println(">>> Mostrando datos de: " + usuario.getNombre() + " con " + progreso.getPuntosTotal() + " puntos");
-                
-                // Actualizar información básica
-                if (userName != null) userName.setText(usuario.getNombre());
-                if (userEmail != null) userEmail.setText("@" + usuario.getEmail().split("@")[0]);
-                if (expPoints != null) expPoints.setText(String.valueOf(progreso.getPuntosTotal()));
-                
-                // Contar desafíos por tipo
-                int semanales = 0, mensuales = 0;
-                for (Desafio desafio : progreso.getDesafiosActivos()) {
-                    if (desafio instanceof DesafioSemanal) {
-                        semanales++;
-                    } else if (desafio instanceof DesafioMensual) {
-                        mensuales++;
-                    }
-                }
-                
-                if (desafiosSemanales != null) desafiosSemanales.setText(String.valueOf(semanales));
-                if (desafiosMensuales != null) desafiosMensuales.setText(String.valueOf(mensuales));
-                
-                // Actualizar logros dinámicamente
-                actualizarLogrosVisibles(progreso);
-                
-            } else {
-                System.out.println(">>> No hay datos disponibles para mostrar");
-                // Datos por defecto si no hay estudiantes
-                if (userName != null) userName.setText("Sin usuario");
-                if (userEmail != null) userEmail.setText("@ninguno");
+            if (usuarioLogueado == null) {
+                System.out.println(">>> No hay usuario logueado, no se pueden actualizar datos del perfil");
+                // Limpiar la interfaz
+                if (userName != null) userName.setText("No hay usuario logueado");
+                if (userEmail != null) userEmail.setText("");
                 if (expPoints != null) expPoints.setText("0");
                 if (desafiosSemanales != null) desafiosSemanales.setText("0");
                 if (desafiosMensuales != null) desafiosMensuales.setText("0");
+                return;
             }
+            
+            if (progresoLogueado == null) {
+                System.out.println(">>> No hay progreso para el usuario logueado: " + usuarioLogueado.getNombre());
+                // Mostrar datos básicos del usuario pero sin progreso
+                if (userName != null) userName.setText(usuarioLogueado.getNombre());
+                if (userEmail != null) userEmail.setText("@" + usuarioLogueado.getEmail().split("@")[0]);
+                if (expPoints != null) expPoints.setText("0");
+                if (desafiosSemanales != null) desafiosSemanales.setText("0");
+                if (desafiosMensuales != null) desafiosMensuales.setText("0");
+                return;
+            }
+            
+            System.out.println(">>> Actualizando perfil del usuario logueado: " + usuarioLogueado.getNombre() + " con " + progresoLogueado.getPuntosTotal() + " puntos");
+            
+            // Actualizar ComboBox para mostrar solo el usuario logueado
+            if (estudianteSelector != null && 
+                (estudianteSelector.getItems().isEmpty() || 
+                 !estudianteSelector.getItems().get(0).equals(usuarioLogueado.getNombre()))) {
+                cargarEstudiantesEnComboBox();
+            }
+            
+            // Actualizar información básica del usuario logueado
+            if (userName != null) userName.setText(usuarioLogueado.getNombre());
+            if (userEmail != null) userEmail.setText("@" + usuarioLogueado.getEmail().split("@")[0]);
+            if (expPoints != null) expPoints.setText(String.valueOf(progresoLogueado.getPuntosTotal()));
+            
+            // Contar desafíos por tipo del usuario logueado
+            int semanales = 0, mensuales = 0;
+            for (Desafio desafio : progresoLogueado.getDesafiosActivos()) {
+                if (desafio instanceof DesafioSemanal) {
+                    semanales++;
+                } else if (desafio instanceof DesafioMensual) {
+                    mensuales++;
+                }
+            }
+            
+            if (desafiosSemanales != null) desafiosSemanales.setText(String.valueOf(semanales));
+            if (desafiosMensuales != null) desafiosMensuales.setText(String.valueOf(mensuales));
+            
+            // Actualizar logros del usuario logueado
+            actualizarLogrosVisibles(progresoLogueado);
+            
         } catch (Exception e) {
             System.err.println("Error al actualizar datos del perfil: " + e.getMessage());
             e.printStackTrace();
@@ -334,25 +340,33 @@ public class PerfilUsuarioController {
     // Método para cargar usuarios en el ComboBox
     private void cargarEstudiantesEnComboBox() {
         try {
-            //TODO: Corregir el Main.getUsuarios() para que no use el Main directamente, sino que use un método de acceso
-            List<Usuario> usuarios = Main.getUsuarios();
-            System.out.println(">>> Cargando usuarios en ComboBox: " + usuarios.size() + " usuarios encontrados");
+            // Obtener solo el usuario logueado actual
+            Usuario usuarioLogueado = Main.getUsuarioLogueado();
             
-            if (estudianteSelector != null && !usuarios.isEmpty()) {
-                estudianteSelector.getItems().clear();
-                for (Usuario usuario : usuarios) {
-                    estudianteSelector.getItems().add(usuario.getNombre());
-                    System.out.println("   - Agregado: " + usuario.getNombre());
+            if (usuarioLogueado == null) {
+                System.out.println(">>> No hay usuario logueado, no se puede cargar ComboBox");
+                if (estudianteSelector != null) {
+                    estudianteSelector.getItems().clear();
+                    estudianteSelector.getItems().add("No hay usuario logueado");
+                    estudianteSelector.getSelectionModel().selectFirst();
                 }
-                // Seleccionar el primer usuario por defecto
+                return;
+            }
+            
+            System.out.println(">>> Cargando usuario logueado en ComboBox: " + usuarioLogueado.getNombre());
+            
+            if (estudianteSelector != null) {
+                estudianteSelector.getItems().clear();
+                // Solo agregar el usuario logueado actual
+                estudianteSelector.getItems().add(usuarioLogueado.getNombre());
                 estudianteSelector.getSelectionModel().selectFirst();
-                estudianteActualIndex = 0;
-                System.out.println(">>> ComboBox cargado exitosamente con " + usuarios.size() + " usuarios");
+                // Ya no necesitamos índice
+                System.out.println(">>> ComboBox cargado exitosamente con el usuario logueado: " + usuarioLogueado.getNombre());
             } else {
-                System.out.println(">>> ComboBox no pudo cargarse - selector: " + (estudianteSelector != null) + ", usuarios: " + usuarios.size());
+                System.out.println(">>> ComboBox no pudo cargarse - selector es null");
             }
         } catch (Exception e) {
-            System.err.println("Error al cargar estudiantes en ComboBox: " + e.getMessage());
+            System.err.println("Error al cargar usuario logueado en ComboBox: " + e.getMessage());
             e.printStackTrace();
         }
     }

@@ -1,5 +1,6 @@
 package Modulo_Usuario.Controladores;
 
+import MetodosGlobales.MetodosFrecuentes;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -38,23 +39,24 @@ public class PerfilController {
 
     @FXML
     private void goBack(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Modulo_Usuario/views/homeUsuario.fxml"));
-            Parent root = loader.load();
-            // Pasar el mismo usuario al HomeUsuarioController
-            HomeUsuarioController homeCtrl = loader.getController();
-            homeCtrl.setUsuario(this.usuario);
-            Scene scene = new Scene(root, 360, 640);
-            Stage stage = new Stage();
-            stage.setTitle("Hello Code Software - Inicio");
-            stage.setScene(scene);
-            stage.setResizable(false);
-            stage.show();
-            // Cerrar ventana actual
-            Stage thisStage = (Stage) btnBack.getScene().getWindow();
-            thisStage.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        MetodosFrecuentes.cambiarVentana((Stage) btnBack.getScene().getWindow(), "/Modulo_Usuario/views/homeUsuario.fxml", "Perfil de Usuario");
+//        try {
+//            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Modulo_Usuario/views/homeUsuario.fxml"));
+//            Parent root = loader.load();
+//            // Pasar el mismo usuario al HomeUsuarioController
+//            HomeUsuarioController homeCtrl = loader.getController();
+//            homeCtrl.setUsuario(this.usuario);
+//            Scene scene = new Scene(root, 360, 640);
+//            Stage stage = new Stage();
+//            stage.setTitle("Hello Code Software - Inicio");
+//            stage.setScene(scene);
+//            stage.setResizable(false);
+//            stage.show();
+//            // Cerrar ventana actual
+//            Stage thisStage = (Stage) btnBack.getScene().getWindow();
+//            thisStage.close();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 }

@@ -31,9 +31,10 @@ public class RankingController implements Initializable {
     @FXML private VBox rankingEntriesContainer;
 
     @FXML private Button volverComunidadBtn;
-    // Usuario actual (será establecido dinámicamente)
+    // Usuario actual será siempre el logueado
     private String currentUserName = null;
-    private int usuarioActualIndex = 0;
+    // Ya no necesitamos índice porque siempre mostramos el usuario logueado
+    // private int usuarioActualIndex = 0;
     
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -240,22 +241,24 @@ public class RankingController implements Initializable {
         try {
             if (usuarioSelector != null) {
                 usuarioSelector.getItems().clear();
-                List<Usuario> usuarios = Main.getUsuarios();
                 
-                for (Usuario usuario : usuarios) {
-                    usuarioSelector.getItems().add(usuario.getNombre());
-                }
+                // Obtener solo el usuario logueado actual
+                Usuario usuarioLogueado = Main.getUsuarioLogueado();
                 
-                if (!usuarios.isEmpty()) {
+                if (usuarioLogueado != null) {
+                    usuarioSelector.getItems().add(usuarioLogueado.getNombre());
                     usuarioSelector.getSelectionModel().selectFirst();
-                    usuarioActualIndex = 0;
-                    currentUserName = usuarios.get(0).getNombre();
+                    currentUserName = usuarioLogueado.getNombre();
+                    System.out.println(">>> Usuario logueado cargado en ComboBox: " + usuarioLogueado.getNombre());
+                } else {
+                    usuarioSelector.getItems().add("No hay usuario logueado");
+                    usuarioSelector.getSelectionModel().selectFirst();
+                    currentUserName = "No hay usuario logueado";
+                    System.out.println(">>> No hay usuario logueado");
                 }
-                
-                System.out.println(">>> Usuarios cargados en ComboBox: " + usuarios.size());
             }
         } catch (Exception e) {
-            System.err.println("Error al cargar usuarios: " + e.getMessage());
+            System.err.println("Error al cargar usuario logueado: " + e.getMessage());
         }
     }
     
@@ -263,9 +266,9 @@ public class RankingController implements Initializable {
     private void cambiarUsuario() {
         try {
             if (usuarioSelector != null && usuarioSelector.getSelectionModel().getSelectedIndex() >= 0) {
-                usuarioActualIndex = usuarioSelector.getSelectionModel().getSelectedIndex();
+                // Ya no cambiamos índice, siempre es el usuario logueado
                 currentUserName = usuarioSelector.getValue();
-                System.out.println(">>> Cambiando a usuario: " + currentUserName);
+                System.out.println(">>> Usuario seleccionado (siempre el logueado): " + currentUserName);
                 
                 // Recargar ranking con nuevo usuario
                 cargarRanking();

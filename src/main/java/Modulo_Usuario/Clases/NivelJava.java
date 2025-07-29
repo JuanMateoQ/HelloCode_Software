@@ -20,4 +20,16 @@ public enum NivelJava {
     public String toString() {
         return descripcion;
     }
+
+    /**
+     * Convierte una descripción de vuelta al enum
+     */
+    public static NivelJava fromDescripcion(String descripcion) {
+        for (NivelJava nivel : NivelJava.values()) {
+            if (nivel.getDescripcion().equals(descripcion)) {
+                return nivel;
+            }
+        }
+        throw new IllegalArgumentException("Descripción de nivel no válida: " + descripcion);
+    }
 } 

@@ -28,12 +28,14 @@ public class GestionComunidad_Controller implements Initializable {
     @FXML private TextArea txtDescripcionComunidad;
     @FXML private Button btnCrearComunidad;
 
-    @FXML private TextField txtNombreModerador;
-    @FXML private Button btnAsignarModerador;
-
     @FXML private TextArea txtInformacion;
     @FXML private Button btnVerInformacion;
+
+    @FXML private Button buttonCambioComunidadActiva;
+
     @FXML private Button btnVolver;
+
+
 
     // Controladores de negocio reutilizados del sistema existente
     private ContextoSistema contexto;
@@ -79,7 +81,6 @@ public class GestionComunidad_Controller implements Initializable {
         // Configurar placeholder texts
         txtNombreComunidad.setPromptText("Ingrese el nombre de la comunidad");
         txtDescripcionComunidad.setPromptText("Describe la comunidad y sus objetivos");
-        txtNombreModerador.setPromptText("Nombre del moderador");
 
         // Estilo para el área de información
         txtInformacion.setStyle("-fx-background-color: #f4f4f4; -fx-border-color: #cccccc;");
@@ -156,59 +157,42 @@ public class GestionComunidad_Controller implements Initializable {
         }
     }
 
-    /**
-     * Método FXML para asignar un moderador
-     * Respeta Open/Closed Principle: Extensible sin modificar código existente
-     */
+
     @FXML
-    private void asignarModerador() {
+    private void cambiarComunidadActiva() {
         try {
-            // Verificar que hay una comunidad activa
-            if (!contexto.tieneComunidadActiva()) {
-                mostrarError("Sin Comunidad Activa",
-                        "Debe tener una comunidad activa para asignar un moderador.\n" +
-                                "Cree una comunidad primero o seleccione una existente.");
+            // Validar si hay comunidades disponibles
+            if (contexto.getComunidades().isEmpty()) {
+                mostrarInformacion("Sin Comunidades", "No hay comunidades registradas para seleccionar.");
                 return;
             }
 
-            // Validar entrada de datos
-            String nombreModerador = txtNombreModerador.getText().trim();
+            // Mostrar un diálogo de selección de comunidad
+            ChoiceDialog<Comunidad> dialogo = new ChoiceDialog<>(
+                    contexto.getComunidades().get(0), // Valor por defecto
+                    contexto.getComunidades()
+            );
 
-            if (nombreModerador.isEmpty()) {
-                mostrarError("Campo Requerido", "El nombre del moderador es obligatorio.");
-                txtNombreModerador.requestFocus();
-                return;
-            }
+            dialogo.setTitle("Cambiar Comunidad Activa");
+            dialogo.setHeaderText("Seleccione una comunidad para establecer como activa:");
+            dialogo.setContentText("Comunidades disponibles:");
 
-            if (nombreModerador.length() < 2) {
-                mostrarError("Nombre Muy Corto", "El nombre del moderador debe tener al menos 2 caracteres.");
-                txtNombreModerador.requestFocus();
-                return;
-            }
-
-            // Crear y asignar el moderador
-            Moderador nuevoModerador = new Moderador(nombreModerador);
-            contexto.agregarModerador(nuevoModerador);
-
-            Comunidad comunidadActual = contexto.getComunidadActual();
-            comunidadActual.setModerador(nuevoModerador);
-
-            // Mostrar confirmación
-            mostrarExito("Moderador Asignado",
-                    "✅ El moderador '" + nombreModerador + "' ha sido asignado exitosamente.\n\n" +
-                            "Comunidad: " + comunidadActual.getNombre() + "\n" +
-                            "El moderador anterior ha sido reemplazado.");
-
-            // Limpiar campo y actualizar información
-            txtNombreModerador.clear();
-            actualizarInformacion();
+            // Mostrar diálogo y procesar la selección
+            dialogo.showAndWait().ifPresent(comunidadSeleccionada -> {
+                if (comunidadSeleccionada != null) {
+                    contexto.setComunidadActual(comunidadSeleccionada);
+                    mostrarExito("Comunidad Cambiada",
+                            "✅ Ahora estás trabajando en la comunidad:\n" + comunidadSeleccionada.getNombre());
+                    actualizarInformacion(); // Refrescar el área de texto
+                }
+            });
 
         } catch (Exception e) {
-            mostrarError("Error al Asignar Moderador",
-                    "Ocurrió un error al asignar el moderador:\n" + e.getMessage());
-            System.err.println("Error en asignarModerador: " + e.getMessage());
+            mostrarError("Error al Cambiar Comunidad",
+                    "No se pudo cambiar la comunidad activa:\n" + e.getMessage());
         }
     }
+
 
     /**
      * Método FXML para ver información de la comunidad
@@ -283,8 +267,8 @@ public class GestionComunidad_Controller implements Initializable {
             for (int i = 0; i < contexto.getComunidades().size(); i++) {
                 Comunidad com = contexto.getComunidades().get(i);
                 String marca = com == contexto.getComunidadActual() ? "🔸" : "🔹";
-                info.append(String.format("%s %d. %s (%d usuarios)\n",
-                        marca, i + 1, com.getNombre(), com.getUsuariosConectados().size()));
+                info.append(String.format("%s %d. %s (%d miembros)\n",
+                        marca, i + 1, com.getNombre(), com.getUsuariosMiembros().size()));
             }
         } else {
             info.append("📋 COMUNIDADES:\n");
@@ -329,4 +313,5 @@ public class GestionComunidad_Controller implements Initializable {
         alert.setContentText(mensaje);
         alert.showAndWait();
     }
+
 }

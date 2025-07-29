@@ -1,10 +1,13 @@
 package Nuevo_Modulo_Leccion.controllers;
 
 import MetodosGlobales.MetodosFrecuentes;
+import Nuevo_Modulo_Leccion.dataBase.LeccionRepository;
 import Nuevo_Modulo_Leccion.logic.Leccion;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
+
+import java.util.List;
 
 public class EjemploDeUsoController {
     @FXML
@@ -18,8 +21,8 @@ public class EjemploDeUsoController {
     @FXML
     private void irLeccionUno() {
         Stage stage = (Stage) buttonLeccionUno.getScene().getWindow();
-
-        LeccionUIController.mostrarUnaLeccion(new Leccion(),stage,"/Modulo_Ejercicios/views/SeleccionMultiple-view.fxml");
+        List<Leccion> leccionList = LeccionRepository.getLecciones();
+        LeccionUIController.mostrarUnaLeccion(leccionList.get(0),stage,"/Nuevo_Modulo_Leccion/views/ejemploDeUso.fxml");
     }
 
 

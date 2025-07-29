@@ -1,6 +1,8 @@
 package Modulo_Usuario.Controladores;
 
 
+import MetodosGlobales.MetodosFrecuentes;
+import MetodosGlobales.SesionManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -21,7 +23,7 @@ public class HomeController {
 
     @FXML
     private void abrirUsuarios(MouseEvent event) {
-        try {/*
+        try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/Modulo_Usuario/views/crud.fxml"));
             Scene scene = new Scene(fxmlLoader.load(), 360, 640);
 
@@ -33,8 +35,8 @@ public class HomeController {
 
             // Cerrar la pantalla actual
             Stage thisStage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
-            thisStage.close();*/
-            mostrarMensaje("Módulo Lecciones", "Este módulo estará disponible próximamente.");
+            thisStage.close();
+            //mostrarMensaje("Módulo Lecciones", "Este módulo estará disponible próximamente.");
         } catch (Exception e) {
             e.printStackTrace();
             mostrarError("Error al abrir el módulo de usuarios: " + e.getMessage());
@@ -64,8 +66,7 @@ public class HomeController {
     @FXML
     private void abrirComunidad(MouseEvent event) {
         try {
-            /*
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/Modulo_Comunidad/Views/Comunidad.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/Modulo_Comunidad/Views/Admin/AdminComunidad.fxml"));
             Scene scene = new Scene(fxmlLoader.load(), 360, 640);
 
             Stage stage = new Stage();
@@ -78,8 +79,7 @@ public class HomeController {
             // Cerrar la pantalla actual
             Stage thisStage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
             thisStage.close();
-             */
-            mostrarMensaje("Módulo Lecciones", "Este módulo estará disponible próximamente.");
+
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -91,20 +91,25 @@ public class HomeController {
     @FXML
 
     private void mostrarPerfil(ActionEvent event) {
-
+        cambiarVentana(event, "/Modulo_Usuario/views/perfil.fxml", "Perfil de Usuario");
         // Aquí puedes mostrar información del perfil del usuario
-        mostrarMensaje("Perfil de Usuario", "Funcionalidad de perfil estará disponible próximamente.");
+        //mostrarMensaje("Perfil de Usuario", "Funcionalidad de perfil estará disponible próximamente.");
     }
 
     @FXML
     private void cerrarSesion(ActionEvent event) {
+        cambiarVentana(event, "/Modulo_Usuario/views/login.fxml", "Hello Code Software - Iniciar Sesión");
+    }
+
+    private void cambiarVentana(ActionEvent event, String rutaFXML, String titulo) {
         try {
+            SesionManager.getInstancia().cerrarSesion();
             // Volver a la pantalla de login
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/Modulo_Usuario/views/login.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(rutaFXML));
             Scene scene = new Scene(fxmlLoader.load(), 360, 720);
 
             Stage stage = new Stage();
-            stage.setTitle("Hello Code Software - Iniciar Sesión");
+            stage.setTitle(titulo);
             stage.setScene(scene);
             stage.setResizable(false);
             stage.show();

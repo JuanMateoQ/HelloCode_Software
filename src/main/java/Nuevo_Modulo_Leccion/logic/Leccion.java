@@ -1,8 +1,6 @@
 package Nuevo_Modulo_Leccion.logic;
 
 import Modulo_Ejercicios.exercises.EjercicioBase;
-import Modulo_Ejercicios.exercises.EjercicioCompletarCodigo;
-import Modulo_Ejercicios.exercises.EjercicioSeleccion;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,14 +1,9 @@
 package Gamificacion_Modulo.clases;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
+import MetodosGlobales.SesionManager;
 import Modulo_Usuario.Clases.Roles;
 import Modulo_Usuario.Clases.Usuario;
 import javafx.application.Application;
@@ -109,7 +104,7 @@ public class Main extends Application {
                 stageActivo = primaryStage;
             } else {
                 // Buscar cualquier Stage abierto de JavaFX
-                for (javafx.stage.Window window : javafx.stage.Stage.getWindows()) {
+                for (javafx.stage.Window window : Stage.getWindows()) {
                     if (window instanceof Stage && window.isShowing()) {
                         stageActivo = (Stage) window;
                         break;
@@ -186,11 +181,54 @@ public class Main extends Application {
         return progresos;
     }
 
+    /**
+     * Obtiene el progreso del usuario actualmente logueado
+     * @return ProgresoEstudiante del usuario logueado o null si no hay usuario logueado o no tiene progreso
+     */
+    public static ProgresoEstudiante getProgresoUsuarioLogueado() {
+        try {
+            SesionManager sesionManager = SesionManager.getInstancia();
+            Usuario usuarioLogueado = sesionManager.getUsuarioAutenticado();
+            
+            if (usuarioLogueado == null) {
+                System.out.println(">>> No hay usuario logueado en el sistema");
+                return null;
+            }
+            
+            // Buscar el progreso del usuario logueado
+            for (ProgresoEstudiante progreso : progresos) {
+                if (progreso.getUsuario().getUsername().equals(usuarioLogueado.getUsername())) {
+                    System.out.println(">>> Progreso encontrado para usuario logueado: " + usuarioLogueado.getNombre());
+                    return progreso;
+                }
+            }
+            
+            System.out.println(">>> No se encontró progreso para el usuario logueado: " + usuarioLogueado.getNombre());
+            return null;
+            
+        } catch (Exception e) {
+            System.err.println(">>> Error al obtener progreso del usuario logueado: " + e.getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Obtiene el usuario actualmente logueado
+     * @return Usuario logueado o null si no hay usuario logueado
+     */
+    public static Usuario getUsuarioLogueado() {
+        try {
+            SesionManager sesionManager = SesionManager.getInstancia();
+            return sesionManager.getUsuarioAutenticado();
+        } catch (Exception e) {
+            System.err.println(">>> Error al obtener usuario logueado: " + e.getMessage());
+            return null;
+        }
+    }
+
     //TODO: CREAR UNA NUEVA CLASE PARA INICIALIZAR LOS DATOS, se quito el bucle porque hacia lo mismo de crearProgresoEstudiante
     private static void inicializarDatos() {
-        // Cargar usuarios del módulo de usuarios
-        cargarUsuariosDesdeArchivo();
-        // Crear automáticamente progresos para todos los usuarios cargados
+        // Crear automáticamente progresos para todos los usuarios cargados desde SesionManager
         crearProgresoEstudiante();
         // Inicializar logros predeterminados
         inicializarLogros();
@@ -205,7 +243,32 @@ public class Main extends Application {
     public static void crearProgresoEstudiante() {
         try {
             usuarios.clear();
-            cargarUsuariosDesdeArchivo();
+            
+            // Obtener usuarios desde SesionManager
+            SesionManager sesionManager = SesionManager.getInstancia();
+            List<Usuario> usuariosDesdeManager = sesionManager.getUsuarios();
+            
+            if (usuariosDesdeManager != null && !usuariosDesdeManager.isEmpty()) {
+                // Filtrar solo usuarios con rol USUARIO
+                for (Usuario usuario : usuariosDesdeManager) {
+                    if (usuario.getRol() == Roles.USUARIO) {
+                        // Completar información del usuario con datos por defecto si no tiene
+                        if (usuario.getNombre() == null || usuario.getNombre().isEmpty() || usuario.getNombre().equals("null")) {
+                            usuario.setNombre("Usuario " + usuario.getUsername());
+                        }
+                        if (usuario.getEmail() == null || usuario.getEmail().isEmpty() || usuario.getEmail().equals("null")) {
+                            usuario.setEmail(usuario.getUsername() + "@email.com");
+                        }
+
+                        if (usuario.getRol() == Roles.USUARIO){
+                            usuarios.add(usuario);
+                            System.out.println(">>> Usuario cargado: " + usuario.getUsername() + " - " + usuario.getNombre());
+                        }
+                    }
+                }
+            } else {
+                System.out.println(">>> No hay usuarios disponibles en SesionManager");
+            }
 
             // Crear progreso para usuarios nuevos
             for (Usuario usuario : usuarios) {
@@ -228,47 +291,6 @@ public class Main extends Application {
         }
     }
 
-    // Método para cargar usuarios desde el archivo del módulo de usuarios
-    private static void cargarUsuariosDesdeArchivo() {
-        try {
-            InputStream inputStream = new FileInputStream(new File("src/main/java/Modulo_Usuario/Usuarios/usuarios.txt"));
-
-            try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
-                String linea;
-                while ((linea = br.readLine()) != null) {
-                    linea = linea.trim();
-                    if (!linea.isEmpty()) {
-                        Usuario usuario = Usuario.fromString(linea);
-
-                        if (usuario != null) {
-                            // Completar información del usuario con datos por defecto si no tiene
-                            if (usuario.getNombre() == null || usuario.getNombre().isEmpty() || usuario.getNombre().equals("null")) {
-                                usuario.setNombre("Usuario " + usuario.getUsername());
-                            }
-                            if (usuario.getEmail() == null || usuario.getEmail().isEmpty() || usuario.getNombre().equals("null")) {
-                                usuario.setEmail(usuario.getUsername() + "@email.com");
-                            }
-                            if (usuario.getRol() == Roles.USUARIO){
-                                usuarios.add(usuario);
-                                System.out.println(">>> Usuario cargado: " + usuario.getUsername() + " - " + usuario.getNombre());
-                            }
-
-                        }
-                    }
-                }
-            }
-
-            if (usuarios.isEmpty()) {
-                System.out.println(">>> No se encontraron usuarios válidos. Creando usuarios por defecto.");
-
-            }
-
-        } catch (Exception e) {
-            System.err.println(">>> Error al cargar usuarios: " + e.getMessage());
-            e.printStackTrace();
-
-        }
-    }
     //TODO: Mover a alguna clase que maneje el inicializador de logros
 
     private static void inicializarLogros() {
