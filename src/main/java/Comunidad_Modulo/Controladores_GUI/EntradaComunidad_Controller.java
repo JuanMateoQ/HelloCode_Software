@@ -76,7 +76,8 @@ public class EntradaComunidad_Controller {
 
     @FXML
     private void volverAHome() {
-        mostrarMensaje("Ruta", "Funcionalidad de la ruta pronto será mostrada");
+        MetodosFrecuentes.cambiarVentana((Stage) buttonVolver.getScene().getWindow(), "/GestionAprendizaje_Modulo/Vistas/Ruta.fxml", "Volver a Home - Ruta");
+        //mostrarMensaje("Ruta", "Funcionalidad de la ruta pronto será mostrada");
     }
     @FXML
     private void salir() {
