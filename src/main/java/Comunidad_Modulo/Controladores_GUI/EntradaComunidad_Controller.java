@@ -1,7 +1,7 @@
 package Comunidad_Modulo.Controladores_GUI;
 
 import Gamificacion_Modulo.clases.Main;
-import Conexion.MetodosFrecuentes;
+import MetodosGlobales.MetodosFrecuentes;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -76,8 +76,7 @@ public class EntradaComunidad_Controller {
 
     @FXML
     private void volverAHome() {
-        MetodosFrecuentes.cambiarVentana((Stage) buttonVolver.getScene().getWindow(), "/GestionAprendizaje_Modulo/Vistas/Ruta.fxml", "Volver a Home - Ruta");
-        //mostrarMensaje("Ruta", "Funcionalidad de la ruta pronto será mostrada");
+        mostrarMensaje("Ruta", "Funcionalidad de la ruta pronto será mostrada");
     }
     @FXML
     private void salir() {

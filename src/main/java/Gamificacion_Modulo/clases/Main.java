@@ -1,9 +1,10 @@
 package Gamificacion_Modulo.clases;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import Conexion.SesionManager;
-import Modulo_Usuario.Clases.TipoDeAcceso;
+import MetodosGlobales.SesionManager;
+import Modulo_Usuario.Clases.Roles;
 import Modulo_Usuario.Clases.Usuario;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -164,6 +165,33 @@ public class Main extends Application {
     }
 
     /**
+     * Obtiene solo los usuarios con rol USUARIO (estudiantes) que tienen progreso en gamificación
+     * @return Lista de usuarios con rol USUARIO únicamente
+     */
+    public static List<Usuario> getUsuariosEstudiantes() {
+        try {
+            SesionManager sesionManager = SesionManager.getInstancia();
+            List<Usuario> todosLosUsuarios = sesionManager.getUsuarios();
+            
+            if (todosLosUsuarios == null) {
+                return new ArrayList<>();
+            }
+            
+            // Filtrar solo usuarios con rol USUARIO
+            List<Usuario> usuariosEstudiantes = todosLosUsuarios.stream()
+                    .filter(usuario -> usuario.getRol() == Roles.USUARIO)
+                    .collect(java.util.stream.Collectors.toList());
+                    
+            System.out.println(">>> Usuarios estudiantes obtenidos: " + usuariosEstudiantes.size());
+            return usuariosEstudiantes;
+            
+        } catch (Exception e) {
+            System.err.println(">>> Error al obtener usuarios estudiantes: " + e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+
+    /**
      * Obtiene el usuario actualmente logueado
      * @return Usuario logueado o null si no hay usuario logueado
      */
@@ -197,7 +225,7 @@ public class Main extends Application {
             if (usuariosDesdeManager != null && !usuariosDesdeManager.isEmpty()) {
                 // Crear progreso para usuarios nuevos
                 for (Usuario usuario : usuariosDesdeManager) {
-                    if (usuario.getRol() == TipoDeAcceso.USUARIO) {
+                    if (usuario.getRol() == Roles.USUARIO) {
                         // Completar información del usuario con datos por defecto si no tiene
                         if (usuario.getNombre() == null || usuario.getNombre().isEmpty() || usuario.getNombre().equals("null")) {
                             usuario.setNombre("Usuario " + usuario.getUsername());

@@ -1,8 +1,7 @@
 package Modulo_Usuario.Controladores;
 
 import Gamificacion_Modulo.clases.Main;
-import Conexion.MetodosFrecuentes;
-import Conexion.SesionManager;
+import MetodosGlobales.MetodosFrecuentes;
 import Modulo_Usuario.Clases.Usuario;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -127,7 +126,6 @@ public class HomeUsuarioController {
             // Cerrar la pantalla actual
             Stage thisStage = (Stage) btnSalir.getScene().getWindow();
             thisStage.close();
-            SesionManager.getInstancia().getUsuarioAutenticado().registrarCurso();
         } catch (Exception e) {
             e.printStackTrace();
             mostrarError("Error al cerrar sesión: " + e.getMessage());

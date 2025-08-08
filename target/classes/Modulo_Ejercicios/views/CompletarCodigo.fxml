@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="360.0" style="-fx-background-color: rgb(66, 72, 116);" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Modulo_Ejercicios.Controladores.EjercicioCompletarController">
+   <children>
+      <BorderPane layoutX="-2.0" layoutY="59.0" prefHeight="373.0" prefWidth="372.0">
+         <center>
+            <GridPane prefWidth="372.0" BorderPane.alignment="CENTER">
+               <columnConstraints>
+                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints maxHeight="119.0" minHeight="10.0" prefHeight="51.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="226.0" minHeight="10.0" prefHeight="70.0" valignment="CENTER" vgrow="SOMETIMES" />
+               </rowConstraints>
+               <children>
+                  <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
+                     <children>
+                        <AnchorPane fx:id="PanelInstruccionEjercicio" layoutX="16.0" layoutY="12.0" prefHeight="274.0" prefWidth="347.0">
+                           <children>
+                              <Text fx:id="TextInstruccion" fill="#dcd6f7" layoutX="17.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Instrucción" textAlignment="JUSTIFY" wrappingWidth="329.13671875">
+                                 <font>
+                                    <Font name="System Bold" size="20.0" />
+                                 </font>
+                              </Text>
+                              <AnchorPane fx:id="PanelEjercicio" layoutX="8.0" layoutY="90.0" prefHeight="163.0" prefWidth="324.0" style="-fx-background-color: rgb(166, 177, 225);">
+                                 <children>
+                                    <TextField fx:id="textEntrada" layoutX="22.0" layoutY="87.0" opacity="0.95" prefHeight="25.0" prefWidth="238.0" style="-fx-background-color: rgb(215, 227, 227);" translateY="40.0" />
+                                    <TextArea fx:id="Ejercicio" layoutX="13.0" layoutY="14.0" prefHeight="96.0" prefWidth="297.0" style="-fx-background-color: rgb(23, 23, 23); -fx-border-color: rgb(23, 23, 23); -fx-control-inner-background: rgb(23, 23, 23); -fx-text-fill: white;" wrapText="true">
+                                       <font>
+                                          <Font name="System Bold" size="16.0" />
+                                       </font>
+                                    </TextArea>
+
+
+                                 </children>
+                              </AnchorPane>
+                           </children>
+                        </AnchorPane>
+                     </children>
+                  </AnchorPane>
+                  <Text fx:id="TexTipo" strokeType="OUTSIDE" strokeWidth="0.0" text="Completa el código correctamente:" wrappingWidth="333.13671875">
+                     <font>
+                        <Font name="System Bold" size="20.0" />
+                     </font>
+                  </Text>
+               </children>
+            </GridPane>
+         </center>
+      </BorderPane>
+      <AnchorPane layoutX="1.0" prefHeight="84.0" prefWidth="372.0">
+         <children>
+            <Text fx:id="txtLenguaje" fill="#dbd5f7" layoutX="139.0" layoutY="25.0" strokeType="OUTSIDE" strokeWidth="0.0" text="JAVA" textAlignment="CENTER">
+               <font>
+                  <Font name="System Bold" size="25.0" />
+               </font>
+            </Text>
+            <ImageView fitHeight="27.0" fitWidth="27.0" layoutX="303.0" layoutY="2.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../imagenes/icon_vidas.png" />
+               </image>
+            </ImageView>
+            <Text fx:id="TexVida" layoutX="335.0" layoutY="20.0" strokeType="OUTSIDE" strokeWidth="0.0" text="5">
+               <font>
+                  <Font name="System Bold" size="19.0" />
+               </font>
+            </Text>
+            <ImageView fitHeight="25.0" fitWidth="27.0" layoutX="269.0" layoutY="2.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../imagenes/icon_pistas.png" />
+               </image>
+            </ImageView>
+            <ProgressBar fx:id="ProgressBar" layoutX="79.0" layoutY="42.0" prefWidth="200.0" progress="0.12" style="-fx-background-color: rgb(220, 214, 247);">
+               <effect>
+                  <ColorAdjust brightness="-0.02" hue="0.42" saturation="-0.34">
+                     <input>
+                        <ColorAdjust />
+                     </input></ColorAdjust>
+               </effect>
+            </ProgressBar>
+         </children>
+      </AnchorPane>
+      <Button fx:id="btnComprobar" layoutX="109.0" layoutY="564.0" mnemonicParsing="false" style="-fx-background-radius: 15; -fx-background-color: rgb(166, 177, 225); -fx-cursor: hand;" text="Comprobar" textFill="WHITE">
+         <font>
+            <Font size="22.0" />
+         </font>
+      </Button>
+      <TextArea fx:id="Avisos" layoutX="63.0" layoutY="458.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="154.0" prefWidth="243.0" style="-fx-background-color: a6b1e1;" text="Avisos" visible="false" wrapText="true">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </TextArea>
+      <Label fx:id="labelRetroalimentacion" layoutX="14.0" layoutY="440.0" prefHeight="171.0" prefWidth="331.0" style="-fx-background-color: rgb(220, 214, 247); -fx-background-radius: 30;" text="ParabraCorrecta" textAlignment="JUSTIFY" textFill="#424774" visible="false" wrapText="true">
+         <font>
+            <Font size="19.0" />
+         </font>
+      </Label>
+      <Label fx:id="labelBien" layoutX="13.0" layoutY="443.0" prefHeight="171.0" prefWidth="331.0" style="-fx-background-color: rgb(220, 214, 247); -fx-background-radius: 30;" text="¡Muy bien, sigue así!" textAlignment="JUSTIFY" textFill="#424774" visible="false" wrapText="true">
+         <font>
+            <Font size="19.0" />
+         </font>
+      </Label>
+      <Button fx:id="btnSiguiente" disable="true" layoutX="108.0" layoutY="579.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="141.0" style="-fx-background-radius: 40;" text="Siguiente &gt;">
+         <font>
+            <Font size="20.0" />
+         </font></Button>
+      <Label fx:id="AvisoCorrecto" alignment="TOP_CENTER" layoutX="99.0" layoutY="443.0" prefHeight="46.0" prefWidth="160.0" style="-fx-background-color: rgb(178, 250, 164); -fx-background-radius: 40;" text="Correcto" textAlignment="CENTER" textFill="WHITE" visible="false">
+         <font>
+            <Font size="25.0" />
+         </font>
+      </Label>
+      <Label fx:id="AvisoIncorrecto" alignment="TOP_CENTER" layoutX="99.0" layoutY="443.0" prefHeight="46.0" prefWidth="161.0" style="-fx-background-color: rgb(247, 112, 105); -fx-background-radius: 40;" text="Incorrecto" textAlignment="CENTER" textFill="WHITE" visible="false">
+         <font>
+            <Font size="25.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>

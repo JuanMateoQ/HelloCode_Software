@@ -42,7 +42,7 @@ public class AsignarDesafioController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        usuarios = Main.getUsuarios();
+        usuarios = Main.getUsuariosEstudiantes();
         desafiosDisponibles = Desafio.getDesafiosDisponibles();
         radioButtonsDesafios = new ArrayList<>();
         toggleGroupDesafios = new ToggleGroup();
@@ -52,7 +52,7 @@ public class AsignarDesafioController implements Initializable {
         configurarEventos();
 
         System.out.println(">>> Asignador de desafíos inicializado");
-        System.out.println(">>> Usuarios disponibles: " + usuarios.size());
+        System.out.println(">>> Usuarios estudiantes disponibles: " + usuarios.size());
         System.out.println(">>> Desafíos disponibles: " + desafiosDisponibles.size());
     }
 
@@ -298,13 +298,13 @@ public class AsignarDesafioController implements Initializable {
 
     // Método para refrescar los datos cuando se abra la ventana
     public void refrescarDatos() {
-        usuarios = Main.getUsuarios();
+        usuarios = Main.getUsuariosEstudiantes();
         desafiosDisponibles = Desafio.getDesafiosDisponibles();
 
         cargarUsuarios();
         cargarDesafiosDisponibles();
 
-        System.out.println(">>> Datos refrescados - Usuarios: " + usuarios.size() + ", Desafíos: " + desafiosDisponibles.size());
+        System.out.println(">>> Datos refrescados - Usuarios estudiantes: " + usuarios.size() + ", Desafíos: " + desafiosDisponibles.size());
     }
 
     private void cerrarVentana() {

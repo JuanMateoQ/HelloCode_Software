@@ -1,6 +1,6 @@
 package Modulo_Ejercicios.otrosModulos;
 
-import Modulo_Ejercicios.exercises.EjercicioBase;
+import Modulo_Ejercicios.logic.EjercicioBase;
 import java.util.ArrayList;
 
 public class Leccion {

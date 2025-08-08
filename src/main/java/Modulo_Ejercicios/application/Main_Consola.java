@@ -2,14 +2,14 @@ package Modulo_Ejercicios.application;
 
 import Modulo_Ejercicios.otrosModulos.Contenido;
 import Modulo_Ejercicios.otrosModulos.Leccion;
-import Modulo_Ejercicios.exercises.EjercicioSeleccion;
-import Modulo_Ejercicios.exercises.EjercicioCompletarCodigo;
-import Modulo_Ejercicios.exercises.EjercicioBase;
-import Modulo_Ejercicios.exercises.Respuesta;
-import Modulo_Ejercicios.exercises.RespuestaString;
-import Modulo_Ejercicios.exercises.ResultadoDeEvaluacion;
-import Modulo_Ejercicios.exercises.Lenguaje;
-import Modulo_Ejercicios.exercises.NivelDificultad;
+import Modulo_Ejercicios.logic.EjercicioSeleccion;
+import Modulo_Ejercicios.logic.EjercicioCompletarCodigo;
+import Modulo_Ejercicios.logic.EjercicioBase;
+import Modulo_Ejercicios.logic.Respuesta;
+import Modulo_Ejercicios.logic.RespuestaString;
+import Modulo_Ejercicios.logic.ResultadoDeEvaluacion;
+import Modulo_Ejercicios.logic.Lenguaje;
+import Modulo_Ejercicios.logic.NivelDificultad;
 import Modulo_Ejercicios.DataBase.EjercicioRepository;
 
 import java.util.ArrayList;

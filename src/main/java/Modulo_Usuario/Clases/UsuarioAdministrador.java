@@ -13,7 +13,7 @@ public class UsuarioAdministrador extends Usuario {
     }
 
     // Constructor con parámetros básicos
-    public UsuarioAdministrador(String username, String password, String nombre, String email, TipoDeAcceso rol) {
+    public UsuarioAdministrador(String username, String password, String nombre, String email, Roles rol) {
         super(username, password, nombre, email);
         this.idAdmin = username; // Usamos username como idAdmin por defecto
         this.setRol(rol);
@@ -22,7 +22,7 @@ public class UsuarioAdministrador extends Usuario {
 
     // Constructor completo
     public UsuarioAdministrador(String username, String password, String nombre, String email,
-                                String idAdmin, TipoDeAcceso rol, Boolean esSuperAdmin) {
+                                String idAdmin, Roles rol, Boolean esSuperAdmin) {
         super(username, password, nombre, email);
         this.idAdmin = idAdmin;
         this.setRol(rol);
@@ -53,7 +53,7 @@ public class UsuarioAdministrador extends Usuario {
     }
 
     // Verifica si el admin tiene el rol requerido para un módulo
-    public boolean tieneAccesoModulo(TipoDeAcceso rolRequerido) {
+    public boolean tieneAccesoModulo(Roles rolRequerido) {
         return this.getRol() == rolRequerido || Boolean.TRUE.equals(this.esSuperAdmin);
     }
 

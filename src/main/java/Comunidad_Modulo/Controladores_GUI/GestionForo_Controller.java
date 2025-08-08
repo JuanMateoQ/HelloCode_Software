@@ -24,8 +24,8 @@ import Comunidad_Modulo.enums.TipoSolucion;
 import Comunidad_Modulo.enums.EstadoHilo;
 import Comunidad_Modulo.servicios.ComunidadService;
 import Comunidad_Modulo.servicios.PersistenciaService;
-import Conexion.MetodosFrecuentes;
-import Conexion.SesionManager;
+import MetodosGlobales.MetodosFrecuentes;
+import MetodosGlobales.SesionManager;
 
 /**
  * Controlador para la gestión del foro en la interfaz JavaFX

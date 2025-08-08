@@ -1,5 +1,6 @@
 package Comunidad_Modulo.Controladores_GUI;
 
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -102,7 +103,7 @@ public class GestionUsuarios_Controller implements Initializable {
     private void conectarUsuario() {
         try {
             // Obtener el usuario actual desde SesionManager
-            Conexion.SesionManager sesion = Conexion.SesionManager.getInstancia();
+            MetodosGlobales.SesionManager sesion = MetodosGlobales.SesionManager.getInstancia();
             
             if (!sesion.hayUsuarioAutenticado()) {
                 mostrarMensajeError("No hay usuario autenticado. Inicie sesión primero.");
@@ -184,7 +185,7 @@ public class GestionUsuarios_Controller implements Initializable {
     private void desconectarUsuario() {
         try {
             // Obtener el usuario actual desde SesionManager
-            Conexion.SesionManager sesion = Conexion.SesionManager.getInstancia();
+            MetodosGlobales.SesionManager sesion = MetodosGlobales.SesionManager.getInstancia();
             
             if (!sesion.hayUsuarioAutenticado()) {
                 mostrarMensajeError("No hay usuario autenticado. Inicie sesión primero.");
@@ -251,7 +252,7 @@ public class GestionUsuarios_Controller implements Initializable {
     private void volver() {
         try {
             // Importar MetodosFrecuentes para cambiar ventana
-            Conexion.MetodosFrecuentes.cambiarVentana(
+            MetodosGlobales.MetodosFrecuentes.cambiarVentana(
                 (javafx.stage.Stage) btnVolver.getScene().getWindow(),
                 "/Modulo_Comunidad/Views/Comunidad.fxml",
                 "Sistema de Comunidad"
@@ -267,7 +268,7 @@ public class GestionUsuarios_Controller implements Initializable {
     private void actualizarInformacionSistema() {
         try {
             ContextoSistema contexto = ContextoSistema.getInstancia();
-            Conexion.SesionManager sesion = Conexion.SesionManager.getInstancia();
+            MetodosGlobales.SesionManager sesion = MetodosGlobales.SesionManager.getInstancia();
             
             StringBuilder info = new StringBuilder("Mis Comunidades\n\n");
             
@@ -334,7 +335,7 @@ public class GestionUsuarios_Controller implements Initializable {
     private void mostrarListaComunidadesDisponibles() {
         try {
             ContextoSistema contexto = ContextoSistema.getInstancia();
-            Conexion.SesionManager sesion = Conexion.SesionManager.getInstancia();
+            MetodosGlobales.SesionManager sesion = MetodosGlobales.SesionManager.getInstancia();
             
             StringBuilder listaComunidades = new StringBuilder("🏘️ Comunidades Disponibles\n");
 

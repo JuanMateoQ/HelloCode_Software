@@ -1,6 +1,6 @@
 package Modulo_Usuario.Controladores;
 
-import Modulo_Usuario.Clases.TipoDeAcceso;
+import Modulo_Usuario.Clases.Roles;
 import Modulo_Usuario.Clases.Usuario;
 import Modulo_Usuario.Clases.UsuarioAdministrador;
 import javafx.event.ActionEvent;
@@ -26,7 +26,7 @@ public class RegisterController {
     @FXML private PasswordField contrasenaField;
     @FXML private PasswordField confirmarContrasenaField;
     @FXML private Label mensajeLabel;
-    @FXML private ComboBox<TipoDeAcceso> comboRol;
+    @FXML private ComboBox<Roles> comboRol;
     @FXML private PasswordField contraseniaAdmin;
     @FXML private Label labelAdmin;
 
@@ -38,10 +38,10 @@ public class RegisterController {
         contraseniaAdmin.setVisible(false);  // Oculta el campo si es INVITADO
         labelAdmin.setVisible(false);
 
-        comboRol.getItems().addAll(TipoDeAcceso.values());
+        comboRol.getItems().addAll(Roles.values());
         cargarUsuarios();
         comboRol.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal == TipoDeAcceso.USUARIO) {
+            if (newVal == Roles.USUARIO) {
                 contraseniaAdmin.setVisible(false);  // Oculta el campo si es INVITADO
                 labelAdmin.setVisible(false);
             } else {
@@ -115,7 +115,7 @@ public class RegisterController {
             mostrarMensaje("Por favor complete todos los campos", true);
             return;
         }
-        if(comboRol.getValue() == TipoDeAcceso.ADMINISTRADOR){
+        if(comboRol.getValue() == Roles.ADMINISTRADOR){
             if(passwordAdmin.isEmpty()){
                 mostrarMensaje("Por favor complete todos los campos", true);
                 return;
@@ -135,13 +135,13 @@ public class RegisterController {
             }
         }
         Usuario nuevoUsuario;
-        if(comboRol.getValue() == TipoDeAcceso.ADMINISTRADOR){
+        if(comboRol.getValue() == Roles.ADMINISTRADOR){
             // Crear nuevo usuario con rol USUARIO y xp inicial 0
-            nuevoUsuario = new Usuario(username, password, nombre, email,0, TipoDeAcceso.ADMINISTRADOR);
+            nuevoUsuario = new Usuario(username, password, nombre, email,0,Roles.ADMINISTRADOR);
             verificarGuardarUsuario(nuevoUsuario);
         }
-        if(comboRol.getValue() == TipoDeAcceso.USUARIO){
-            nuevoUsuario = new Usuario(username, password, nombre, email, 0, TipoDeAcceso.USUARIO);
+        if(comboRol.getValue() == Roles.USUARIO){
+            nuevoUsuario = new Usuario(username, password, nombre, email, 0, Roles.USUARIO);
             verificarGuardarUsuario(nuevoUsuario);
         }
 

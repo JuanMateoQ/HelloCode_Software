@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="Modulo_Ejercicios.Controladores.GUICrud_Controller"
+            prefWidth="360.0" prefHeight="640.0"
+            style="-fx-background-color: #424874;">
+    
+    <!-- Navbar superior -->
+    <HBox style="-fx-background-color: #A6B1E1; -fx-effect: dropshadow(gaussian, #23243a, 4, 0.2, 0, 2);" 
+          AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0" prefHeight="60">
+        <padding>
+            <Insets top="12" right="20" bottom="12" left="20"/>
+        </padding>
+        <HBox alignment="CENTER_LEFT" spacing="12" HBox.hgrow="ALWAYS">
+            <Button text="←" onAction="#volverAlHome"
+                    style="-fx-background-color: transparent; -fx-font-size: 20px; -fx-text-fill: #424874; -fx-background-radius: 20;"
+                    prefWidth="40" prefHeight="40"/>
+            <VBox spacing="2">
+                <Label text="Gestión de Ejercicios" style="-fx-text-fill: #424874; -fx-font-size: 16px; -fx-font-weight: bold;"/>
+                <Label text="Crear y administrar ejercicios" style="-fx-text-fill: #6B7A99; -fx-font-size: 11px;"/>
+            </VBox>
+        </HBox>
+    </HBox>
+
+    <!-- Contenido principal con ScrollPane -->
+    <ScrollPane fitToWidth="true" 
+                AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" 
+                AnchorPane.topAnchor="60" AnchorPane.bottomAnchor="0"
+                style="-fx-background: transparent; -fx-background-color: transparent;">
+        
+        <VBox spacing="20" alignment="TOP_CENTER">
+            <padding>
+                <Insets top="20" right="16" bottom="20" left="16"/>
+            </padding>
+
+            <!-- Título de sección -->
+            <VBox alignment="CENTER" spacing="8">
+                <Label text="💻 Crear Nuevo Ejercicio" 
+                       style="-fx-text-fill: #DCD6F7; -fx-font-size: 24px; -fx-font-weight: bold;"/>
+                <Label text="Completa los campos para crear un ejercicio" 
+                       style="-fx-text-fill: #A6B1E1; -fx-font-size: 14px;"/>
+            </VBox>
+
+            <!-- Tipo de ejercicio -->
+            <VBox spacing="8" maxWidth="320">
+                <Label text="Tipo de Ejercicio" style="-fx-text-fill: #DCD6F7; -fx-font-size: 14px; -fx-font-weight: bold;"/>
+                <ComboBox fx:id="comboTipoEjercicio" prefWidth="320" promptText="Selecciona el tipo de ejercicio"
+                         style="-fx-background-color: #DCD6F7; -fx-text-fill: #424874; -fx-background-radius: 8; -fx-padding: 8;"
+                         onAction="#cambiarTipoEjercicio"/>
+            </VBox>
+
+            <!-- Instrucción -->
+            <VBox spacing="8" maxWidth="320">
+                <Label text="Instrucción/Pregunta" style="-fx-text-fill: #DCD6F7; -fx-font-size: 14px; -fx-font-weight: bold;"/>
+                <TextArea fx:id="txtInstruccion" prefRowCount="3" prefWidth="320" wrapText="true"
+                         promptText="Escribe la instrucción o pregunta del ejercicio..."
+                         style="-fx-background-color: #DCD6F7; -fx-text-fill: #424874; -fx-background-radius: 8; -fx-padding: 8;"/>
+            </VBox>
+
+            <!-- Lenguaje -->
+            <VBox spacing="8" maxWidth="320">
+                <Label text="Lenguaje de Programación" style="-fx-text-fill: #DCD6F7; -fx-font-size: 14px; -fx-font-weight: bold;"/>
+                <ComboBox fx:id="comboLenguaje" prefWidth="320" promptText="Selecciona el lenguaje"
+                         style="-fx-background-color: #DCD6F7; -fx-text-fill: #424874; -fx-background-radius: 8; -fx-padding: 8;"/>
+            </VBox>
+
+            <!-- Nivel de dificultad -->
+            <VBox spacing="8" maxWidth="320">
+                <Label text="Nivel de Dificultad" style="-fx-text-fill: #DCD6F7; -fx-font-size: 14px; -fx-font-weight: bold;"/>
+                <ComboBox fx:id="comboNivel" prefWidth="320" promptText="Selecciona el nivel"
+                         style="-fx-background-color: #DCD6F7; -fx-text-fill: #424874; -fx-background-radius: 8; -fx-padding: 8;"/>
+            </VBox>
+
+            <!-- Sección específica para ejercicios de selección -->
+            <VBox fx:id="seccionSeleccion" spacing="16" maxWidth="320" visible="false" managed="false">
+                <Label text="Opciones de Selección" style="-fx-text-fill: #DCD6F7; -fx-font-size: 16px; -fx-font-weight: bold;"/>
+                
+                <!-- Opciones -->
+                <VBox spacing="8">
+                    <Label text="Opciones (separadas por comas)" style="-fx-text-fill: #DCD6F7; -fx-font-size: 14px;"/>
+                    <TextArea fx:id="txtOpciones" prefRowCount="3" prefWidth="320" wrapText="true"
+                             promptText="Ejemplo: opcion1,opcion2,opcion3,opcion4"
+                             style="-fx-background-color: #DCD6F7; -fx-text-fill: #424874; -fx-background-radius: 8; -fx-padding: 8;"/>
+                </VBox>
+
+                <!-- Respuestas correctas -->
+                <VBox spacing="8">
+                    <Label text="Respuestas Correctas (separadas por comas)" style="-fx-text-fill: #DCD6F7; -fx-font-size: 14px;"/>
+                    <TextField fx:id="txtRespuestasCorrectas" prefWidth="320"
+                              promptText="Ejemplo: respuesta1,respuesta2"
+                              style="-fx-background-color: #DCD6F7; -fx-text-fill: #424874; -fx-background-radius: 8; -fx-padding: 8;"/>
+                </VBox>
+            </VBox>
+
+            <!-- Sección específica para ejercicios de completar código -->
+            <VBox fx:id="seccionCompletar" spacing="16" maxWidth="320" visible="false" managed="false">
+                <Label text="Completar Código" style="-fx-text-fill: #DCD6F7; -fx-font-size: 16px; -fx-font-weight: bold;"/>
+                
+                <!-- Código con espacios -->
+                <VBox spacing="8">
+                    <Label text="Código (usa _____ para espacios en blanco)" style="-fx-text-fill: #DCD6F7; -fx-font-size: 14px;"/>
+                    <TextArea fx:id="txtCodigo" prefRowCount="4" prefWidth="320" wrapText="true"
+                             promptText="Ejemplo: public _____ main(String[] args) { _____ }"
+                             style="-fx-background-color: #DCD6F7; -fx-text-fill: #424874; -fx-background-radius: 8; -fx-padding: 8; -fx-font-family: 'Courier New';"/>
+                </VBox>
+
+                <!-- Respuestas para los espacios -->
+                <VBox spacing="8">
+                    <Label text="Respuestas para los espacios (separadas por comas)" style="-fx-text-fill: #DCD6F7; -fx-font-size: 14px;"/>
+                    <TextField fx:id="txtRespuestasEspacios" prefWidth="320"
+                              promptText="Ejemplo: static void,System.out.println"
+                              style="-fx-background-color: #DCD6F7; -fx-text-fill: #424874; -fx-background-radius: 8; -fx-padding: 8;"/>
+                </VBox>
+            </VBox>
+
+            <!-- Botones de acción -->
+            <HBox spacing="12" alignment="CENTER">
+                <Button text="Crear Ejercicio" onAction="#crearEjercicio"
+                        style="-fx-background-color: #A6B1E1; -fx-text-fill: #424874; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 12 24;"
+                        prefWidth="120"/>
+                <Button text="Limpiar" onAction="#limpiarCampos"
+                        style="-fx-background-color: transparent; -fx-text-fill: #DCD6F7; -fx-font-weight: bold; -fx-border-color: #DCD6F7; -fx-border-radius: 8; -fx-border-width: 1; -fx-padding: 12 24;"
+                        prefWidth="120"/>
+            </HBox>
+
+            <!-- Separador -->
+            <Separator style="-fx-background-color: #A6B1E1;" maxWidth="280"/>
+
+            <!-- Sección de visualización de ejercicios -->
+            <VBox alignment="CENTER" spacing="12">
+                <Label text="📋 Ejercicios Existentes" 
+                       style="-fx-text-fill: #DCD6F7; -fx-font-size: 20px; -fx-font-weight: bold;"/>
+                
+                <!-- Filtros -->
+                <HBox spacing="12" alignment="CENTER">
+                    <ComboBox fx:id="filtroTipo" promptText="Filtrar por tipo" prefWidth="140"
+                             style="-fx-background-color: #A6B1E1; -fx-text-fill: #424874; -fx-background-radius: 6; -fx-padding: 6;"
+                             onAction="#filtrarEjercicios"/>
+                    <ComboBox fx:id="filtroLenguaje" promptText="Filtrar por lenguaje" prefWidth="140"
+                             style="-fx-background-color: #A6B1E1; -fx-text-fill: #424874; -fx-background-radius: 6; -fx-padding: 6;"
+                             onAction="#filtrarEjercicios"/>
+                </HBox>
+
+                <!-- Lista de ejercicios -->
+                <ListView fx:id="listaEjercicios" prefHeight="300" prefWidth="320" maxWidth="320"
+                         style="-fx-background-color: #DCD6F7; -fx-background-radius: 8; -fx-border-color: #A6B1E1; -fx-border-radius: 8;"/>
+                
+                <!-- Botones para ejercicios seleccionados -->
+                <HBox spacing="8" alignment="CENTER">
+                    <Button text="Ver Detalles" onAction="#verDetalles"
+                            style="-fx-background-color: #A6B1E1; -fx-text-fill: #424874; -fx-font-weight: bold; -fx-background-radius: 6; -fx-padding: 8 16;"
+                            prefWidth="100"/>
+                    <Button text="Editar" onAction="#editarEjercicio"
+                            style="-fx-background-color: #DCD6F7; -fx-text-fill: #424874; -fx-font-weight: bold; -fx-background-radius: 6; -fx-padding: 8 16;"
+                            prefWidth="80"/>
+                    <Button text="Eliminar" onAction="#eliminarEjercicio"
+                            style="-fx-background-color: #F28482; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6; -fx-padding: 8 16;"
+                            prefWidth="80"/>
+                </HBox>
+            </VBox>
+        </VBox>
+    </ScrollPane>
+</AnchorPane>

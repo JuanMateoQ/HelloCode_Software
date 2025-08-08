@@ -1,7 +1,7 @@
 package Modulo_Ejercicios.Controladores;
 
 import Modulo_Ejercicios.DataBase.EjercicioRepository;
-import Modulo_Ejercicios.exercises.*;
+import Modulo_Ejercicios.logic.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;

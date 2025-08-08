@@ -30,7 +30,7 @@ public class CrudController {
     @FXML private ComboBox<NivelJava> nivelJavaCombo;
     @FXML private TextField reputacionField;
     @FXML private VBox camposAdmin;
-    @FXML private ComboBox<TipoDeAcceso> rolAdminCombo;
+    @FXML private ComboBox<Roles> rolAdminCombo;
     @FXML private CheckBox esSuperAdminCheck;
     
     private final String ARCHIVO_USUARIOS = "src/main/java/Modulo_Usuario/Usuarios/usuarios.txt";
@@ -61,7 +61,7 @@ public class CrudController {
         nivelJavaCombo.getSelectionModel().selectFirst();
 
         // Configurar roles de administrador
-        ObservableList<TipoDeAcceso> roles = FXCollections.observableArrayList(TipoDeAcceso.values());
+        ObservableList<Roles> roles = FXCollections.observableArrayList(Roles.values());
         if (rolAdminCombo != null) {
             rolAdminCombo.setItems(roles);
             rolAdminCombo.getSelectionModel().selectFirst();
@@ -212,7 +212,7 @@ public class CrudController {
     private Usuario crearUsuarioSegunTipo(String username, String password, String nombre, String email, String tipo) {
         switch (tipo) {
             case "Usuario Básico":
-                TipoDeAcceso rolBasico = TipoDeAcceso.USUARIO;
+                Roles rolBasico = Roles.USUARIO;
                 return new Usuario(username, password, nombre, email, 0, rolBasico);
 
             case "Usuario Comunidad":
@@ -226,7 +226,7 @@ public class CrudController {
                 return new UsuarioComunidad(username, password, nombre, email, username, nivelJava, reputacion);
 
             case "Usuario Administrador":
-                TipoDeAcceso rol = rolAdminCombo != null ? rolAdminCombo.getValue() : TipoDeAcceso.ADMINISTRADOR;
+                Roles rol = rolAdminCombo != null ? rolAdminCombo.getValue() : Roles.ADMINISTRADOR;
                 Boolean esSuperAdmin = esSuperAdminCheck.isSelected();
                 return new UsuarioAdministrador(username, password, nombre, email, username, rol, esSuperAdmin);
 

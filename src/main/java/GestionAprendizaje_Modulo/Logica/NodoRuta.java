@@ -74,13 +74,14 @@ public class NodoRuta {
 
     private final int orden;
     private boolean completado;
+    private final String id;
     private final Leccion leccion; // <-- Utiliza la clase Leccion correcta
     private List<RecursoAprendizaje> materialDeApoyo;
 
-    public NodoRuta(int orden, Leccion leccion) {
+    public NodoRuta(int orden, String id, Leccion leccion) {
         this.orden = orden;
+        this.id = id; // <-- Se asigna el ID
         this.leccion = leccion;
-        this.completado = false;
         this.materialDeApoyo = new ArrayList<>();
     }
 
@@ -89,6 +90,8 @@ public class NodoRuta {
     }
 
     // --- Getters y otros métodos ---
+    public String getId() { return id; } // <-- GETTER AÑADIDO
+
     public int getOrden() { return orden; }
     public boolean isCompletado() { return completado; }
     public void marcarComoCompletado() { this.completado = true; }

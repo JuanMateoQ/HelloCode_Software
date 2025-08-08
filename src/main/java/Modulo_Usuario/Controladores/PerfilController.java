@@ -1,8 +1,11 @@
 package Modulo_Usuario.Controladores;
 
-import Conexion.MetodosFrecuentes;
+import MetodosGlobales.MetodosFrecuentes;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;

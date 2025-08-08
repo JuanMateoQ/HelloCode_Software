@@ -61,18 +61,19 @@ public class RankingController implements Initializable {
 
     public void cargarRanking() {
         try {
-            List<Usuario> usuarios = Main.getUsuarios();
+            // Obtener solo usuarios con rol USUARIO (estudiantes)
+            List<Usuario> usuariosEstudiantes = Main.getUsuariosEstudiantes();
             List<ProgresoEstudiante> progresos = ProgresoEstudiante.getProgresos();
 
-            if (usuarios.isEmpty()) {
+            if (usuariosEstudiantes.isEmpty()) {
                 mostrarMensajeVacio();
                 return;
             }
 
             // Crear lista de usuarios con sus puntuaciones
             List<EstudianteRanking> estudiantesRanking = new ArrayList<>();
-
-            for (Usuario usuario : usuarios) {
+            
+            for (Usuario usuario : usuariosEstudiantes) {
                 ProgresoEstudiante progreso = encontrarProgresoPorUsuario(usuario, progresos);
                 int puntos = progreso != null ? progreso.getPuntosTotal() : 0;
                 estudiantesRanking.add(new EstudianteRanking(usuario.getNombre(), puntos));

@@ -45,7 +45,7 @@ public class SimularActividadController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        usuarios = Main.getUsuarios();
+        usuarios = Main.getUsuariosEstudiantes();
         radioButtonsDesafios = new ArrayList<>();
         toggleGroupDesafios = new ToggleGroup();
 
@@ -54,7 +54,7 @@ public class SimularActividadController implements Initializable {
         configurarEventos();
 
         System.out.println(">>> Simulador de actividades inicializado");
-        System.out.println(">>> Usuarios disponibles: " + usuarios.size());
+        System.out.println(">>> Usuarios estudiantes disponibles: " + usuarios.size());
         System.out.println(">>> Desafíos disponibles en sistema: " + Desafio.getDesafiosDisponibles().size());
     }
 

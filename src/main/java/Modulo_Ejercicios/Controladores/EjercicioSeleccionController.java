@@ -1,11 +1,10 @@
 package Modulo_Ejercicios.Controladores;
 
-import Conexion.LeccionesCompletadas;
-import Conexion.MetodosFrecuentes;
-import Modulo_Ejercicios.exercises.EjercicioSeleccion;
-import Modulo_Ejercicios.exercises.Respuesta;
-import Modulo_Ejercicios.exercises.RespuestaString;
-import Modulo_Ejercicios.exercises.ResultadoDeEvaluacion;
+import MetodosGlobales.MetodosFrecuentes;
+import Modulo_Ejercicios.logic.EjercicioSeleccion;
+import Modulo_Ejercicios.logic.Respuesta;
+import Modulo_Ejercicios.logic.RespuestaString;
+import Modulo_Ejercicios.logic.ResultadoDeEvaluacion;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -315,7 +314,6 @@ public class EjercicioSeleccionController implements Initializable {
             
             switch (tipoRespuesta) {
                 case CORRECTO:
-                    LeccionesCompletadas.set(LeccionesCompletadas.getLeccionesCompletadas() +1);
                     respuestasCorrectasUsuario.add(true);
                     mostrarFeedback(tipoRespuesta, "¡Excelente trabajo! Tu respuesta es completamente correcta.", null);
                     break;

@@ -177,7 +177,7 @@ public class ContextoSistema {
      */
     public void establecerComunidadActivaParaUsuario() {
         try {
-            Conexion.SesionManager sesion = Conexion.SesionManager.getInstancia();
+            MetodosGlobales.SesionManager sesion = MetodosGlobales.SesionManager.getInstancia();
 
             // ✅ NO reemplazar si ya hay comunidad activa
             if (this.comunidadActual != null) {

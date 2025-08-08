@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import Comunidad_Modulo.controladores.ContextoSistema;
 import Comunidad_Modulo.modelo.*;
 import Modulo_Usuario.Clases.UsuarioComunidad;
-import Conexion.MetodosFrecuentes;
+import MetodosGlobales.MetodosFrecuentes;
 
 /**
  * Controlador para la gestión de chats privados en la interfaz JavaFX
@@ -691,7 +691,7 @@ public class GestionChat_Controller implements Initializable {
      */
     private UsuarioComunidad obtenerUsuarioActual() {
         try {
-            Conexion.SesionManager sesion = Conexion.SesionManager.getInstancia();
+            MetodosGlobales.SesionManager sesion = MetodosGlobales.SesionManager.getInstancia();
             if (sesion.hayUsuarioAutenticado()) {
                 return sesion.getUsuarioComunidad();
             }

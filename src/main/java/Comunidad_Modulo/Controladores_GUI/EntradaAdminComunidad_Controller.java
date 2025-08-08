@@ -1,6 +1,6 @@
 package Comunidad_Modulo.Controladores_GUI;
 
-import Conexion.MetodosFrecuentes;
+import MetodosGlobales.MetodosFrecuentes;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;

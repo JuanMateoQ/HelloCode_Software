@@ -1,11 +1,10 @@
 package Modulo_Ejercicios.Controladores;
 
-import Conexion.LeccionesCompletadas;
-import Conexion.MetodosFrecuentes;
-import Modulo_Ejercicios.exercises.EjercicioCompletarCodigo;
-import Modulo_Ejercicios.exercises.Respuesta;
-import Modulo_Ejercicios.exercises.RespuestaString;
-import Modulo_Ejercicios.exercises.ResultadoDeEvaluacion;
+import MetodosGlobales.MetodosFrecuentes;
+import Modulo_Ejercicios.logic.EjercicioCompletarCodigo;
+import Modulo_Ejercicios.logic.Respuesta;
+import Modulo_Ejercicios.logic.RespuestaString;
+import Modulo_Ejercicios.logic.ResultadoDeEvaluacion;
 import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -184,7 +183,6 @@ public class EjercicioCompletarController implements Initializable {
 
             if (resultado.getPorcentajeDeAcerto() == 100) {
                 // Respuesta correcta
-                LeccionesCompletadas.set(LeccionesCompletadas.getLeccionesCompletadas() +1);
                 respuestasCorrectasUsuario.add(true);
                 mostrarFeedbackCorrecto();
                 

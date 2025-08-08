@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="Modulo_Ejercicios.Controladores.EmparejarController">
+	<top>
+		<Label fx:id="lblInstruccion" wrapText="true" style="-fx-font-size:16px; -fx-padding:10;" />
+	</top>
+	<center>
+		<HBox spacing="20" style="-fx-padding:10;">
+			<children>
+				<VBox spacing="5" HBox.hgrow="ALWAYS">
+					<children>
+						<Label text="Izquierda" style="-fx-font-weight:bold;" />
+						<ListView fx:id="listIzquierda" prefWidth="200" />
+					</children>
+				</VBox>
+				<VBox spacing="5" HBox.hgrow="ALWAYS">
+					<children>
+						<Label text="Derecha (ordena para emparejar)" style="-fx-font-weight:bold;" />
+						<ListView fx:id="listDerecha" prefWidth="200" />
+					</children>
+				</VBox>
+			</children>
+		</HBox>
+	</center>
+	<bottom>
+		<VBox spacing="8" style="-fx-padding:10;">
+			<children>
+				<Label fx:id="lblResultado" />
+				<HBox spacing="10">
+					<children>
+						<Button fx:id="btnEvaluar" text="Evaluar" />
+						<Button fx:id="btnSiguiente" text="Siguiente" />
+					</children>
+				</HBox>
+			</children>
+		</VBox>
+	</bottom>
+</BorderPane>

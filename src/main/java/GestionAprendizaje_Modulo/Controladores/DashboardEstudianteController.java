@@ -1,11 +1,15 @@
 package GestionAprendizaje_Modulo.Controladores;
 
-import GestionAprendizaje_Modulo.Logica.AprendizajeManager;
+import Gamificacion_Modulo.clases.Main;
+import MetodosGlobales.MetodosFrecuentes;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
 
 public class DashboardEstudianteController {
 
@@ -19,7 +23,11 @@ public class DashboardEstudianteController {
     private ComboBox<String> nivelComboBox;
 
     @FXML
-    private Button continuarButton;
+    private Button btnInicio;
+    @FXML
+    private Button btnRanking;
+    @FXML private Button btnPerfil;
+    @FXML private Button btnComunidad;
 
     private static String lenguajeSeleccionado;
 
@@ -45,4 +53,26 @@ public class DashboardEstudianteController {
             e.printStackTrace();
         }
     }
+
+    @FXML
+    private void irARanking(ActionEvent event) {
+        MetodosFrecuentes.cambiarVentana((Stage) btnRanking.getScene().getWindow(), "/Gamificacion_Modulo/fxml/Ranking.fxml", "Ranking");
+    }
+
+    @FXML
+    private void irAHome(ActionEvent event) {
+        MetodosFrecuentes.cambiarVentana((Stage) btnInicio.getScene().getWindow(), "/Modulo_Usuario/views/homeUsuario.fxml", "Ruta de Aprendizaje");
+    }
+
+    @FXML
+    private void irAPerfil(ActionEvent event) {
+        MetodosFrecuentes.cambiarVentana((Stage) btnPerfil.getScene().getWindow(), "/Gamificacion_Modulo/fxml/PerfilUsuario.fxml", "Perfil de Usuario");
+    }
+
+    @FXML
+    private void irAComunidad(ActionEvent event) {
+        MetodosFrecuentes.cambiarVentana((Stage) btnComunidad.getScene().getWindow(), "/Modulo_Comunidad/Views/Comunidad.fxml", "Comunidad");
+        //mostrarMensaje("Comunidad", "Funcionalidad de comunidad próximamente");
+    }
+
 }

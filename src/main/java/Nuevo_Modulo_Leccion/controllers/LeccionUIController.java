@@ -1,18 +1,18 @@
 package Nuevo_Modulo_Leccion.controllers;
 
-import GestionAprendizaje_Modulo.Logica.AprendizajeManager;
-import Conexion.MetodosFrecuentes;
-import Conexion.SesionManager;
+import MetodosGlobales.MetodosFrecuentes;
 import Modulo_Ejercicios.Controladores.EjercicioCompletarController;
 import Modulo_Ejercicios.Controladores.EjercicioSeleccionController;
-import Modulo_Ejercicios.exercises.EjercicioBase;
-import Modulo_Ejercicios.exercises.EjercicioCompletarCodigo;
-import Modulo_Ejercicios.exercises.EjercicioSeleccion;
+import Modulo_Ejercicios.logic.EjercicioBase;
+import Modulo_Ejercicios.logic.EjercicioCompletarCodigo;
+import Modulo_Ejercicios.logic.EjercicioSeleccion;
+import Modulo_Ejercicios.logic.EjercicioEmparejar;
 import Nuevo_Modulo_Leccion.logic.Leccion;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import java.util.function.Consumer;
 
 public class LeccionUIController {
     
@@ -20,7 +20,6 @@ public class LeccionUIController {
     private static Leccion leccionActual;
     private static int indiceEjercicioActual = 0;
     private static String rutaFXMLVentanaFinal; // nueva variable
-
     /**
      * Método principal para mostrar una lección con ejercicios mixtos
      * Detecta automáticamente los tipos de ejercicios y carga la vista apropiada
@@ -58,14 +57,14 @@ public class LeccionUIController {
                 return;
             }
             
-            // Obtener el ejercicio actual
             EjercicioBase ejercicioActual = leccionActual.getListEjercicios().get(indiceEjercicioActual);
             
-            // Mostrar el ejercicio según su tipo
             if (ejercicioActual instanceof EjercicioSeleccion) {
                 mostrarEjercicioSeleccion((EjercicioSeleccion) ejercicioActual);
             } else if (ejercicioActual instanceof EjercicioCompletarCodigo) {
                 mostrarEjercicioCompletar((EjercicioCompletarCodigo) ejercicioActual);
+            } else if (ejercicioActual instanceof EjercicioEmparejar) {
+                mostrarEjercicioEmparejar((EjercicioEmparejar) ejercicioActual);
             } else {
                 // Ejercicio no reconocido, saltar al siguiente
                 indiceEjercicioActual++;
@@ -81,17 +80,11 @@ public class LeccionUIController {
     public static void avanzarAlSiguienteEjercicio() {
         indiceEjercicioActual++;
         mostrarSiguienteEjercicio();
-        System.out.println(indiceEjercicioActual);
     }
-
-
-    //Obtiene el índice del ejercicio actual para mostrar progreso
 
     public static int getIndiceEjercicioActual() {
         return indiceEjercicioActual;
     }
-
-    // Obtiene el total de ejercicios en la lección actual
 
     public static int getTotalEjercicios() {
         return leccionActual != null ? leccionActual.getListEjercicios().size() : 0;
@@ -99,50 +92,44 @@ public class LeccionUIController {
     
 
     private static void mostrarEjercicioSeleccion(EjercicioSeleccion ejercicio) {
-        try {
-            FXMLLoader loader = new FXMLLoader(LeccionUIController.class.getResource("/Modulo_Ejercicios/views/SeleccionMultiple-view.fxml"));
-            Parent root = loader.load();
-            
-            // Obtener el controlador y configurar el ejercicio individual
-            EjercicioSeleccionController controller = loader.getController();
-            controller.setEjercicio(ejercicio);
-            
-            // Mostrar la ventana
-            Stage stage = new Stage();
-            stage.setTitle("Ejercicio de Selección Múltiple " + (indiceEjercicioActual + 1));
-            stage.setScene(new Scene(root));
-            stage.setResizable(false);
-            stage.show();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            MetodosFrecuentes.mostrarAlerta("Error", "Error al cargar ejercicio de selección: " + e.getMessage());
-        }
+        mostrarVentanaEjercicio(
+                "/Modulo_Ejercicios/views/SeleccionMultiple-view.fxml",
+                EjercicioSeleccionController.class,
+                c -> c.setEjercicio(ejercicio)
+        );
     }
 
-    /**
-     * Muestra un ejercicio de completar código individual
-     */
     private static void mostrarEjercicioCompletar(EjercicioCompletarCodigo ejercicio) {
+        mostrarVentanaEjercicio(
+                "/Modulo_Ejercicios/views/CompletarCodigo.fxml",
+                EjercicioCompletarController.class,
+                c -> c.setEjercicio(ejercicio)
+        );
+    }
+
+    private static void mostrarEjercicioEmparejar(EjercicioEmparejar ejercicio) {
+        mostrarVentanaEjercicio(
+                "/Modulo_Ejercicios/views/Emparejar.fxml",
+                Modulo_Ejercicios.Controladores.EmparejarController.class,
+                c -> c.setEjercicio(ejercicio)
+        );
+    }
+
+    private static <T> void mostrarVentanaEjercicio(String rutaFXML, Class<T> tipoControlador, Consumer<T> inicializador) {
         try {
-            FXMLLoader loader = new FXMLLoader(LeccionUIController.class.getResource("/Modulo_Ejercicios/views/CompletarCodigo.fxml"));
+            FXMLLoader loader = new FXMLLoader(LeccionUIController.class.getResource(rutaFXML));
             Parent root = loader.load();
-            
-            // Obtener el controlador y configurar el ejercicio individual
-            EjercicioCompletarController controller = loader.getController();
-            controller.setEjercicio(ejercicio);
-            
-            // Mostrar la ventana
+            Object ctrl = loader.getController();
+            if (tipoControlador.isInstance(ctrl) && inicializador != null) {
+                inicializador.accept(tipoControlador.cast(ctrl));
+            }
             Stage stage = new Stage();
-            stage.setTitle("Ejercicio de Completar Código " + (indiceEjercicioActual + 1));
             stage.setScene(new Scene(root));
             stage.setResizable(false);
             stage.show();
-
-
         } catch (Exception e) {
             e.printStackTrace();
-            MetodosFrecuentes.mostrarAlerta("Error", "Error al cargar ejercicio de completar código: " + e.getMessage());
+            MetodosFrecuentes.mostrarAlerta("Error", "Error al cargar ventana: " + e.getMessage());
         }
     }
 
@@ -179,7 +166,7 @@ public class LeccionUIController {
             if (rutaFXMLVentanaFinal != null && !rutaFXMLVentanaFinal.isEmpty()) {
                 MetodosFrecuentes.mostrarVentana(rutaFXMLVentanaFinal, "Menú de Lecciones");
             }
-            SesionManager.getInstancia().setCurso(AprendizajeManager.getInstancia().getCursos());
+
         } catch (Exception e) {
             e.printStackTrace();
             MetodosFrecuentes.mostrarAlerta("Error", "Error al mostrar lección completada: " + e.getMessage());

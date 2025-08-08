@@ -12,9 +12,10 @@ import java.util.ResourceBundle;
 // Importar las clases del modelo y controladores
 import Comunidad_Modulo.controladores.ContextoSistema;
 import Comunidad_Modulo.modelo.Comunidad;
+import Comunidad_Modulo.modelo.Moderador;
 import Comunidad_Modulo.integracion.ModuloUsuariosSimulado;
 import Comunidad_Modulo.integracion.IModuloUsuarios;
-import Conexion.MetodosFrecuentes;
+import MetodosGlobales.MetodosFrecuentes;
 
 /**
  * Controlador para la gestión de comunidad en la interfaz JavaFX
