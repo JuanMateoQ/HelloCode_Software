@@ -15,8 +15,8 @@ import java.util.*;
 public class MainGUIEjerciciosEmparejar extends Application {
 
     public static void main(String[] args) {
-        //ejecutarDemoConsola();
-        launch(args);
+        ejecutarDemoConsola();
+        //launch(args);
 
     }
 
@@ -27,7 +27,7 @@ public class MainGUIEjerciciosEmparejar extends Application {
             System.out.println("No se encontraron ejercicios de emparejar.");
             return;
         }
-        EjercicioEmparejar ejercicio = ejercicios.get(0);
+        EjercicioEmparejar ejercicio = ejercicios.get(1);
         System.out.println("Instrucción: " + ejercicio.getInstruccion());
 
         List<String> izquierda = ejercicio.obtenerColumnaIzquierda();

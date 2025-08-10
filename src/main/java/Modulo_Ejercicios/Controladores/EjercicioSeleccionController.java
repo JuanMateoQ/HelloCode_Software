@@ -7,6 +7,7 @@ import Modulo_Ejercicios.logic.RespuestaString;
 import Modulo_Ejercicios.logic.ResultadoDeEvaluacion;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.animation.PauseTransition;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
@@ -15,11 +16,18 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.function.Consumer;
 import java.util.List;
 import java.util.ResourceBundle;
+
+
+import Modulo_Ejercicios.otrosModulos.Usuario; // Importar Usuario para manejar vidas
+
 
 public class EjercicioSeleccionController implements Initializable {
 
@@ -28,21 +36,11 @@ public class EjercicioSeleccionController implements Initializable {
         CORRECTO, INCORRECTO, PARCIALMENTE_CORRECTO
     }
 
-    // Variables para el sistema de vidas
-    private int vidasActuales = 20;
-    private final int VIDAS_MAXIMAS = 3;
-
     @FXML
     private ImageView imgFondo;
 
     @FXML
     private Text txtLiveCount;
-
-    @FXML
-    private Button btnPista;
-
-    @FXML
-    private ImageView imgPista;
 
     @FXML
     private ProgressBar progressBar;
@@ -114,6 +112,9 @@ public class EjercicioSeleccionController implements Initializable {
     @FXML
     private Button btnSiguiente;
 
+    @FXML
+    private Button btnClose;
+
     // Lista para almacenar los botones generados dinámicamente
     private List<Button> botonesOpciones = new ArrayList<>();
 
@@ -123,13 +124,20 @@ public class EjercicioSeleccionController implements Initializable {
     private List<Boolean> respuestasCorrectasUsuario = new ArrayList<>();
 
     private EjercicioSeleccion ejercicioActual; // Un solo ejercicio
-    private int totalEjercicios = 0;
+
+    // Callback para notificar el resultado a Lección (quien gestionará vidas/navegación)
+    private Consumer<ResultadoDeEvaluacion> onResultado;
 
 
 
 
     public EjercicioSeleccionController() {
         // Constructor requerido por FXMLLoader
+    }
+
+    // Inyectado por LeccionUIController: Lección escuchará el resultado para manejar vidas
+    public void setOnResultado(Consumer<ResultadoDeEvaluacion> onResultado) {
+        this.onResultado = onResultado;
     }
 
 
@@ -221,10 +229,9 @@ public class EjercicioSeleccionController implements Initializable {
 
     /**
      * Método para configurar un solo ejercicio individual
-     */
+    */
     public void setEjercicio(EjercicioSeleccion ejercicio) {
         this.ejercicioActual = ejercicio;
-        this.totalEjercicios = 1;
         cargarInstruccion(ejercicio);
         actualizarProgressBar();
     }
@@ -304,12 +311,19 @@ public class EjercicioSeleccionController implements Initializable {
             }
             
             ResultadoDeEvaluacion resultado = ejercicioActual.evaluarRespuestas(respuestasUsuario);
-            
+
+            // Notificar primero a Lección para que gestione vidas si corresponde (<100)
+            if (onResultado != null) {
+                onResultado.accept(resultado);
+            }
+            // Refrescar contador de vidas tras posible decremento
+            actualizarVidasUI();
+
             // Obtener las respuestas correctas para mostrar retroalimentación
             List<String> respuestasCorrectas = ejercicioActual.obtenerRespuestasCorrectas();
-            
+
             actualizarColoresBotones(respuestasCorrectas);
-            
+
             TipoRespuesta tipoRespuesta = determinarTipoRespuesta(resultado.getPorcentajeDeAcerto(), respuestasUsuario.size(), respuestasCorrectas.size());
             
             switch (tipoRespuesta) {
@@ -336,19 +350,23 @@ public class EjercicioSeleccionController implements Initializable {
             btnComprobar.setVisible(false);
             feedbackPanel.setVisible(true);
 
+            // El resultado ya fue notificado antes de mostrar el feedback
+
         }
     }
     
     //Determina el tipo de respuesta basado en el porcentaje de acierto
     private TipoRespuesta determinarTipoRespuesta(double porcentajeAcierto, int numRespuestasUsuario, int numRespuestasCorrectas) {
-        if (porcentajeAcierto == 100.0) {
+        // Correcto solo si el usuario seleccionó exactamente todas las correctas y nada más
+        if (porcentajeAcierto == 100.0 && numRespuestasUsuario == numRespuestasCorrectas) {
             return TipoRespuesta.CORRECTO;
-        } else if (porcentajeAcierto > 0 && numRespuestasUsuario <= numRespuestasCorrectas) {
-            // Si el usuario seleccionó algunas correctas pero no todas, y no seleccionó incorrectas
-            return TipoRespuesta.PARCIALMENTE_CORRECTO;
-        } else {
-            return TipoRespuesta.INCORRECTO;
         }
+        // Parcial si hay al menos una correcta, independientemente de que haya extras incorrectas
+        if (porcentajeAcierto > 0.0) {
+            return TipoRespuesta.PARCIALMENTE_CORRECTO;
+        }
+        // Incorrecto cuando no acertó ninguna
+        return TipoRespuesta.INCORRECTO;
     }
 
     private int contarRespuestasCorrectas(ArrayList<Respuesta> respuestasUsuario, List<String> respuestasCorrectas) {
@@ -373,19 +391,35 @@ public class EjercicioSeleccionController implements Initializable {
                 mostrarPanelCorrecto(mensaje, explicacion);
                 break;
             case INCORRECTO:
-                if (vidasActuales <= 0) {
+                if (Usuario.getVidas() <= 0) {
                     mostrarPanelGameOver();
                 } else {
                     mostrarPanelIncorrecto(mensaje, explicacion);
                 }
                 break;
             case PARCIALMENTE_CORRECTO:
-                mostrarPanelParcial(mensaje, explicacion);
+                if (Usuario.getVidas() <= 0) {
+                    // Si al quedar parcialmente correcto se agotaron las vidas, mostrar Game Over
+                    mostrarPanelGameOver();
+                } else {
+                    mostrarPanelParcial(mensaje, explicacion);
+                }
                 break;
         }
 
-        // Configurar y mostrar el botón siguiente
-        configurarBotonSiguiente();
+        // Configurar y mostrar el botón siguiente solo si NO es Game Over
+    if (Usuario.getVidas() <= 0) {
+            if (btnSiguiente != null) {
+                btnSiguiente.setVisible(false);
+                btnSiguiente.setManaged(false);
+            }
+        } else {
+            configurarBotonSiguiente();
+            if (btnSiguiente != null) {
+                btnSiguiente.setVisible(true);
+                btnSiguiente.setManaged(true);
+            }
+        }
 
         // Mostrar el panel de feedback
         feedbackPanel.setVisible(true);
@@ -450,6 +484,11 @@ public class EjercicioSeleccionController implements Initializable {
                 textGameOverDetalle.setText("No te preocupes, puedes intentarlo nuevamente.");
             }
         }
+        // Mostrar panel unos segundos y volver a la ventana anterior (como en EjercicioCompletarController)
+        actualizarVidasUI();
+        PauseTransition pause = new PauseTransition(Duration.seconds(3));
+        pause.setOnFinished(e -> terminarEjecucion());
+        pause.play();
     }
 
     private void configurarBotonSiguiente() {
@@ -457,7 +496,7 @@ public class EjercicioSeleccionController implements Initializable {
             btnSiguiente.setDisable(false);
             btnSiguiente.setOpacity(1.0);
 
-            if (vidasActuales <= 0) {
+            if (Usuario.getVidas() <= 0) {
                 btnSiguiente.setText("REINICIAR");
             } else {
                 btnSiguiente.setText("SIGUIENTE");
@@ -477,6 +516,20 @@ public class EjercicioSeleccionController implements Initializable {
         }
     }
 
+    // Finaliza y regresa a la ventana anterior (home), replicando la lógica de EjercicioCompletarController
+    private void terminarEjecucion() {
+        try {
+            Button ref = (btnSiguiente != null) ? btnSiguiente : btnComprobar;
+            if (ref != null && ref.getScene() != null) {
+                Stage stage = (Stage) ref.getScene().getWindow();
+                String destino = Nuevo_Modulo_Leccion.controllers.LeccionUIController.getRutaFXMLVentanaFinal();
+                MetodosFrecuentes.cambiarVentana(stage, destino, "Menú de Lecciones");
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // Inicializar la lección al cargar el controller
@@ -487,23 +540,42 @@ public class EjercicioSeleccionController implements Initializable {
 
         btnComprobar.setOnAction(event -> handleComprobar());
 
+        if (btnClose != null) {
+            btnClose.setOnAction(e -> confirmarSalida());
+        }
+
         // Configurar el evento del botón siguiente
         if (btnSiguiente != null) {
             btnSiguiente.setOnAction(event -> handleContinuar());
+        }
+
+        actualizarVidasUI();
+
+    }
+
+    private void confirmarSalida() {
+        javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmación");
+        alert.setHeaderText(null);
+        alert.setContentText("¿Seguro quiere salir del ejercicio?");
+
+        javafx.scene.control.ButtonType aceptar = new javafx.scene.control.ButtonType("Aceptar", javafx.scene.control.ButtonBar.ButtonData.OK_DONE);
+        javafx.scene.control.ButtonType cancelar = new javafx.scene.control.ButtonType("Cancelar", javafx.scene.control.ButtonBar.ButtonData.CANCEL_CLOSE);
+        alert.getButtonTypes().setAll(aceptar, cancelar);
+
+        var result = alert.showAndWait();
+        if (result.isPresent() && result.get() == aceptar) {
+            terminarEjecucion();
         }
     }
 
     @FXML
     private void handleContinuar() {
-        if (vidasActuales <= 0) {
-            // Mostrar alerta de Game Over y regresar a la pantalla de ruta
-            MetodosFrecuentes.mostrarAlerta("Game Over", "Se han agotado las vidas. Regresando a la pantalla de ruta.");
-        } else {
-            // Continuar al siguiente ejercicio
-            feedbackPanel.setVisible(false);
-            btnComprobar.setVisible(false); // Ocultar hasta que se haga una nueva selección
-            cerrarVentanaYAvanzar();
-        }
+
+        feedbackPanel.setVisible(false);
+        btnComprobar.setVisible(false); // Ocultar hasta que se haga una nueva selección
+        cerrarVentanaYAvanzar();
+
     }
 
         /**
@@ -512,7 +584,7 @@ public class EjercicioSeleccionController implements Initializable {
     private void actualizarProgressBar() {
         try {
             // Obtener el progreso actual de la lección desde LeccionUIController
-            int indiceActual = Nuevo_Modulo_Leccion.controllers.LeccionUIController.getIndiceEjercicioActual() + 1;
+            int indiceActual = Nuevo_Modulo_Leccion.controllers.LeccionUIController.getIndiceEjercicioActual();
             int totalEjercicios = Nuevo_Modulo_Leccion.controllers.LeccionUIController.getTotalEjercicios();
             
             if (totalEjercicios > 0) {
@@ -530,4 +602,9 @@ public class EjercicioSeleccionController implements Initializable {
         }
     }
 
+    private void actualizarVidasUI() {
+        if (txtLiveCount != null) {
+            txtLiveCount.setText(String.valueOf(Usuario.getVidas()));
+        }
+    }
 }

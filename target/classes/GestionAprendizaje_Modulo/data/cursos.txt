@@ -1,3 +1,0 @@
-1,Java,Curso de Java básico,Principiante
-2,Python,Curso de Python intermedio,Intermedio
-3,C,Curso avanzado de C,Avanzado

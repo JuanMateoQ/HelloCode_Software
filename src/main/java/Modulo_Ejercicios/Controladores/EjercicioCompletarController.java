@@ -17,6 +17,11 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
+
+
+//borrar luego
+import Modulo_Ejercicios.otrosModulos.Usuario; // Importar Usuario para manejar vidas
 
 public class EjercicioCompletarController implements Initializable {
 
@@ -62,17 +67,22 @@ public class EjercicioCompletarController implements Initializable {
     @FXML
     Text txtLenguaje;
 
-    // Variables del sistema de vidas y ejercicios
-    private int vidasActuales = 15;
-    private final int VIDAS_MAXIMAS = 15;
-    // private int ejercicioActual = 0; // COMENTADO: No usado para ejercicios individuales
-    // private int totalEjercicios = 0; // COMENTADO: No usado para ejercicios individuales
+    @FXML
+    private Button btnClose;
+
+    
     /**
      * COMENTADO: Campo usado para listas de ejercicios, no necesario para ejercicios individuales
      */
-    // private List<EjercicioCompletarCodigo> ejerciciosCompletarCodigo;
     private EjercicioCompletarCodigo ejercicioIndividual; // Un solo ejercicio
     private List<Boolean> respuestasCorrectasUsuario = new ArrayList<>();
+    // Callback para notificar el resultado a Lección (quien gestionará vidas/navegación)
+    private Consumer<ResultadoDeEvaluacion> onResultado;
+
+    // Inyectado por LeccionUIController: Lección escuchará el resultado para manejar vidas
+    public void setOnResultado(Consumer<ResultadoDeEvaluacion> onResultado) {
+        this.onResultado = onResultado;
+    }
 
 
     /**
@@ -87,7 +97,7 @@ public class EjercicioCompletarController implements Initializable {
             cargarEjercicio(ejercicio);
             // Configurar la barra de progreso para un solo ejercicio
             actualizarProgressBar();
-            actualizarVidasUI();
+            // La UI de vidas se establece en initialize() y después de restar vida
         }
     }
 
@@ -95,22 +105,18 @@ public class EjercicioCompletarController implements Initializable {
      * Carga un ejercicio individual en la interfaz
      */
     private void cargarEjercicio(EjercicioCompletarCodigo ejercicio) {
-        // Establecer la instrucción
         if (TextInstruccion != null) {
             TextInstruccion.setText(ejercicio.getInstruccion());
         }
         
-        // Establecer el contenido del ejercicio
         if (Ejercicio != null) {
             Ejercicio.setText(ejercicio.obtenerCodigoIncompleto());
         }
         
-        // Limpiar el campo de entrada
         if (textEntrada != null) {
             textEntrada.clear();
         }
         
-        // Ocultar avisos
         if (AvisoCorrecto != null) {
             AvisoCorrecto.setVisible(false);
         }
@@ -127,13 +133,11 @@ public class EjercicioCompletarController implements Initializable {
             Avisos.setVisible(false);
         }
         
-        // Asegurar que el botón siguiente esté oculto al cargar un nuevo ejercicio
         if (btnSiguiente != null) {
             btnSiguiente.setDisable(true);
             btnSiguiente.setOpacity(0.0);
         }
         
-        // Asegurar que el botón comprobar esté habilitado
         if (btnComprobar != null) {
             btnComprobar.setDisable(false);
         }
@@ -142,30 +146,37 @@ public class EjercicioCompletarController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        // cargarEjercicioActual(); // COMENTADO: No necesario, se usa setEjercicio() para ejercicios individuales
-
-        // Inicializar UI
         ProgressBar.setProgress(0);
-        actualizarVidasUI();
+    actualizarVidasUI();
+
 
         // Configurar eventos de botones
         btnComprobar.setOnAction(event -> comprobarCodigo());
         btnSiguiente.setOnAction(event -> cerrarVentanaYAvanzar());
+        if (btnClose != null) {
+            btnClose.setOnAction(e -> confirmarSalida());
+        }
         
         // Inicialmente ocultar el botón siguiente
         btnSiguiente.setDisable(true);
         btnSiguiente.setOpacity(0.0);
     }
 
-    /**
-     * Actualiza la UI de las vidas
-     */
-    private void actualizarVidasUI() {
-        if (TexVida != null) {
-            TexVida.setText(String.valueOf(vidasActuales));
+    private void confirmarSalida() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmación");
+        alert.setHeaderText(null);
+        alert.setContentText("¿Seguro quiere salir del ejercicio?");
+
+        ButtonType aceptar = new ButtonType("Aceptar", ButtonBar.ButtonData.OK_DONE);
+        ButtonType cancelar = new ButtonType("Cancelar", ButtonBar.ButtonData.CANCEL_CLOSE);
+        alert.getButtonTypes().setAll(aceptar, cancelar);
+
+        var result = alert.showAndWait();
+        if (result.isPresent() && result.get() == aceptar) {
+            terminarEjecucion();
         }
     }
-
 
     private void comprobarCodigo() {
         String input = textEntrada.getText().trim();
@@ -185,13 +196,20 @@ public class EjercicioCompletarController implements Initializable {
                 // Respuesta correcta
                 respuestasCorrectasUsuario.add(true);
                 mostrarFeedbackCorrecto();
-                
             } else {
                 // Respuesta incorrecta
                 respuestasCorrectasUsuario.add(false);
-                //reducirVida();
-                
-                if (vidasActuales > 0) {
+                // Notificar primero a Lección para que gestione vidas
+                if (onResultado != null) {
+                    onResultado.accept(resultado);
+                } else {
+                    // Fallback por si no se inyecta el callback
+                    //Usuario.restarVida();
+                }
+
+                actualizarVidasUI();
+
+                if (Usuario.getVidas() > 0) {
                     mostrarFeedbackIncorrecto(ejercicioIndividual);
                 } else {
                     mostrarGameOver();
@@ -206,6 +224,15 @@ public class EjercicioCompletarController implements Initializable {
 
             // Limpiar el TextField para permitir nuevo intento
             textEntrada.clear();
+        }
+    }
+
+    /**
+     * Actualiza el texto de vidas en la UI.
+     */
+    private void actualizarVidasUI() {
+        if (TexVida != null) {
+            TexVida.setText(String.valueOf(Usuario.getVidas()));
         }
     }
 
@@ -259,11 +286,6 @@ public class EjercicioCompletarController implements Initializable {
     }
 
 
-    private void reducirVida() {
-        vidasActuales--;
-        actualizarVidasUI();
-    }
-
     //Cierra la ventana actual y avanza al siguiente ejercicio en la secuencia
     private void cerrarVentanaYAvanzar() {
         try {
@@ -304,11 +326,8 @@ public class EjercicioCompletarController implements Initializable {
      */
     private void terminarEjecucion() {
         btnComprobar.setDisable(true);
-        MetodosFrecuentes.cambiarVentana(
-            (Stage) btnComprobar.getScene().getWindow(), 
-            "/Modulo_Usuario/views/homeUsuario.fxml", 
-            "Ventana Home..."
-        );
+        String destino = Nuevo_Modulo_Leccion.controllers.LeccionUIController.getRutaFXMLVentanaFinal();
+        MetodosFrecuentes.cambiarVentana((Stage) btnComprobar.getScene().getWindow(), destino, "Menú de Lecciones");
     }
 
     /**
@@ -317,7 +336,7 @@ public class EjercicioCompletarController implements Initializable {
     private void actualizarProgressBar() {
         try {
             // Obtener el progreso actual de la lección desde LeccionUIController
-            int indiceActual = Nuevo_Modulo_Leccion.controllers.LeccionUIController.getIndiceEjercicioActual() + 1;
+            int indiceActual = Nuevo_Modulo_Leccion.controllers.LeccionUIController.getIndiceEjercicioActual();
             int totalEjercicios = Nuevo_Modulo_Leccion.controllers.LeccionUIController.getTotalEjercicios();
             
             if (totalEjercicios > 0) {

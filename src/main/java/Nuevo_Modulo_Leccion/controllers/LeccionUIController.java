@@ -14,6 +14,9 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import java.util.function.Consumer;
 
+
+import Modulo_Ejercicios.otrosModulos.Usuario; //import para mostrar los ejercicios solo si el usuario tiene mas de una vida
+
 public class LeccionUIController {
     
     // Variables estáticas para manejar la secuencia de ejercicios
@@ -28,17 +31,21 @@ public class LeccionUIController {
 
         try {
             // Cerrar la ventana actual
-            if (ventanaActual != null) {
-                ventanaActual.close();
-            }
-
+            
             // Inicializar la secuencia de ejercicios
             leccionActual = leccionAMostrar;
             indiceEjercicioActual = 0;
             rutaFXMLVentanaFinal = rutaFXML;
             
-            // Mostrar el primer ejercicio
-            mostrarSiguienteEjercicio();
+            // Verifica si el usuario tiene al menos una vida
+            if (Usuario.getVidas() > 0) { 
+                ventanaActual.close();
+                mostrarSiguienteEjercicio();
+            } else {
+                MetodosFrecuentes.mostrarAlerta("No tienes suficientes vidas", "Debes tener más de una vida para acceder a los ejercicios.");
+
+                
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -90,6 +97,11 @@ public class LeccionUIController {
         return leccionActual != null ? leccionActual.getListEjercicios().size() : 0;
     }
     
+    // Permite a los controladores de ejercicios conocer la ruta final configurada por Lección
+    public static String getRutaFXMLVentanaFinal() {
+        return rutaFXMLVentanaFinal;
+    }
+    
 
     private static void mostrarEjercicioSeleccion(EjercicioSeleccion ejercicio) {
         mostrarVentanaEjercicio(
@@ -123,9 +135,25 @@ public class LeccionUIController {
             if (tipoControlador.isInstance(ctrl) && inicializador != null) {
                 inicializador.accept(tipoControlador.cast(ctrl));
             }
+            // Crear la ventana del ejercicio
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
             stage.setResizable(false);
+
+            // Inyectar callback opcional: el controller puede declarar setOnResultado(Consumer<ResultadoDeEvaluacion>)
+            try {
+                var metodo = ctrl.getClass().getMethod("setOnResultado", java.util.function.Consumer.class);
+        java.util.function.Consumer<Modulo_Ejercicios.logic.ResultadoDeEvaluacion> onResultado = (res) -> {
+                    if (res == null) return;
+                    boolean fallo = res.getPorcentajeDeAcerto() < 100.0;
+                    if (fallo) {
+                        Usuario.restarVida();
+                    }
+                };
+                metodo.invoke(ctrl, onResultado);
+            } catch (NoSuchMethodException nsme) {
+            }
+
             stage.show();
         } catch (Exception e) {
             e.printStackTrace();
@@ -133,24 +161,7 @@ public class LeccionUIController {
         }
     }
 
-    /**
-     * Muestra la pantalla de lección completada
-     */
-    /*private static void mostrarLeccionCompletada() {
-        try {
-            MetodosFrecuentes.mostrarVentana("/Nuevo_Modulo_Leccion/views/ResumenLeccionCompletada.fxml", "Resumen");
-            //MetodosFrecuentes.mostrarAlerta("¡Felicidades!", "Has completado todos los ejercicios de la lección.");
-            // Abrir la ventana final que fue pasada por parámetro
-            if (rutaFXMLVentanaFinal != null && !rutaFXMLVentanaFinal.isEmpty()) {
-                MetodosFrecuentes.mostrarVentana(rutaFXMLVentanaFinal, "Menú de Lecciones");
-            }
-            // Aquí puedes agregar lógica adicional para mostrar estadísticas, XP ganado, etc.
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            MetodosFrecuentes.mostrarAlerta("Error", "Error al mostrar lección completada: " + e.getMessage());
-        }
-    }*/
     private static void mostrarLeccionCompletada() {
         try {
             FXMLLoader loader = new FXMLLoader(LeccionUIController.class.getResource("/Nuevo_Modulo_Leccion/views/ResumenLeccionCompletada.fxml"));

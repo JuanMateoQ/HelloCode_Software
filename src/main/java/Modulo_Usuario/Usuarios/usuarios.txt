@@ -11,3 +11,4 @@ Evelin;123456;Evelin Rocha;evelinrocha@epn.edu;0;USUARIO
 Jose;1234567;Jose;joserocapod0842@gmail.com;0;USUARIO
 esteban;esteban;esteban;esteban@god.ec;0;USUARIO
 tarek;tarek;tarek;tarek@god.com;0;ADMINISTRADOR
+An-yel;Mashi222324;Angel;angelpstaz@gmail.com;0;USUARIO
