@@ -6,6 +6,7 @@ import Modulo_Ejercicios.Controladores.EjercicioSeleccionController;
 import Modulo_Ejercicios.logic.EjercicioBase;
 import Modulo_Ejercicios.logic.EjercicioCompletarCodigo;
 import Modulo_Ejercicios.logic.EjercicioSeleccion;
+import Modulo_Ejercicios.logic.ResultadoDeEvaluacion;
 import Modulo_Ejercicios.logic.EjercicioEmparejar;
 import Nuevo_Modulo_Leccion.logic.Leccion;
 import javafx.fxml.FXMLLoader;
@@ -143,7 +144,7 @@ public class LeccionUIController {
             // Inyectar callback opcional: el controller puede declarar setOnResultado(Consumer<ResultadoDeEvaluacion>)
             try {
                 var metodo = ctrl.getClass().getMethod("setOnResultado", java.util.function.Consumer.class);
-        java.util.function.Consumer<Modulo_Ejercicios.logic.ResultadoDeEvaluacion> onResultado = (res) -> {
+                Consumer<ResultadoDeEvaluacion> onResultado = (res) -> {
                     if (res == null) return;
                     boolean fallo = res.getPorcentajeDeAcerto() < 100.0;
                     if (fallo) {
