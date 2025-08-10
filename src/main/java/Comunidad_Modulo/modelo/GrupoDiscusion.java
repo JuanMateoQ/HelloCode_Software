@@ -69,12 +69,6 @@ public class GrupoDiscusion {
         hilos.add(hilo);
     }
 
-    // Método original crearHilo
-    public void crearHilo(String titulo, String problema, UsuarioComunidad autor) {
-        HiloDiscusion hilo = new HiloDiscusion(titulo, problema, autor);
-        addHilo(hilo);
-    }
-
     public void unirseGrupo(UsuarioComunidad usuario) {
         if (!miembros.contains(usuario)) {
             miembros.add(usuario);

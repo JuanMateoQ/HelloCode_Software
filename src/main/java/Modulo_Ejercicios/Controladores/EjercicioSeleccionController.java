@@ -1,10 +1,10 @@
 package Modulo_Ejercicios.Controladores;
 
 import MetodosGlobales.MetodosFrecuentes;
-import Modulo_Ejercicios.exercises.EjercicioSeleccion;
-import Modulo_Ejercicios.exercises.Respuesta;
-import Modulo_Ejercicios.exercises.RespuestaString;
-import Modulo_Ejercicios.exercises.ResultadoDeEvaluacion;
+import Modulo_Ejercicios.logic.EjercicioSeleccion;
+import Modulo_Ejercicios.logic.Respuesta;
+import Modulo_Ejercicios.logic.RespuestaString;
+import Modulo_Ejercicios.logic.ResultadoDeEvaluacion;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -123,8 +123,6 @@ public class EjercicioSeleccionController implements Initializable {
     private List<Boolean> respuestasCorrectasUsuario = new ArrayList<>();
 
     private EjercicioSeleccion ejercicioActual; // Un solo ejercicio
-    private List<EjercicioSeleccion> ejerciciosSeleccion; // Lista de ejercicios
-    private int indiceEjercicioActual = 0; // Índice del ejercicio actual
     private int totalEjercicios = 0;
 
 
@@ -228,6 +226,7 @@ public class EjercicioSeleccionController implements Initializable {
         this.ejercicioActual = ejercicio;
         this.totalEjercicios = 1;
         cargarInstruccion(ejercicio);
+        actualizarProgressBar();
     }
 
     //Carga un ejercicio individual en la interfaz
@@ -253,10 +252,6 @@ public class EjercicioSeleccionController implements Initializable {
             feedbackPanel.setVisible(false);
         }
         
-        // Configurar progress bar para un solo ejercicio
-        if (progressBar != null) {
-            progressBar.setProgress(0.0);
-        }
     }
 
 
@@ -341,7 +336,6 @@ public class EjercicioSeleccionController implements Initializable {
             btnComprobar.setVisible(false);
             feedbackPanel.setVisible(true);
 
-            actualizarProgressBar();
         }
     }
     
@@ -483,13 +477,6 @@ public class EjercicioSeleccionController implements Initializable {
         }
     }
 
-    private void actualizarProgressBar() {
-        // Para un ejercicio individual, el progreso es 100% al completar
-        if (progressBar != null) {
-            progressBar.setProgress(1.0);
-        }
-    }
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // Inicializar la lección al cargar el controller
@@ -519,38 +506,27 @@ public class EjercicioSeleccionController implements Initializable {
         }
     }
 
-    // Método para establecer la lista de ejercicios
-    public void setEjercicios(List<EjercicioSeleccion> ejercicios) {
-        this.ejerciciosSeleccion = ejercicios;
-        this.totalEjercicios = ejercicios != null ? ejercicios.size() : 0;
-        this.indiceEjercicioActual = 0;
-        
-        // Cargar el primer ejercicio si hay ejercicios disponibles
-        if (ejercicios != null && !ejercicios.isEmpty()) {
-            cargarEjercicio(ejercicios.get(0));
-        }
-    }
-    
-    // Método para cargar un ejercicio específico
-    private void cargarEjercicio(EjercicioSeleccion ejercicio) {
-        this.ejercicioActual = ejercicio;
-        
-        // Configurar la instrucción
-        if (lblInstruccion != null) {
-            lblInstruccion.setText(ejercicio.getInstruccion());
-        }
-        
-        // Configurar las opciones
-        if (ejercicio.getListOpciones() != null) {
-            setOpciones(ejercicio.getListOpciones());
-        }
-        
-        // Limpiar selecciones anteriores
-        opcionesSeleccionadas.clear();
-        
-        // Ocultar paneles de feedback
-        if (feedbackPanel != null) {
-            feedbackPanel.setVisible(false);
+        /**
+     * Actualiza la barra de progreso basada en el progreso de la lección
+     */
+    private void actualizarProgressBar() {
+        try {
+            // Obtener el progreso actual de la lección desde LeccionUIController
+            int indiceActual = Nuevo_Modulo_Leccion.controllers.LeccionUIController.getIndiceEjercicioActual() + 1;
+            int totalEjercicios = Nuevo_Modulo_Leccion.controllers.LeccionUIController.getTotalEjercicios();
+            
+            if (totalEjercicios > 0) {
+                double progreso = (double) indiceActual / totalEjercicios;
+                if (progressBar != null) {
+                    progressBar.setProgress(progreso);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Fallback: progreso completo para ejercicio individual
+            if (progressBar != null) {
+                progressBar.setProgress(1.0);
+            }
         }
     }
 

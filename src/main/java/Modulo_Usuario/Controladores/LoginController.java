@@ -87,8 +87,14 @@ public class LoginController {
         if (usuarioEncontrado != null) {
             try {
                 SesionManager.getInstancia().iniciarSesion(usuarioEncontrado);
+                
+                // Debug: verificar rol del usuario
+                System.out.println("Login exitoso - Usuario: " + usuarioEncontrado.getUsername() + 
+                                 ", Rol: " + usuarioEncontrado.getRol());
+                
                 // Si es usuario normal, va a homeUsuario.fxml
                 if (usuarioEncontrado.getRol() == Roles.USUARIO) {
+                    System.out.println("Redirigiendo a Panel Usuario");
                     FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/Modulo_Usuario/views/homeUsuario.fxml"));
                     Parent root = fxmlLoader.load();
                     HomeUsuarioController homeController = fxmlLoader.getController();
@@ -99,10 +105,26 @@ public class LoginController {
                     stage.setScene(scene);
                     stage.setResizable(false);
                     stage.show();
-                } else {
-                    // Cualquier otro rol va a home.fxml
+                } else if (usuarioEncontrado.getRol() == Roles.ADMINISTRADOR) {
+                    // Si es administrador, va a home.fxml con HomeController
+                    System.out.println("Redirigiendo a Panel Administrador");
                     FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/Modulo_Usuario/views/home.fxml"));
                     Parent root = fxmlLoader.load();
+                    HomeController homeController = fxmlLoader.getController();
+                    homeController.setUsuario(usuarioEncontrado);
+                    Scene scene = new Scene(root, 360, 640);
+                    Stage stage = new Stage();
+                    stage.setTitle("Hello Code Software - Panel Administrador");
+                    stage.setScene(scene);
+                    stage.setResizable(false);
+                    stage.show();
+                } else {
+                    // Para cualquier otro rol futuro, también va al panel admin
+                    System.out.println("Rol no reconocido, redirigiendo a Panel Admin");
+                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/Modulo_Usuario/views/home.fxml"));
+                    Parent root = fxmlLoader.load();
+                    HomeController homeController = fxmlLoader.getController();
+                    homeController.setUsuario(usuarioEncontrado);
                     Scene scene = new Scene(root, 360, 640);
                     Stage stage = new Stage();
                     stage.setTitle("Hello Code Software - Panel Admin");

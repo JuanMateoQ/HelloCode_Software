@@ -4,7 +4,6 @@ import Modulo_Usuario.Clases.UsuarioComunidad;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 public class Respuesta {
     private String idRespuesta;
@@ -14,8 +13,9 @@ public class Respuesta {
     private Map<String, Integer> votosUsuarios;
     private Boolean esSolucion;
 
-    public Respuesta(String contenido, UsuarioComunidad autor) {
-        this.idRespuesta = UUID.randomUUID().toString();
+    // Constructor para crear una nueva respuesta (el ID se asignará desde PersistenciaService)
+    public Respuesta(String idRespuesta, String contenido, UsuarioComunidad autor) {
+        this.idRespuesta = idRespuesta;
         this.contenido = contenido;
         this.autor = autor;
         this.fechaPublicacion = LocalDateTime.now();
@@ -29,7 +29,7 @@ public class Respuesta {
         this.contenido = contenido;
         this.autor = autor;
         this.fechaPublicacion = fechaPublicacion;
-        this.votosUsuarios = (votosUsuarios != null) ? votosUsuarios : new HashMap<>();
+        this.votosUsuarios = (votosUsuarios != null) ? new HashMap<>(votosUsuarios) : new HashMap<>(); // Asegurar que no sea null
         this.esSolucion = (esSolucion != null) ? esSolucion : false;
     }
 
@@ -61,7 +61,7 @@ public class Respuesta {
 
     // Nuevo getter para el mapa de votos
     public Map<String, Integer> getVotosUsuarios() {
-        return votosUsuarios;
+        return new HashMap<>(votosUsuarios);
     }
 
     // Métodos para obtener el total de votos positivos y negativos
@@ -88,36 +88,63 @@ public class Respuesta {
             throw new IllegalArgumentException("El usuario votante no puede ser nulo.");
         }
         String username = usuarioVotante.getUsername();
+        int votoAnterior = votosUsuarios.getOrDefault(username, 0);
 
-        if (tipoVoto == 1) {
-            if (votosUsuarios.containsKey(username) && votosUsuarios.get(username) == 1) {
-                votosUsuarios.remove(username); // Quitar el voto si ya existe
+        if (tipoVoto == 1) { // Voto Positivo
+            if (votoAnterior == 1) {
+                System.out.println("ℹ️ El usuario " + username + " ya había dado voto positivo a esta respuesta.");
             } else {
                 votosUsuarios.put(username, 1);
+                if (votoAnterior == -1) { // Cambió de dislike a like
+                    autor.incrementarReputacion(2); // Recupera el punto perdido y gana uno nuevo
+                } else { // Voto nuevo o cambió de no votar a like
+                    autor.incrementarReputacion(1);
+                }
+                System.out.println("✅ Usuario " + username + " dio voto positivo a la respuesta.");
             }
-        } else if (tipoVoto == -1) {
-            if (votosUsuarios.containsKey(username) && votosUsuarios.get(username) == -1) {
-                votosUsuarios.remove(username); // Quitar el voto si ya existe
+        } else if (tipoVoto == -1) { // Voto Negativo
+            if (votoAnterior == -1) {
+                System.out.println("ℹ️ El usuario " + username + " ya había dado voto negativo a esta respuesta.");
             } else {
                 votosUsuarios.put(username, -1);
+                if (votoAnterior == 1) { // Cambió de like a dislike
+                    autor.decrementarReputacion(2); // Pierde el punto ganado y uno nuevo
+                } else { // Voto nuevo o cambió de no votar a dislike
+                    autor.decrementarReputacion(1);
+                }
+                System.out.println("✅ Usuario " + username + " dio voto negativo a la respuesta.");
             }
-        } else if (tipoVoto == 0) { // Quitar voto
-            votosUsuarios.remove(username);
+        } else if (tipoVoto == 0) { // Quitar Voto
+            if (votoAnterior == 0) {
+                System.out.println("ℹ️ El usuario " + username + " no había votado esta respuesta.");
+            } else {
+                votosUsuarios.remove(username);
+                if (votoAnterior == 1) { // Quita voto positivo
+                    autor.decrementarReputacion(1);
+                } else if (votoAnterior == -1) { // Quita voto negativo
+                    autor.incrementarReputacion(1);
+                }
+                System.out.println("✅ Usuario " + username + " quitó su voto de la respuesta.");
+            }
         } else {
-            throw new IllegalArgumentException("Tipo de voto inválido. Use 1 para voto positivo, -1 para voto negativo, o 0 para quitar voto.");
+            throw new IllegalArgumentException("Tipo de voto inválido. Use 1 (voto positivo), -1 (voto negativo) o 0 (quitar voto).");
         }
     }
 
     public void marcarComoSolucion() {
-        this.esSolucion = true;
-        // Otorgar puntos de reputación al autor
-        autor.incrementarReputacion(10);
+        if (!this.esSolucion) {
+            this.esSolucion = true;
+            // Otorgar puntos de reputación al autor
+            autor.incrementarReputacion(10);
+        }
     }
 
     public void desmarcarComoSolucion() {
-        this.esSolucion = false;
-        // Quitar puntos de reputación al autor
-        autor.decrementarReputacion(10);
+        if (this.esSolucion) {
+            this.esSolucion = false;
+            // Quitar puntos de reputación al autor
+            autor.decrementarReputacion(10);
+        }
     }
 
     @Override

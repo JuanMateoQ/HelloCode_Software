@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Collections;
 import java.util.Comparator;
-
+//se puso final para mantener al ranking como singleton
 public final class Ranking {
 
     private static Ranking INSTANCE;
@@ -31,7 +31,7 @@ public final class Ranking {
         if (!rankingGeneral.contains(estudiante)) {
             rankingGeneral.add(estudiante);
         }
-        
+
         // Ordenar por puntos totales (descendente)
         Collections.sort(rankingGeneral, new Comparator<ProgresoEstudiante>() {
             @Override
@@ -42,10 +42,27 @@ public final class Ranking {
     }
 
     public List<ProgresoEstudiante> obtenerRankingGeneral() {
-        return new ArrayList<>(rankingGeneral);
+        return this.rankingGeneral;
     }
 
     public Integer calcularPosicion(ProgresoEstudiante estudiante) {
         return rankingGeneral.indexOf(estudiante) + 1;
+    }
+
+    // Métodos estáticos para acceso directo al singleton
+    public static Ranking getRanking() {
+        return getInstance();
+    }
+
+    public static void actualizarRankingGlobal(ProgresoEstudiante estudiante) {
+        getInstance().actualizarRanking(estudiante);
+    }
+
+    public static List<ProgresoEstudiante> obtenerRankingGlobal() {
+        return getInstance().obtenerRankingGeneral();
+    }
+
+    public static Integer calcularPosicionGlobal(ProgresoEstudiante estudiante) {
+        return getInstance().calcularPosicion(estudiante);
     }
 }

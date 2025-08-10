@@ -20,8 +20,9 @@ public class Solucion {
     private Map<String, Integer> votosUsuarios;
     private List<Comentario> comentarios;
 
-    public Solucion(String titulo, String contenido, UsuarioComunidad autor, TipoSolucion tipoSolucion) {
-        this.idSolucion = UUID.randomUUID().toString();
+    // Constructor para crear una nueva solución
+    public Solucion(String idSolucion, String titulo, String contenido, UsuarioComunidad autor, TipoSolucion tipoSolucion) {
+        this.idSolucion = idSolucion;
         this.titulo = titulo;
         this.contenido = contenido;
         this.autor = autor;
@@ -71,10 +72,6 @@ public class Solucion {
 
     public TipoSolucion getTipoSolucion() {
         return tipoSolucion;
-    }
-
-    public void setTipoSolucion(TipoSolucion tipoSolucion) {
-        this.tipoSolucion = tipoSolucion;
     }
 
     public String getArchivo() {
@@ -132,7 +129,8 @@ public class Solucion {
     }
 
     public void comentar(String contenido, UsuarioComunidad autor) {
-        Comentario comentario = new Comentario(contenido, autor);
+        String tempId = "TEMP_" + UUID.randomUUID().toString();
+        Comentario comentario = new Comentario(tempId, contenido, autor);
         comentarios.add(comentario);
     }
 

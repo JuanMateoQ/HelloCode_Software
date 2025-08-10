@@ -1,6 +1,6 @@
 package Nuevo_Modulo_Leccion.logic;
 
-import Modulo_Ejercicios.exercises.EjercicioBase;
+import Modulo_Ejercicios.logic.EjercicioBase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,5 +27,11 @@ public class Leccion {
      */
     public List<EjercicioBase> getListEjercicios() {
         return listEjercicios;
+    }
+
+    public void agregarEjerciciosLista(List<EjercicioBase> listaEjercicios) {
+        for (EjercicioBase ejercicio : listaEjercicios) {
+            agregarEjercicio(ejercicio);
+        }
     }
 }

@@ -1,10 +1,10 @@
 package Modulo_Ejercicios.Controladores;
 
 import MetodosGlobales.MetodosFrecuentes;
-import Modulo_Ejercicios.exercises.EjercicioCompletarCodigo;
-import Modulo_Ejercicios.exercises.Respuesta;
-import Modulo_Ejercicios.exercises.RespuestaString;
-import Modulo_Ejercicios.exercises.ResultadoDeEvaluacion;
+import Modulo_Ejercicios.logic.EjercicioCompletarCodigo;
+import Modulo_Ejercicios.logic.Respuesta;
+import Modulo_Ejercicios.logic.RespuestaString;
+import Modulo_Ejercicios.logic.ResultadoDeEvaluacion;
 import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -86,7 +86,7 @@ public class EjercicioCompletarController implements Initializable {
         if (ejercicio != null) {
             cargarEjercicio(ejercicio);
             // Configurar la barra de progreso para un solo ejercicio
-            ProgressBar.setProgress(0);
+            actualizarProgressBar();
             actualizarVidasUI();
         }
     }
@@ -165,41 +165,6 @@ public class EjercicioCompletarController implements Initializable {
             TexVida.setText(String.valueOf(vidasActuales));
         }
     }
-
-    /**
-     * Carga el ejercicio actual en la interfaz
-     * COMENTADO: Este método se usa para listas de ejercicios, 
-     * no para ejercicios individuales manejados por LeccionUIController
-     */
-    /*
-    private void cargarEjercicioActual() {
-        if (ejerciciosCompletarCodigo != null && ejercicioActual < ejerciciosCompletarCodigo.size()) {
-            EjercicioCompletarCodigo ejercicio = ejerciciosCompletarCodigo.get(ejercicioActual);
-
-            // Mostrar instrucciones y código incompleto usando los métodos de la clase
-            TextInstruccion.setText(ejercicio.getInstruccion());
-            Ejercicio.setText(ejercicio.obtenerCodigoIncompleto());
-            txtLenguaje.setText(ejercicio.getLenguaje().toString());
-
-            // Limpiar mensajes anteriores
-            ocultarMensajesFeedback();
-        }
-    }
-    */
-
-    /**
-     * Oculta todos los mensajes de feedback
-     * COMENTADO: No se usa más con la nueva lógica de ejercicios individuales
-     */
-    /*
-    private void ocultarMensajesFeedback() {
-        AvisoCorrecto.setVisible(false);
-        AvisoIncorrecto.setVisible(false);
-        labelRetroalimentacion.setVisible(false);
-        labelBien.setVisible(false);
-        Avisos.setVisible(false);
-    }
-    */
 
 
     private void comprobarCodigo() {
@@ -344,5 +309,28 @@ public class EjercicioCompletarController implements Initializable {
             "/Modulo_Usuario/views/homeUsuario.fxml", 
             "Ventana Home..."
         );
+    }
+
+    /**
+     * Actualiza la barra de progreso basada en el progreso de la lección
+     */
+    private void actualizarProgressBar() {
+        try {
+            // Obtener el progreso actual de la lección desde LeccionUIController
+            int indiceActual = Nuevo_Modulo_Leccion.controllers.LeccionUIController.getIndiceEjercicioActual() + 1;
+            int totalEjercicios = Nuevo_Modulo_Leccion.controllers.LeccionUIController.getTotalEjercicios();
+            
+            if (totalEjercicios > 0) {
+                double progreso = (double) indiceActual / totalEjercicios;
+                if (ProgressBar != null) {
+                    ProgressBar.setProgress(progreso);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (ProgressBar != null) {
+                ProgressBar.setProgress(1.0);
+            }
+        }
     }
 }

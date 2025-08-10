@@ -1,57 +1,224 @@
+/* Paleta de colores consistente con el módulo usuario */
+/* #424874 - Azul principal oscuro (fondo) */
+/* #A6B1E1 - Azul claro (botones principales) */
+/* #DCD6F7 - Lavanda claro (texto, paneles) */
+/* #CACFD6 - Gris claro (campos de entrada) */
+/* #F8F8F8 - Blanco crema (contraste) */
+
+/* Fuente principal del sistema: Segoe UI */
+
+/* Estilo base para el cuerpo del ejercicio */
+.bodybg {
+    -fx-background-color: #424874;
+    -fx-font-family: "Segoe UI", sans-serif;
+}
+
 /* Estilo base para botones de opciones */
 .boton-opcion {
-    -fx-background-color: #000000;
-    -fx-background-radius: 15;
-    -fx-text-fill: white;
-    -fx-font-size: 10px;
+    -fx-background-color: #DCD6F7;
+    -fx-background-radius: 8;
+    -fx-text-fill: #424874;
+    -fx-font-size: 14px;
+    -fx-font-family: "Segoe UI";
+    -fx-font-weight: bold;
     -fx-cursor: hand;
     -fx-alignment: CENTER;
+    -fx-padding: 12 20 12 20;
+    -fx-effect: dropshadow(gaussian, #424874, 4, 0.2, 0, 2);
+    -fx-border-color: transparent;
+    -fx-border-width: 2;
+    -fx-border-radius: 8;
 }
 
 .boton-opcion:hover {
-    -fx-background-color: #444444;
+    -fx-background-color: #F8F8F8;
+    -fx-effect: dropshadow(gaussian, #424874, 6, 0.3, 0, 3);
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
 }
 
 /* Estilo para botón seleccionado */
 .boton-seleccionado {
-    -fx-background-color: white;
-    -fx-background-radius: 15;
-    -fx-text-fill: black;
-    -fx-font-size: 10px;
+    -fx-background-color: #A6B1E1;
+    -fx-background-radius: 8;
+    -fx-text-fill: #424874;
+    -fx-font-size: 14px;
+    -fx-font-family: "Segoe UI";
+    -fx-font-weight: bold;
     -fx-cursor: hand;
     -fx-alignment: CENTER;
+    -fx-padding: 12 20 12 20;
+    -fx-effect: dropshadow(gaussian, #424874, 6, 0.3, 0, 3);
+    -fx-border-color: #424874;
+    -fx-border-width: 2;
+    -fx-border-radius: 8;
 }
 
 .boton-seleccionado:hover {
-    -fx-background-color: #f0f0f0;
+    -fx-background-color: #B8C5F2;
+    -fx-effect: dropshadow(gaussian, #424874, 8, 0.4, 0, 4);
 }
 
-/* Estilo para botón correcto (verde) */
+/* Estilo para botón correcto (verde más suave) */
 .boton-correcto {
-    -fx-background-color: #00CC00;
-    -fx-background-radius: 15;
+    -fx-background-color: #4CAF50;
+    -fx-background-radius: 8;
     -fx-text-fill: white;
-    -fx-font-size: 10px;
+    -fx-font-size: 14px;
+    -fx-font-family: "Segoe UI";
+    -fx-font-weight: bold;
     -fx-cursor: hand;
     -fx-alignment: CENTER;
+    -fx-padding: 12 20 12 20;
+    -fx-effect: dropshadow(gaussian, #2E7D32, 6, 0.3, 0, 3);
 }
 
-/* Estilo para botón incorrecto (rojo) */
+/* Estilo para botón incorrecto (rojo más suave) */
 .boton-incorrecto {
-    -fx-background-color: #CC0000;
-    -fx-background-radius: 15;
+    -fx-background-color: #F44336;
+    -fx-background-radius: 8;
     -fx-text-fill: white;
-    -fx-font-size: 10px;
+    -fx-font-size: 14px;
+    -fx-font-family: "Segoe UI";
+    -fx-font-weight: bold;
     -fx-cursor: hand;
     -fx-alignment: CENTER;
+    -fx-padding: 12 20 12 20;
+    -fx-effect: dropshadow(gaussian, #C62828, 6, 0.3, 0, 3);
 }
 
-/* Estilo para botón no seleccionado pero correcto (naranja) */
+/* Estilo para botón no seleccionado pero correcto (naranja más suave) */
 .boton-no-seleccionado-correcto {
-    -fx-background-color: #FF8C00;
-    -fx-background-radius: 15;
+    -fx-background-color: #FF9800;
+    -fx-background-radius: 8;
     -fx-text-fill: white;
-    -fx-font-size: 10px;
+    -fx-font-size: 14px;
+    -fx-font-family: "Segoe UI";
+    -fx-font-weight: bold;
     -fx-cursor: hand;
     -fx-alignment: CENTER;
+    -fx-padding: 12 20 12 20;
+    -fx-effect: dropshadow(gaussian, #E65100, 6, 0.3, 0, 3);
+}
+
+/* Estilos para paneles de feedback mejorados */
+.feedback-correcto {
+    -fx-background-color: linear-gradient(to bottom, #4CAF50, #66BB6A);
+    -fx-background-radius: 8 8 0 0;
+    -fx-effect: dropshadow(gaussian, rgba(76, 175, 80, 0.3), 8, 0.3, 0, -2);
+}
+
+.feedback-incorrecto {
+    -fx-background-color: linear-gradient(to bottom, #F44336, #EF5350);
+    -fx-background-radius: 8 8 0 0;
+    -fx-effect: dropshadow(gaussian, rgba(244, 67, 54, 0.3), 8, 0.3, 0, -2);
+}
+
+.feedback-parcial {
+    -fx-background-color: linear-gradient(to bottom, #FF9800, #FFB74D);
+    -fx-background-radius: 8 8 0 0;
+    -fx-effect: dropshadow(gaussian, rgba(255, 152, 0, 0.3), 8, 0.3, 0, -2);
+}
+
+.feedback-game-over {
+    -fx-background-color: linear-gradient(to bottom, #9C27B0, #BA68C8);
+    -fx-background-radius: 8 8 0 0;
+    -fx-effect: dropshadow(gaussian, rgba(156, 39, 176, 0.3), 8, 0.3, 0, -2);
+}
+
+/* Estilo para textos de feedback */
+.feedback-text {
+    -fx-text-fill: white;
+    -fx-font-family: "Segoe UI";
+    -fx-font-weight: bold;
+    -fx-font-size: 18px;
+}
+
+.feedback-description {
+    -fx-text-fill: white;
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 14px;
+}
+
+/* Estilo para botones en paneles de feedback */
+.feedback-button {
+    -fx-background-color: white;
+    -fx-text-fill: #424874;
+    -fx-font-family: "Segoe UI";
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+    -fx-padding: 10 20 10 20;
+    -fx-effect: dropshadow(gaussian, rgba(66, 72, 116, 0.3), 4, 0.2, 0, 2);
+}
+
+.feedback-button:hover {
+    -fx-background-color: #F8F8F8;
+    -fx-effect: dropshadow(gaussian, rgba(66, 72, 116, 0.4), 6, 0.3, 0, 3);
+}
+
+/* Estilo para el botón principal (Comprobar) */
+.main-button {
+    -fx-background-color: #A6B1E1;
+    -fx-text-fill: #424874;
+    -fx-font-family: "Segoe UI";
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+    -fx-effect: dropshadow(gaussian, #424874, 6, 0.2, 0, 2);
+}
+
+.main-button:hover {
+    -fx-background-color: #B8C5F2;
+    -fx-effect: dropshadow(gaussian, #424874, 8, 0.3, 0, 3);
+}
+
+/* Estilo para la barra de progreso */
+.progress-bar {
+    -fx-accent: #A6B1E1;
+    -fx-background-color: #DCD6F7;
+    -fx-background-radius: 10;
+}
+
+.progress-bar .bar {
+    -fx-background-color: linear-gradient(to right, #A6B1E1, #B8C5F2);
+    -fx-background-radius: 10;
+    -fx-padding: 0.25em;
+}
+
+.progress-bar .track {
+    -fx-background-color: #DCD6F7;
+    -fx-background-radius: 10;
+    -fx-background-insets: 0;
+}
+
+/* Animaciones suaves para transiciones */
+.boton-opcion, .boton-seleccionado, .main-button, .feedback-button {
+    -fx-transition: all 0.2s ease;
+}
+
+/* Estilo para paneles con fondo */
+.content-panel {
+    -fx-background-color: #DCD6F7;
+    -fx-background-radius: 12;
+    -fx-effect: dropshadow(gaussian, #424874, 8, 0.2, 0, 2);
+    -fx-padding: 20;
+}
+
+/* Estilo para textos principales */
+.main-text {
+    -fx-text-fill: #DCD6F7;
+    -fx-font-family: "Segoe UI";
+    -fx-font-weight: normal;
+}
+
+.title-text {
+    -fx-text-fill: #DCD6F7;
+    -fx-font-family: "Segoe UI";
+    -fx-font-weight: bold;
+}
+
+/* Estilo para iconos y elementos gráficos */
+.icon-text {
+    -fx-text-fill: #A6B1E1;
+    -fx-font-family: "Segoe UI";
+    -fx-font-weight: bold;
 }

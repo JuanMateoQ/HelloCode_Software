@@ -34,5 +34,6 @@ public class DesafioSemanal extends Desafio {
 
     // Getters
     public Integer getMetaSemanal() { return super.meta; }
-    public Integer getLeccionesCompletadas() { return leccionesCompletadas; }
+    public Integer getLeccionesCompletadas() {
+        return leccionesCompletadas; }
 } 

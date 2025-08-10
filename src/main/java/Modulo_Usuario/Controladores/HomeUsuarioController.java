@@ -6,7 +6,6 @@ import Modulo_Usuario.Clases.Usuario;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -60,26 +59,7 @@ public class HomeUsuarioController {
 
     @FXML
     private void irAHome(ActionEvent event) {
-        // Abrir la ruta
-//        try {
-//            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Modulo_Usuario/views/perfil.fxml"));
-//            Parent root = loader.load();
-//            PerfilController pc = loader.getController();
-//            pc.setUsuario(usuario);
-//            Scene scene = new Scene(root, 360, 640);
-//            Stage stage = new Stage();
-//            stage.setTitle("Perfil de Usuario");
-//            stage.setScene(scene);
-//            stage.setResizable(false);
-//            stage.show();
-//            // cerrar la actual
-//            Stage thisStage = (Stage) btnHome.getScene().getWindow();
-//            thisStage.close();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            mostrarError("Error abriendo perfil: " + e.getMessage());
-//        }
-        mostrarMensaje("Ruta", "Funcionalidad de la ruta pronto será mostrada");
+        MetodosFrecuentes.cambiarVentana((Stage) btnHome.getScene().getWindow(), "/GestionAprendizaje_Modulo/Vistas/Ruta.fxml", "Ruta de Aprendizaje");
     }
 
     @FXML

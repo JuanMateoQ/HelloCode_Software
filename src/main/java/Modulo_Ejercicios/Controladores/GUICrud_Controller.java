@@ -1,6 +1,7 @@
 package Modulo_Ejercicios.Controladores;
 
-import Modulo_Ejercicios.exercises.*;
+import Modulo_Ejercicios.logic.*;
+import Nuevo_Modulo_Leccion.logic.TemaLeccion;
 import Modulo_Ejercicios.DataBase.EjercicioRepository;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -122,12 +123,20 @@ public class GUICrud_Controller implements Initializable {
         todosLosEjercicios.clear();
         
         // Cargar ejercicios de selección
-        List<EjercicioSeleccion> ejerciciosSeleccion = EjercicioRepository.cargarEjerciciosSeleccion();
-        todosLosEjercicios.addAll(ejerciciosSeleccion);
+        try {
+            List<EjercicioSeleccion> ejerciciosSeleccion = EjercicioRepository.cargarEjerciciosSeleccion();
+            todosLosEjercicios.addAll(ejerciciosSeleccion);
+        } catch (Exception e) {
+            mostrarMensaje("Error", "Error al cargar ejercicios de selección: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
         
         // Cargar ejercicios de completar código
-        List<EjercicioCompletarCodigo> ejerciciosCompletar = EjercicioRepository.cargarEjerciciosCompletarCodigo();
-        todosLosEjercicios.addAll(ejerciciosCompletar);
+        try {
+            List<EjercicioCompletarCodigo> ejerciciosCompletar = EjercicioRepository.cargarEjerciciosCompletarCodigo();
+            todosLosEjercicios.addAll(ejerciciosCompletar);
+        } catch (Exception e) {
+            mostrarMensaje("Error", "Error al cargar ejercicios de completar código: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
         
         // Actualizar lista filtrada
         filtrarEjercicios();
@@ -235,6 +244,7 @@ public class GUICrud_Controller implements Initializable {
             .conRespuestasCorrectas(respuestas)
             .conNivel(comboNivel.getValue())
             .conLenguaje(comboLenguaje.getValue())
+            .conTema(null) // Tema por defecto (null permitido)
             .construir();
         
         // Guardar en repositorio
@@ -272,6 +282,7 @@ public class GUICrud_Controller implements Initializable {
             .conRespuestasEsperadas(respuestas)
             .conNivel(comboNivel.getValue())
             .conLenguaje(comboLenguaje.getValue())
+            .conTema(null) // Tema por defecto (null permitido)
             .construir();
         
         // Guardar en repositorio

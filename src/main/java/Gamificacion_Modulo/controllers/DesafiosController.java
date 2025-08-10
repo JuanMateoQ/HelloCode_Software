@@ -9,25 +9,25 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 
 public class DesafiosController {
-    
+
     @FXML
     private AnchorPane mainPane;
-    
+
     @FXML
     private Label lblTitulo;
-    
+
     @FXML
     private ImageView imgEllipse;
-    
+
     @FXML
     private HBox navigationBar;
-    
+
     @FXML
     private Button navButton1;
-    
+
     @FXML
     private Button navButton2;
-    
+
     @FXML
     private Button navButton3;
 

@@ -10,12 +10,16 @@ public class ProgresoEstudiante {
     private Usuario usuario;
     private List<Logro> logrosDesbloqueados;
     private Integer puntosTotal;
-    public void setPuntosTotal(Integer puntosTotal) {
-        this.puntosTotal = puntosTotal;
-    }
     private HashMap<String, Double> listaDesafios; // Hash<id, porcentaje>
     private Integer desafiosCompletados;
     private List<Desafio> desafiosActivos = new ArrayList<>();
+
+    public List<Logro> getLogrosDesbloqueados() {
+        return logrosDesbloqueados;
+    }
+
+    // Lista estática de todos los progresos
+    private static final List<ProgresoEstudiante> progresos = new ArrayList<>();
 
     public ProgresoEstudiante(Usuario usuario) {
         this.usuario = usuario;
@@ -23,6 +27,15 @@ public class ProgresoEstudiante {
         this.puntosTotal = 0;
         this.listaDesafios = new HashMap<>();
         this.desafiosCompletados = 0;
+
+        // Agregar automáticamente a la lista estática
+        progresos.add(this);
+    }
+
+    public void setPuntosTotal(Integer puntosTotal) {
+        this.puntosTotal = puntosTotal;
+        // Actualizar automáticamente el ranking cuando cambian los puntos
+        Ranking.actualizarRankingGlobal(this);
     }
 
     public void actualizarProgreso(Desafio desafio) {
@@ -67,6 +80,8 @@ public class ProgresoEstudiante {
 
     public void sumarPuntos(Integer puntos) {
         this.puntosTotal += puntos;
+        // Actualizar automáticamente el ranking cuando cambian los puntos
+        Ranking.actualizarRankingGlobal(this);
     }
 
     // Getters
@@ -75,4 +90,56 @@ public class ProgresoEstudiante {
     public Integer getDesafiosCompletados() { return desafiosCompletados; }
     public Usuario getUsuario() { return usuario; }
     public HashMap<String, Double> getListaDesafios() { return listaDesafios; }
+
+    // Métodos estáticos para gestionar la lista de progresos
+    public static List<ProgresoEstudiante> getProgresos() {
+        return new ArrayList<>(progresos);
+    }
+
+    public static ProgresoEstudiante buscarProgresoPorUsuario(String username) {
+        return progresos.stream()
+                .filter(p -> p.getUsuario().getUsername().equals(username))
+                .findFirst()
+                .orElse(null);
+    }
+
+    public static ProgresoEstudiante getProgresoUsuarioLogueado() {
+        try {
+            MetodosGlobales.SesionManager sesionManager = MetodosGlobales.SesionManager.getInstancia();
+            Usuario usuarioLogueado = sesionManager.getUsuarioAutenticado();
+
+            if (usuarioLogueado == null) {
+                System.out.println(">>> No hay usuario logueado en el sistema");
+                return null;
+            }
+
+            // Buscar el progreso del usuario logueado
+            for (ProgresoEstudiante progreso : progresos) {
+                if (progreso.getUsuario().getUsername().equals(usuarioLogueado.getUsername())) {
+                    System.out.println(">>> Progreso encontrado para usuario logueado: " + usuarioLogueado.getNombre());
+                    return progreso;
+                }
+            }
+
+            System.out.println(">>> No se encontró progreso para el usuario logueado: " + usuarioLogueado.getNombre());
+            return null;
+
+        } catch (Exception e) {
+            System.err.println(">>> Error al obtener progreso del usuario logueado: " + e.getMessage());
+            return null;
+        }
+    }
+
+    public static boolean existeProgreso(String username) {
+        return progresos.stream()
+                .anyMatch(p -> p.getUsuario().getUsername().equals(username));
+    }
+
+    public static void limpiarProgresos() {
+        progresos.clear();
+    }
+
+    public static int getTotalProgresos() {
+        return progresos.size();
+    }
 }

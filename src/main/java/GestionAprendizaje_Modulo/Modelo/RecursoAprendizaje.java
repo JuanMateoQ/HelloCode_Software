@@ -1,33 +1,25 @@
 package GestionAprendizaje_Modulo.Modelo;
 
-import java.util.UUID;
-// Usamos una clase abstracta para que sea fácil agregar nuevos tipos de recursos en el futuro.
-public abstract class RecursoAprendizaje {
-    // Cada recurso tiene un identificador único generado automáticamente.
-    private final String id;
+public class RecursoAprendizaje {
+    private String titulo;
+    private String url;
+    private String tipo;
 
-    // Título del recurso, por ejemplo: "Video introductorio", "Guía PDF", etc.
-    private final String titulo;
-
-    // Constructor que asigna un UUID único y el título proporcionado.
-    public RecursoAprendizaje(String titulo) {
-        this.id = UUID.randomUUID().toString();
+    public RecursoAprendizaje(String titulo, String url, String tipo) {
         this.titulo = titulo;
+        this.url = url;
+        this.tipo = tipo;
     }
 
-    // Método getter para obtener el título del recurso.
     public String getTitulo() {
         return titulo;
     }
 
-    // Metodo abstracto que cada tipo de recurso debe implementar.
-    // Por ejemplo, un video puede devolver su URL, un PDF puede devolver su nombre de archivo, etc.
-    public abstract String obtenerDetalle();
+    public String getUrl() {
+        return url;
+    }
 
-    // Representación en texto del recurso, útil para mostrarlo por consola.
-    // Imprime el tipo de recurso (nombre de la clase) seguido del título.
-    @Override
-    public String toString() {
-        return String.format("%s: %s", this.getClass().getSimpleName(), titulo);
+    public String getTipo() {
+        return tipo;
     }
 }

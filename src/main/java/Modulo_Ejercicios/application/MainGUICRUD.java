@@ -16,7 +16,7 @@ public class MainGUICRUD extends Application {
             Parent root = loader.load();
             
             // Configurar la escena
-            Scene scene = new Scene(root, 360, 640);
+            Scene scene = new Scene(root, 360, 720);
             
             // Configurar el stage
             primaryStage.setTitle("Hello Code Software - Gestión de Ejercicios");

@@ -36,7 +36,7 @@ public class PersistenciaService {
     private static final String ARCHIVO_HILOS = BASE_PATH + "hilos.txt";
     private static final String ARCHIVO_SOLUCIONES = BASE_PATH + "soluciones.txt";
     private static final String ARCHIVO_RESPUESTAS = BASE_PATH + "respuestas.txt";
-    private static final String ARCHIVO_COMENTARIOS = BASE_PATH + "comentarios.txt"; // Nuevo archivo para comentarios
+    private static final String ARCHIVO_COMENTARIOS = BASE_PATH + "comentarios.txt";
 
     // Formato para fechas
     private static final DateTimeFormatter FORMATO_FECHA = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -597,7 +597,8 @@ public class PersistenciaService {
      * Guarda una solución compartida
      * Formato: nombreComunidad;tituloGrupo;idSolucion;titulo;contenido;autor;fechaCreacion;tipoSolucion;votosUsuarios
      */
-    public static String guardarSolucionCompartida(String nombreComunidad, String tituloGrupo, String idSolucion, String titulo, String contenido, String autor, String tipoSolucion, Map<String, Integer> votosUsuarios) {
+    public static String guardarSolucionCompartida(String nombreComunidad, String tituloGrupo, String titulo, String contenido, String autor, String tipoSolucion, Map<String, Integer> votosUsuarios) {
+        String idSolucion = generarIdUnico("SOL"); // Generar ID aquí
         System.out.println("📝 Guardando solución compartida: " + titulo + " (ID: " + idSolucion + ")");
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(ARCHIVO_SOLUCIONES, true))) {
@@ -652,7 +653,8 @@ public class PersistenciaService {
             }
 
             if (!encontrada) {
-                nuevasLineas.add(nuevaLinea); // Si no se encontró, agregarla (caso de nueva solución)
+                System.err.println("⚠️ Solución con ID '" + solucion.getIdSolucion() + "' no encontrada para actualizar. No se agregó nueva línea.");
+                return;
             }
 
             escribirTodasLasLineas(ARCHIVO_SOLUCIONES, nuevasLineas);
@@ -724,7 +726,7 @@ public class PersistenciaService {
             }
 
             if (!encontrada) {
-                nuevasLineas.add(nuevaLinea); // Si no se encontró, agregarla (caso de nueva respuesta)
+                System.err.println("⚠️ Respuesta con ID '" + respuesta.getIdRespuesta() + "' no encontrada para actualizar. Agregando como nueva línea.");
             }
 
             escribirTodasLasLineas(ARCHIVO_RESPUESTAS, nuevasLineas);
@@ -740,7 +742,8 @@ public class PersistenciaService {
      * Guarda un comentario a una solución.
      * Formato: nombreComunidad;tituloGrupo;idSolucion;idComentario;contenido;autor;fechaCreacion;votosUsuarios
      */
-    public static String guardarComentarioSolucion(String nombreComunidad, String tituloGrupo, String idSolucion, String idComentario, String contenido, String autor, Map<String, Integer> votosUsuarios) {
+    public static String guardarComentarioSolucion(String nombreComunidad, String tituloGrupo, String idSolucion, String contenido, String autor, Map<String, Integer> votosUsuarios) {
+        String idComentario = generarIdUnico("COM");
         System.out.println("📝 Guardando comentario a la solución " + idSolucion + " (ID: " + idComentario + ")");
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(ARCHIVO_COMENTARIOS, true))) {
@@ -794,7 +797,7 @@ public class PersistenciaService {
             }
 
             if (!encontrada) {
-                nuevasLineas.add(nuevaLinea); // Si no se encontró, agregarla (caso de nuevo comentario)
+                System.err.println("⚠️ Comentario con ID '" + comentario.getIdComentario() + "' no encontrado para actualizar. Agregando como nueva línea.");
             }
 
             escribirTodasLasLineas(ARCHIVO_COMENTARIOS, nuevasLineas);
@@ -890,7 +893,9 @@ public class PersistenciaService {
                 if (linea.trim().isEmpty() || linea.startsWith("#")) continue;
 
                 String[] datos = linea.split(";");
-                if (datos.length >= 9) {
+                // Asegurarse de que haya al menos 8 partes para los datos básicos (sin votos)
+                // y 9 si se incluyen los votos.
+                if (datos.length >= 8) {
                     String comunidad = datos[0];
                     String grupo = datos[1];
 
@@ -902,7 +907,8 @@ public class PersistenciaService {
                         solucion.put("autor", datos[5]);
                         solucion.put("fecha", datos[6]);
                         solucion.put("tipo", datos[7]);
-                        solucion.put("votosUsuarios", datos[8]);
+                        // Si hay votos, se añaden. Si no, la clave estará ausente o vacía.
+                        solucion.put("votosUsuarios", datos.length > 8 ? datos[8] : "");
                         soluciones.add(solucion);
                     }
                 }
@@ -927,7 +933,9 @@ public class PersistenciaService {
                 if (linea.trim().isEmpty() || linea.startsWith("#")) continue;
 
                 String[] datos = linea.split(";");
-                if (datos.length >= 9) {
+                // Asegurarse de que haya al menos 8 partes para los datos básicos (sin votos)
+                // y 9 si se incluyen los votos.
+                if (datos.length >= 8) {
                     String comunidad = datos[0];
                     String grupo = datos[1];
                     String hiloId = datos[2];
@@ -939,7 +947,8 @@ public class PersistenciaService {
                         respuesta.put("autor", datos[5]);
                         respuesta.put("fecha", datos[6]);
                         respuesta.put("esSolucion", datos[7]);
-                        respuesta.put("votosUsuarios", datos[8]);
+                        // Si hay votos, se añaden. Si no, la clave estará ausente o vacía.
+                        respuesta.put("votosUsuarios", datos.length > 8 ? datos[8] : "");
                         respuestas.add(respuesta);
                     }
                 }
@@ -963,7 +972,9 @@ public class PersistenciaService {
                 if (linea.trim().isEmpty() || linea.startsWith("#")) continue;
 
                 String[] datos = linea.split(";");
-                if (datos.length >= 8) {
+                // Asegurarse de que haya al menos 7 partes para los datos básicos (sin votos)
+                // y 8 si se incluyen los votos.
+                if (datos.length >= 7) {
                     String comunidad = datos[0];
                     String grupo = datos[1];
                     String solucionId = datos[2];
@@ -974,7 +985,8 @@ public class PersistenciaService {
                         comentario.put("contenido", datos[4]);
                         comentario.put("autor", datos[5]);
                         comentario.put("fecha", datos[6]);
-                        comentario.put("votosUsuarios", datos[7]);
+                        // Si hay votos, se añaden. Si no, la clave estará ausente o vacía.
+                        comentario.put("votosUsuarios", datos.length > 7 ? datos[7] : "");
                         comentarios.add(comentario);
                     }
                 }
@@ -1082,7 +1094,7 @@ public class PersistenciaService {
                 if (linea.trim().isEmpty() || linea.startsWith("#")) continue;
 
                 String[] datos = linea.split(";");
-                if (datos.length >= 9) {
+                if (datos.length >= 8) {
                     String comunidad = datos[0];
                     String tituloGrupo = datos[1];
                     String idHilo = datos[2];
@@ -1091,7 +1103,7 @@ public class PersistenciaService {
                     String autorUsername = datos[5];
                     String fechaCreacionStr = datos[6];
                     String estadoStr = datos[7];
-                    String votosUsuariosStr = datos[8];
+                    String votosUsuariosStr = (datos.length > 8) ? datos[8] : ""; // Leer votos si existen, sino cadena vacía
 
                     if (comunidad.equals(nombreComunidad)) {
                         // Buscar el grupo de discusión correspondiente
@@ -1120,30 +1132,8 @@ public class PersistenciaService {
                                             }
                                         }
 
-                                        // Crear el hilo y establecer sus propiedades
-                                        HiloDiscusion hilo = new HiloDiscusion(tituloHilo, contenido, autor);
-
-                                        // Usar reflexión para establecer el ID, estado, fecha y votos (ya que son privados o no tienen setters directos)
-                                        try {
-                                            java.lang.reflect.Field idField = HiloDiscusion.class.getDeclaredField("idHilo");
-                                            idField.setAccessible(true);
-                                            idField.set(hilo, idHilo);
-
-                                            java.lang.reflect.Field estadoField = HiloDiscusion.class.getDeclaredField("estado");
-                                            estadoField.setAccessible(true);
-                                            estadoField.set(hilo, estado);
-
-                                            java.lang.reflect.Field fechaField = HiloDiscusion.class.getDeclaredField("fechaCreacion");
-                                            fechaField.setAccessible(true);
-                                            fechaField.set(hilo, fechaCreacion);
-
-                                            java.lang.reflect.Field votosUsuariosField = HiloDiscusion.class.getDeclaredField("votosUsuarios");
-                                            votosUsuariosField.setAccessible(true);
-                                            votosUsuariosField.set(hilo, votosUsuarios);
-
-                                        } catch (Exception e) {
-                                            System.err.println("⚠️ No se pudo establecer propiedades del hilo por reflexión: " + e.getMessage());
-                                        }
+                                        // Crear el hilo usando el constructor de carga
+                                        HiloDiscusion hilo = new HiloDiscusion(idHilo, tituloHilo, contenido, autor, estado, votosUsuarios, fechaCreacion);
 
                                         // Acceder directamente a la lista privada de hilos usando reflexión
                                         try {
@@ -1192,7 +1182,7 @@ public class PersistenciaService {
                 if (linea.trim().isEmpty() || linea.startsWith("#")) continue;
 
                 String[] datos = linea.split(";");
-                if (datos.length >= 9) {
+                if (datos.length >= 8) {
                     String comunidad = datos[0];
                     String grupo = datos[1];
                     String hiloId = datos[2];
@@ -1201,7 +1191,7 @@ public class PersistenciaService {
                     String autorUsername = datos[5];
                     String fechaCreacionStr = datos[6];
                     boolean esSolucion = Boolean.parseBoolean(datos[7]);
-                    String votosUsuariosStr = datos[8];
+                    String votosUsuariosStr = (datos.length > 8) ? datos[8] : ""; // Leer votos si existen, sino cadena vacía
 
                     if (comunidad.equals(nombreComunidad) && grupo.equals(tituloGrupo) && hiloId.equals(idHilo)) {
                         UsuarioComunidad autor = buscarUsuarioPorUsername(autorUsername);
@@ -1219,6 +1209,7 @@ public class PersistenciaService {
                                 }
                             }
 
+                            // Crear la respuesta usando el constructor de carga
                             Respuesta respuesta = new Respuesta(idRespuesta, contenido, autor, fechaCreacion, votosUsuarios, esSolucion);
 
                             // Acceder directamente a la lista privada de respuestas usando reflexión
@@ -1231,7 +1222,7 @@ public class PersistenciaService {
                             } catch (Exception e) {
                                 System.err.println("⚠️ No se pudo acceder a la lista de respuestas: " + e.getMessage());
                                 // Fallback: intentar usando el método normal (aunque sea una copia)
-                                hilo.getRespuestas().add(respuesta);
+                                hilo.addRespuesta(respuesta); // Usar el método público si existe
                             }
 
                             respuestasCargadas++;
@@ -1264,7 +1255,7 @@ public class PersistenciaService {
                 if (linea.trim().isEmpty() || linea.startsWith("#")) continue;
 
                 String[] datos = linea.split(";");
-                if (datos.length >= 9) {
+                if (datos.length >= 8) {
                     String comunidad = datos[0];
                     String tituloGrupo = datos[1];
                     String idSolucion = datos[2];
@@ -1273,7 +1264,7 @@ public class PersistenciaService {
                     String autorUsername = datos[5];
                     String fechaCreacionStr = datos[6];
                     String tipoSolucionStr = datos[7];
-                    String votosUsuariosStr = datos[8];
+                    String votosUsuariosStr = (datos.length > 8) ? datos[8] : ""; // Leer votos si existen, sino cadena vacía
 
                     if (comunidad.equals(nombreComunidad)) {
                         // Buscar el grupo de compartir correspondiente
@@ -1291,7 +1282,7 @@ public class PersistenciaService {
                                         TipoSolucion tipo = TipoSolucion.fromDescripcion(tipoSolucionStr);
                                         LocalDateTime fecha = LocalDateTime.parse(fechaCreacionStr, FORMATO_FECHA);
 
-                                        // Parsear votosUsuarios
+                                        // Inicializar votosUsuarios como un mapa vacío si no hay votos
                                         Map<String, Integer> votosUsuarios = new HashMap<>();
                                         if (!votosUsuariosStr.isEmpty()) {
                                             for (String votoEntry : votosUsuariosStr.split(",")) {
@@ -1302,7 +1293,7 @@ public class PersistenciaService {
                                             }
                                         }
 
-                                        // Crear la solución
+                                        // Crear la solución usando el constructor de carga
                                         Solucion solucion = new Solucion(idSolucion, titulo, contenido, autor, tipo, null, fecha, votosUsuarios, null);
 
                                         // Acceder directamente a la lista privada de soluciones usando reflexión
@@ -1339,6 +1330,8 @@ public class PersistenciaService {
         }
     }
 
+
+
     /**
      * Carga los comentarios persistidos para una solución específica.
      */
@@ -1351,7 +1344,7 @@ public class PersistenciaService {
                 if (linea.trim().isEmpty() || linea.startsWith("#")) continue;
 
                 String[] datos = linea.split(";");
-                if (datos.length >= 8) {
+                if (datos.length >= 7) {
                     String comunidad = datos[0];
                     String grupo = datos[1];
                     String solucionId = datos[2];
@@ -1359,7 +1352,7 @@ public class PersistenciaService {
                     String contenido = datos[4];
                     String autorUsername = datos[5];
                     String fechaCreacionStr = datos[6];
-                    String votosUsuariosStr = datos[7];
+                    String votosUsuariosStr = (datos.length > 7) ? datos[7] : ""; // Leer votos si existen, sino cadena vacía
 
                     if (comunidad.equals(nombreComunidad) && grupo.equals(tituloGrupo) && solucionId.equals(idSolucion)) {
                         UsuarioComunidad autor = buscarUsuarioPorUsername(autorUsername);
@@ -1377,6 +1370,7 @@ public class PersistenciaService {
                                 }
                             }
 
+                            // Crear el comentario usando el constructor de carga
                             Comentario comentario = new Comentario(idComentario, contenido, autor, fecha, votosUsuarios);
 
                             // Acceder directamente a la lista privada de comentarios usando reflexión
@@ -1507,7 +1501,7 @@ public class PersistenciaService {
             System.out.println("Hilos de discusión: " + leerArchivo(ARCHIVO_HILOS).size());
             System.out.println("Soluciones compartidas: " + leerArchivo(ARCHIVO_SOLUCIONES).size());
             System.out.println("Respuestas a hilos: " + leerArchivo(ARCHIVO_RESPUESTAS).size());
-            System.out.println("Comentarios a soluciones: " + leerArchivo(ARCHIVO_COMENTARIOS).size()); // Nuevo
+            System.out.println("Comentarios a soluciones: " + leerArchivo(ARCHIVO_COMENTARIOS).size());
         } catch (Exception e) {
             System.out.println("Error al obtener estadísticas: " + e.getMessage());
         }

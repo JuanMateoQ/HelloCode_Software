@@ -3,6 +3,7 @@ package Modulo_Usuario.Controladores;
 
 import MetodosGlobales.MetodosFrecuentes;
 import MetodosGlobales.SesionManager;
+import Modulo_Usuario.Clases.Usuario;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -14,6 +15,13 @@ import javafx.stage.Stage;
 
 
 public class HomeController {
+    
+    private Usuario usuario;
+    
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+        System.out.println("Usuario establecido en HomeController: " + usuario.getNombre() + " (Rol: " + usuario.getRol() + ")");
+    }
 
     @FXML
     private void abrirLeccion(MouseEvent event) {

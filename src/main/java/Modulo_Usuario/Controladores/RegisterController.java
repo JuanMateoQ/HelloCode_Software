@@ -2,7 +2,6 @@ package Modulo_Usuario.Controladores;
 
 import Modulo_Usuario.Clases.Roles;
 import Modulo_Usuario.Clases.Usuario;
-import Modulo_Usuario.Clases.UsuarioAdministrador;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -120,7 +119,8 @@ public class RegisterController {
                 mostrarMensaje("Por favor complete todos los campos", true);
                 return;
             }
-            if(!passwordAdmin.equals(UsuarioAdministrador.getPasswordCreacion())){
+            // Usar una contraseña fija para administradores
+            if(!passwordAdmin.equals("12345")){
                 mostrarMensaje("Incorrecto password de creacion", true);
                 return;
             }
@@ -149,8 +149,10 @@ public class RegisterController {
     }
 
     private void verificarGuardarUsuario(Usuario nuevoUsuario) {
+
         if (guardarUsuario(nuevoUsuario)) {
             mostrarMensaje("Usuario registrado exitosamente", false);
+            Gamificacion_Modulo.clases.Main.crearProgresoEstudiante();
             limpiarCampos();
 
             // Esperar un momento y volver al login

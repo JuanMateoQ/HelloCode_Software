@@ -22,8 +22,9 @@ public class HiloDiscusion {
     private LocalDateTime fechaCreacion;
     private static final DateTimeFormatter FORMATO_FECHA = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-    public HiloDiscusion(String titulo, String problema, UsuarioComunidad autor) {
-        this.idHilo = UUID.randomUUID().toString();
+    // Constructor para crear un nuevo hilo
+    public HiloDiscusion(String idHilo, String titulo, String problema, UsuarioComunidad autor) {
+        this.idHilo = idHilo;
         this.titulo = titulo;
         this.problema = problema;
         this.autor = autor;
@@ -31,6 +32,19 @@ public class HiloDiscusion {
         this.respuestas = new ArrayList<>();
         this.votosUsuarios = new HashMap<>();
         this.fechaCreacion = LocalDateTime.now();
+    }
+
+    // Constructor para cargar desde persistencia
+    public HiloDiscusion(String idHilo, String titulo, String problema, UsuarioComunidad autor, EstadoHilo estado,
+                         Map<String, Integer> votosUsuarios, LocalDateTime fechaCreacion) {
+        this.idHilo = idHilo;
+        this.titulo = titulo;
+        this.problema = problema;
+        this.autor = autor;
+        this.estado = estado;
+        this.respuestas = new ArrayList<>();
+        this.votosUsuarios = (votosUsuarios != null) ? new HashMap<>(votosUsuarios) : new HashMap<>();
+        this.fechaCreacion = fechaCreacion;
     }
 
     // Getters y setters
@@ -50,10 +64,6 @@ public class HiloDiscusion {
         return problema;
     }
 
-    public void setProblema(String problema) {
-        this.problema = problema;
-    }
-
     public UsuarioComunidad getAutor() {
         return autor;
     }
@@ -70,6 +80,11 @@ public class HiloDiscusion {
         return new ArrayList<>(respuestas);
     }
 
+    // Método para añadir una respuesta
+    public void addRespuesta(Respuesta respuesta) {
+        this.respuestas.add(respuesta);
+    }
+
     public Map<String, Integer> getVotosUsuarios() {
         return new HashMap<>(votosUsuarios);
     }
@@ -79,16 +94,16 @@ public class HiloDiscusion {
     }
 
     // Métodos de negocio
-    public boolean responder(String contenido, UsuarioComunidad autor, Moderador moderador) {
+    public boolean responder(String contenido, UsuarioComunidad autorRespuesta, Moderador moderador) {
         if (estado == EstadoHilo.CERRADO) {
             System.out.println("🚫 No se puede responder a un hilo cerrado");
             return false;
         }
 
         // Verificar si el usuario está sancionado
-        if (moderador.usuarioEstaSancionado(autor)) {
-            SancionUsuario sancion = moderador.getSancionActiva(autor);
-            System.out.println("🚫 RESPUESTA BLOQUEADA - Usuario " + autor.getNombre() +
+        if (moderador.usuarioEstaSancionado(autorRespuesta)) {
+            SancionUsuario sancion = moderador.getSancionActiva(autorRespuesta);
+            System.out.println("🚫 RESPUESTA BLOQUEADA - Usuario " + autorRespuesta.getNombre() +
                     " está sancionado. Tiempo restante: " +
                     sancion.getMinutosRestantes() + " minutos");
             System.out.println("   Razón: " + sancion.getRazon());
@@ -96,49 +111,48 @@ public class HiloDiscusion {
         }
 
         // Moderar el contenido de la respuesta
-        ResultadoModeracion resultado = moderador.moderarMensaje(contenido, autor);
+        ResultadoModeracion resultado = moderador.moderarMensaje(contenido, autorRespuesta);
 
         if (!resultado.isAprobado()) {
             System.out.println("🚫 RESPUESTA BLOQUEADA EN HILO DE DISCUSIÓN");
-            System.out.println("   Usuario: " + autor.getNombre());
+            System.out.println("   Usuario: " + autorRespuesta.getNombre());
             System.out.println("   Hilo: " + this.titulo);
             System.out.println("   Contenido: \"" + contenido + "\"");
             System.out.println("   Razón: " + resultado.getMensaje());
             return false;
         }
 
-        // Si la respuesta es aprobada, agregarla al hilo
-        Respuesta respuesta = new Respuesta(contenido, autor);
+        Respuesta respuesta = new Respuesta(UUID.randomUUID().toString(), contenido, autorRespuesta);
         respuestas.add(respuesta);
 
         // Otorgar puntos de reputación por participar
-        autor.incrementarReputacion(2);
+        autorRespuesta.incrementarReputacion(2);
 
-        System.out.println("✅ Respuesta agregada al hilo \"" + this.titulo + "\" por " + autor.getNombre());
+        System.out.println("✅ Respuesta agregada al hilo \"" + this.titulo + "\" por " + autorRespuesta.getNombre());
         return true;
     }
 
     // Método legacy para compatibilidad (sin moderación)
     @Deprecated
-    public void responder(String contenido, UsuarioComunidad autor) {
+    public void responder(String contenido, UsuarioComunidad autorRespuesta) {
         if (estado == EstadoHilo.CERRADO) {
             throw new IllegalStateException("No se puede responder a un hilo cerrado");
         }
 
-        Respuesta respuesta = new Respuesta(contenido, autor);
+        Respuesta respuesta = new Respuesta(UUID.randomUUID().toString(), contenido, autorRespuesta);
         respuestas.add(respuesta);
 
         // Otorgar puntos de reputación por participar
-        autor.incrementarReputacion(2);
+        autorRespuesta.incrementarReputacion(2);
     }
 
     /**
      * Permite a un usuario votar por el hilo (votos positivos, votos negativos, o quitar voto).
-     * @param usuario El usuario que vota.
+     * @param usuarioVotante El usuario que vota.
      * @param tipoVoto 1 para positivo, -1 para negativo, 0 para quitar voto.
      */
-    public void votar(UsuarioComunidad usuario, int tipoVoto) {
-        String username = usuario.getUsername();
+    public void votar(UsuarioComunidad usuarioVotante, int tipoVoto) {
+        String username = usuarioVotante.getUsername();
         int votoAnterior = votosUsuarios.getOrDefault(username, 0);
 
         if (tipoVoto == 1) {
@@ -163,9 +177,9 @@ public class HiloDiscusion {
                 } else {
                     autor.decrementarReputacion(1);
                 }
-                System.out.println("✅ Usuario " + username + " dio voto positivo al hilo.");
+                System.out.println("✅ Usuario " + username + " dio voto negativo al hilo.");
             }
-        } else if (tipoVoto == 0) { // Quitar Voto
+        } else if (tipoVoto == 0) {
             if (votoAnterior == 0) {
                 System.out.println("ℹ️ El usuario " + username + " no había votado este hilo.");
             } else {
@@ -198,11 +212,6 @@ public class HiloDiscusion {
         return (int) votosUsuarios.values().stream().filter(v -> v == -1).count();
     }
 
-    // Método getVotos original, ahora devuelve la suma neta de votos
-    public int getVotos() {
-        return votosUsuarios.values().stream().mapToInt(Integer::intValue).sum();
-    }
-
     public void marcarResuelto() {
         this.estado = EstadoHilo.RESUELTO;
         // Otorgar puntos de reputación por resolver problema
@@ -217,10 +226,6 @@ public class HiloDiscusion {
         if (estado == EstadoHilo.CERRADO || estado == EstadoHilo.RESUELTO) {
             this.estado = EstadoHilo.ABIERTO;
         }
-    }
-
-    public boolean tieneSolucion() {
-        return respuestas.stream().anyMatch(Respuesta::getEsSolucion);
     }
 
     public List<Respuesta> getSoluciones() {

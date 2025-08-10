@@ -1,7 +1,9 @@
 package Gamificacion_Modulo.clases;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class Desafio {
 
@@ -13,6 +15,8 @@ public abstract class Desafio {
     protected int leccionesCompletadas;
     protected int meta;
 
+    // Lista estática de desafíos disponibles
+    private static final List<Desafio> desafiosDisponibles = new ArrayList<>();
 
     public Desafio( List<Logro> logros, int recompensa, int meta) {
         this.logrosDisponibles = logros;
@@ -54,8 +58,31 @@ public abstract class Desafio {
         desbloquearLogro(estudiante);
     }
 
+    public void actualizarAvance(Integer cantidad) {
+        this.leccionesCompletadas += cantidad;
+    }
+
     public List<Logro> getLogrosDisponibles() {
         return logrosDisponibles;
+    }
+
+    // Métodos estáticos para gestionar desafíos disponibles
+    public static List<Desafio> getDesafiosDisponibles() {
+        return new ArrayList<>(desafiosDisponibles);
+    }
+
+    public static void agregarDesafio(Desafio desafio) {
+        desafiosDisponibles.add(desafio);
+    }
+
+    public static void removerDesafio(Desafio desafio) {
+        desafiosDisponibles.remove(desafio);
+    }
+
+    public static List<Desafio> getDesafiosActivos() {
+        return desafiosDisponibles.stream()
+                .filter(Desafio::getEstaActivo)
+                .collect(Collectors.toList());
     }
 
     // Getters

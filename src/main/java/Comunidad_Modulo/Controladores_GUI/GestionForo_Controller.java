@@ -5,22 +5,16 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.effect.BoxBlur;
 import javafx.scene.effect.ColorAdjust;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.collections.FXCollections;
 import javafx.animation.Timeline;
 import javafx.animation.KeyFrame;
 import javafx.util.Duration;
-
 import java.net.URL;
-import java.util.ResourceBundle;
-import java.util.List;
-import java.util.Optional;
-import java.util.ArrayList;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
-
-// Importar las clases del modelo y controladores
 import Comunidad_Modulo.controladores.ContextoSistema;
 import Comunidad_Modulo.modelo.*;
 import Modulo_Usuario.Clases.NivelJava;
@@ -51,7 +45,7 @@ public class GestionForo_Controller implements Initializable {
     @FXML private ComboBox<String> comboAccionSolucion;
     @FXML private Button btnGestionarSoluciones;
 
-    // Elementos de las nuevas pestañas y formulario overlay
+    // Elementos de pestañas y formulario overlay
     @FXML private VBox formCrearGrupo;
     @FXML private Label lblTituloFormulario;
     @FXML private Button btnConfirmarCrearGrupo;
@@ -533,10 +527,7 @@ public class GestionForo_Controller implements Initializable {
             }
 
             // Solicitar índice del grupo
-            TextInputDialog dialog = new TextInputDialog();
-            dialog.setTitle("Unirse a Grupo de Discusión");
-            dialog.setHeaderText(info.toString());
-            dialog.setContentText("Seleccione el número del grupo:");
+            TextInputDialog dialog = crearTextInputDialog("Unirse a Grupo de Discusión", info.toString(), "Seleccione el número del grupo:");
 
             Optional<String> result = dialog.showAndWait();
             if (!result.isPresent()) return;
@@ -620,10 +611,7 @@ public class GestionForo_Controller implements Initializable {
             }
 
             // Solicitar índice del grupo
-            TextInputDialog dialog = new TextInputDialog();
-            dialog.setTitle("Unirse a Grupo de Compartir");
-            dialog.setHeaderText(info.toString());
-            dialog.setContentText("Seleccione el número del grupo:");
+            TextInputDialog dialog = crearTextInputDialog("Unirse a Grupo de Compartir", info.toString(), "Seleccione el número del grupo:");
 
             Optional<String> result = dialog.showAndWait();
             if (!result.isPresent()) return;
@@ -740,10 +728,7 @@ public class GestionForo_Controller implements Initializable {
         }
 
         // Seleccionar grupo
-        TextInputDialog grupoDialog = new TextInputDialog();
-        grupoDialog.setTitle("Crear Hilo");
-        grupoDialog.setHeaderText(info.toString());
-        grupoDialog.setContentText("Seleccione el grupo (número):");
+        TextInputDialog grupoDialog = crearTextInputDialog("Crear Hilo", info.toString(), "Seleccione el grupo (número):");
 
         Optional<String> grupoResult = grupoDialog.showAndWait();
         if (!grupoResult.isPresent()) return;
@@ -758,20 +743,14 @@ public class GestionForo_Controller implements Initializable {
             GrupoDiscusion grupo = gruposDelUsuario.get(indiceGrupo);
 
             // Solicitar datos del hilo
-            TextInputDialog tituloDialog = new TextInputDialog();
-            tituloDialog.setTitle("Crear Hilo");
-            tituloDialog.setHeaderText("Nuevo Hilo en: " + grupo.getTitulo() + "\nAutor: " + autor.getNombre());
-            tituloDialog.setContentText("Título del hilo:");
+            TextInputDialog tituloDialog = crearTextInputDialog("Crear Hilo", "Nuevo Hilo en: " + grupo.getTitulo() + "\nAutor: " + autor.getNombre(), "Título del hilo:");
 
             Optional<String> tituloResult = tituloDialog.showAndWait();
             if (!tituloResult.isPresent() || tituloResult.get().trim().isEmpty()) {
                 return;
             }
 
-            TextInputDialog problemaDialog = new TextInputDialog();
-            problemaDialog.setTitle("Crear Hilo");
-            problemaDialog.setHeaderText("Descripción del Problema");
-            problemaDialog.setContentText("Descripción:");
+            TextInputDialog problemaDialog = crearTextInputDialog("Crear Hilo", "Descripción del Problema", "Descripción:");
 
             Optional<String> problemaResult = problemaDialog.showAndWait();
             if (!problemaResult.isPresent() || problemaResult.get().trim().isEmpty()) {
@@ -781,13 +760,13 @@ public class GestionForo_Controller implements Initializable {
             String titulo = tituloResult.get().trim();
             String problema = problemaResult.get().trim();
 
-            // Crear el hilo
-            HiloDiscusion nuevoHilo = new HiloDiscusion(titulo, problema, autor);
-            grupo.addHilo(nuevoHilo); // Usar el nuevo método addHilo en GrupoDiscusion
-
-            // Guardar el hilo en persistencia
+            // Guardar el hilo en persistencia primero para obtener el ID
             String nombreComunidad = ContextoSistema.getInstance().getComunidadActual().getNombre();
-            String idHilo = PersistenciaService.guardarHiloDiscusion(nombreComunidad, grupo.getTitulo(), titulo, problema, autor.getUsername(), nuevoHilo.getEstado(), nuevoHilo.getVotosUsuarios());
+            String idHilo = PersistenciaService.guardarHiloDiscusion(nombreComunidad, grupo.getTitulo(), titulo, problema, autor.getUsername(), EstadoHilo.ABIERTO, new HashMap<>());
+
+            // Crear el hilo con el ID generado y añadirlo al grupo
+            HiloDiscusion nuevoHilo = new HiloDiscusion(idHilo, titulo, problema, autor);
+            grupo.addHilo(nuevoHilo); // Usar el nuevo método addHilo en GrupoDiscusion
 
             mostrarMensajeExito("✅ Hilo '" + titulo + "' creado exitosamente por " + autor.getNombre() + " en '" + grupo.getTitulo() + "' (ID: " + idHilo + ")", txtInformacionDiscusion);
             actualizarInformacion();
@@ -830,7 +809,7 @@ public class GestionForo_Controller implements Initializable {
                     // Mostrar respuestas y si son solución
                     for (int j = 0; j < hilo.getRespuestas().size(); j++) {
                         Respuesta resp = hilo.getRespuestas().get(j);
-                        info.append(String.format("         -> %d. %s: %.30s... (\u2B06%d \u2B07%d)%s\n", // Modificado para mostrar likes y dislikes de respuesta
+                        info.append(String.format("         -> %d. %s: %.30s... (\u2B06%d \u2B07%d)%s\n",
                                 (j + 1), resp.getAutor().getNombre(), resp.getContenido(), resp.getVotosPositivos(), resp.getVotosNegativos(),
                                 resp.getEsSolucion() ? " [SOLUCIÓN]" : ""));
                     }
@@ -871,10 +850,7 @@ public class GestionForo_Controller implements Initializable {
         HiloDiscusion hiloSeleccionado = seleccionarHilo(hilos, txtInformacionDiscusion);
         if (hiloSeleccionado == null) return;
 
-        Alert votoAlert = new Alert(Alert.AlertType.CONFIRMATION);
-        votoAlert.setTitle("Votar Hilo");
-        votoAlert.setHeaderText("Hilo: " + hiloSeleccionado.getTitulo());
-        votoAlert.setContentText("¿Desea dar un voto o quitar su voto?");
+        Alert votoAlert = crearStyledAlert(Alert.AlertType.CONFIRMATION, "Votar Hilo", "Hilo: " + hiloSeleccionado.getTitulo(), "¿Desea dar un voto positivo, negativo, o quitar su voto?");
 
         ButtonType darLikeBtn = new ButtonType("\u2B06 Dar Voto Positivo");
         ButtonType darDislikeBtn = new ButtonType("\u2B07 Dar Voto Negativo");
@@ -952,6 +928,7 @@ public class GestionForo_Controller implements Initializable {
         estadoDialog.setTitle("Cambiar Estado del Hilo");
         estadoDialog.setHeaderText("Hilo: " + hiloSeleccionado.getTitulo() + "\nEstado actual: " + hiloSeleccionado.getEstado());
         estadoDialog.setContentText("Seleccione el nuevo estado:");
+        applyDialogStyles(estadoDialog.getDialogPane());
 
         Optional<EstadoHilo> result = estadoDialog.showAndWait();
         if (result.isPresent()) {
@@ -1040,10 +1017,7 @@ public class GestionForo_Controller implements Initializable {
         }
 
         // Seleccionar grupo
-        TextInputDialog grupoDialog = new TextInputDialog();
-        grupoDialog.setTitle("Responder Hilo");
-        grupoDialog.setHeaderText(info.toString());
-        grupoDialog.setContentText("Seleccione el grupo (número):");
+        TextInputDialog grupoDialog = crearTextInputDialog("Responder Hilo", info.toString(), "Seleccione el grupo (número):");
 
         Optional<String> grupoResult = grupoDialog.showAndWait();
         if (!grupoResult.isPresent()) return;
@@ -1074,10 +1048,7 @@ public class GestionForo_Controller implements Initializable {
             }
 
             // Seleccionar hilo
-            TextInputDialog hiloDialog = new TextInputDialog();
-            hiloDialog.setTitle("Responder Hilo");
-            hiloDialog.setHeaderText(hilosInfo.toString());
-            hiloDialog.setContentText("Seleccione el hilo (número):");
+            TextInputDialog hiloDialog = crearTextInputDialog("Responder Hilo", hilosInfo.toString(), "Seleccione el hilo (número):");
 
             Optional<String> hiloResult = hiloDialog.showAndWait();
             if (!hiloResult.isPresent()) return;
@@ -1097,11 +1068,8 @@ public class GestionForo_Controller implements Initializable {
             }
 
             // Solicitar contenido de la respuesta
-            TextInputDialog respuestaDialog = new TextInputDialog();
-            respuestaDialog.setTitle("Responder Hilo");
-            respuestaDialog.setHeaderText("Respondiendo a: " + hilo.getTitulo() + "\nPor: " + autor.getNombre() +
-                    "\n\nProblema: " + hilo.getProblema());
-            respuestaDialog.setContentText("Su respuesta:");
+            TextInputDialog respuestaDialog = crearTextInputDialog("Responder Hilo", "Respondiendo a: " + hilo.getTitulo() + "\nPor: " + autor.getNombre() +
+                    "\n\nProblema: " + hilo.getProblema(), "Su respuesta:");
 
             Optional<String> respuestaResult = respuestaDialog.showAndWait();
             if (!respuestaResult.isPresent() || respuestaResult.get().trim().isEmpty()) {
@@ -1112,15 +1080,25 @@ public class GestionForo_Controller implements Initializable {
 
             // Procesar la respuesta con moderación
             Moderador moderador = contexto.getComunidadActual().getModerador();
+            // La respuesta se crea con un ID temporal, que será reemplazado al guardar
+            Respuesta tempRespuesta = new Respuesta(UUID.randomUUID().toString(), contenido, autor);
             boolean respuestaEnviada = hilo.responder(contenido, autor, moderador);
 
             if (respuestaEnviada) {
                 // Guardar la respuesta en persistencia
                 String nombreComunidad = ContextoSistema.getInstance().getComunidadActual().getNombre();
                 // Se pasa el mapa de votos y el estado de esSolucion
-                String idRespuesta = PersistenciaService.guardarRespuestaHilo(nombreComunidad, grupo.getTitulo(), hilo.getIdHilo(), contenido, autor.getUsername(), new Respuesta(contenido, autor).getVotosUsuarios(), false);
+                String idRespuestaGenerado = PersistenciaService.guardarRespuestaHilo(nombreComunidad, grupo.getTitulo(), hilo.getIdHilo(), contenido, autor.getUsername(), tempRespuesta.getVotosUsuarios(), false);
 
-                mostrarMensajeExito("✅ Respuesta agregada exitosamente por " + autor.getNombre() + " (ID: " + idRespuesta + ")", txtInformacionDiscusion);
+                // Actualizar el ID de la respuesta en el objeto en memoria si es necesario (aunque ya se añadió al hilo)
+                // Si el hilo ya tiene la respuesta, se puede buscar y actualizar su ID
+                hilo.getRespuestas().stream()
+                        .filter(r -> r.getContenido().equals(contenido) && r.getAutor().equals(autor) && r.getIdRespuesta().equals(tempRespuesta.getIdRespuesta()))
+                        .findFirst()
+                        .ifPresent(r -> r.setIdRespuesta(idRespuestaGenerado));
+
+
+                mostrarMensajeExito("✅ Respuesta agregada exitosamente por " + autor.getNombre() + " (ID: " + idRespuestaGenerado + ")", txtInformacionDiscusion);
             } else {
                 mostrarMensajeError("🚫 La respuesta no pudo ser enviada (posible contenido inapropiado).", txtInformacionDiscusion);
             }
@@ -1166,13 +1144,10 @@ public class GestionForo_Controller implements Initializable {
         Respuesta respuestaSeleccionada = seleccionarRespuesta(respuestas, txtInformacionDiscusion);
         if (respuestaSeleccionada == null) return;
 
-        Alert votoAlert = new Alert(Alert.AlertType.CONFIRMATION);
-        votoAlert.setTitle("Votar Respuesta");
-        votoAlert.setHeaderText("Respuesta de: " + respuestaSeleccionada.getAutor().getNombre());
-        votoAlert.setContentText("¿Desea dar like, dislike o quitar su voto?");
+        Alert votoAlert = crearStyledAlert(Alert.AlertType.CONFIRMATION, "Votar Respuesta", "Respuesta de: " + respuestaSeleccionada.getAutor().getNombre(), "¿Desea dar voto positivo, negativo o quitar su voto?");
 
         ButtonType darLikeBtn = new ButtonType("\u2B06 Voto Positivo");
-        ButtonType darDislikeBtn = new ButtonType("\u2B06 Voto Negativo");
+        ButtonType darDislikeBtn = new ButtonType("\u2B07 Voto Negativo");
         ButtonType quitarVotoBtn = new ButtonType("❌ Quitar Voto");
         ButtonType cancelarBtn = new ButtonType("Cancelar", ButtonBar.ButtonData.CANCEL_CLOSE);
 
@@ -1333,10 +1308,7 @@ public class GestionForo_Controller implements Initializable {
         }
 
         // Seleccionar grupo
-        TextInputDialog grupoDialog = new TextInputDialog();
-        grupoDialog.setTitle("Compartir Solución");
-        grupoDialog.setHeaderText(info.toString());
-        grupoDialog.setContentText("Seleccione el grupo (número):");
+        TextInputDialog grupoDialog = crearTextInputDialog("Compartir Solución", info.toString(), "Seleccione el grupo (número):");
 
         Optional<String> grupoResult = grupoDialog.showAndWait();
         if (!grupoResult.isPresent()) return;
@@ -1351,20 +1323,14 @@ public class GestionForo_Controller implements Initializable {
             GrupoCompartir grupo = gruposDelUsuario.get(indiceGrupo);
 
             // Solicitar datos de la solución
-            TextInputDialog tituloDialog = new TextInputDialog();
-            tituloDialog.setTitle("Compartir Solución");
-            tituloDialog.setHeaderText("Nueva Solución en: " + grupo.getTitulo() + "\nAutor: " + autor.getNombre());
-            tituloDialog.setContentText("Título de la solución:");
+            TextInputDialog tituloDialog = crearTextInputDialog("Compartir Solución", "Nueva Solución en: " + grupo.getTitulo() + "\nAutor: " + autor.getNombre(), "Título de la solución:");
 
             Optional<String> tituloResult = tituloDialog.showAndWait();
             if (!tituloResult.isPresent() || tituloResult.get().trim().isEmpty()) {
                 return;
             }
 
-            TextInputDialog contenidoDialog = new TextInputDialog();
-            contenidoDialog.setTitle("Compartir Solución");
-            contenidoDialog.setHeaderText("Contenido de la Solución");
-            contenidoDialog.setContentText("Descripción/Código:");
+            TextInputDialog contenidoDialog = crearTextInputDialog("Compartir Solución", "Contenido de la Solución", "Descripción/Código:");
 
             Optional<String> contenidoResult = contenidoDialog.showAndWait();
             if (!contenidoResult.isPresent() || contenidoResult.get().trim().isEmpty()) {
@@ -1376,6 +1342,8 @@ public class GestionForo_Controller implements Initializable {
             tipoSolucionDialog.setTitle("Tipo de Solución");
             tipoSolucionDialog.setHeaderText("Seleccione el tipo de solución:");
             tipoSolucionDialog.setContentText("Tipo:");
+            applyDialogStyles(tipoSolucionDialog.getDialogPane());
+
             Optional<TipoSolucion> tipoSolucionResult = tipoSolucionDialog.showAndWait();
             if (!tipoSolucionResult.isPresent()) {
                 return;
@@ -1386,13 +1354,13 @@ public class GestionForo_Controller implements Initializable {
             String titulo = tituloResult.get().trim();
             String contenido = contenidoResult.get().trim();
 
-            // Crear y compartir la solución
-            Solucion solucion = new Solucion(titulo, contenido, autor, tipoSolucion);
-            comunidadService.procesarSolucionEnGrupo(grupo, solucion);
-
-            // Guardar la solución en persistencia
+            // Guardar la solución en persistencia primero para obtener el ID
             String nombreComunidad = ContextoSistema.getInstance().getComunidadActual().getNombre();
-            String idSolucion = PersistenciaService.guardarSolucionCompartida(nombreComunidad, grupo.getTitulo(), solucion.getIdSolucion(), titulo, contenido, autor.getUsername(), tipoSolucion.getDescripcion(), solucion.getVotosUsuarios());
+            String idSolucion = PersistenciaService.guardarSolucionCompartida(nombreComunidad, grupo.getTitulo(), titulo, contenido, autor.getUsername(), tipoSolucion.getDescripcion(), new HashMap<>());
+
+            // Crear la solución con el ID generado y añadirla al grupo
+            Solucion solucion = new Solucion(idSolucion, titulo, contenido, autor, tipoSolucion);
+            comunidadService.procesarSolucionEnGrupo(grupo, solucion);
 
             mostrarMensajeExito("✅ Solución '" + titulo + "' compartida exitosamente por " + autor.getNombre() + " en '" + grupo.getTitulo() + "' (ID: " + idSolucion + ")", txtInformacionCompartir);
             actualizarInformacion();
@@ -1427,7 +1395,7 @@ public class GestionForo_Controller implements Initializable {
                 for (int i = 0; i < grupo.getSoluciones().size(); i++) {
                     Solucion solucion = grupo.getSoluciones().get(i);
                     info.append(String.format("   %d. %s\n", (i + 1), solucion.getTitulo()));
-                    info.append(String.format("      Autor: %s | Tipo: %s | 👍%d 👎%d\n", // Modificado para mostrar likes y dislikes
+                    info.append(String.format("      Autor: %s | Tipo: %s | 👍%d 👎%d\n",
                             solucion.getAutor().getNombre(), solucion.getTipoSolucion(), solucion.getLikes(), solucion.getDislikes()));
                     info.append(String.format("      Contenido: %.50s%s\n",
                             solucion.getContenido(),
@@ -1476,10 +1444,7 @@ public class GestionForo_Controller implements Initializable {
         Solucion solucionSeleccionada = seleccionarSolucion(soluciones, txtInformacionCompartir);
         if (solucionSeleccionada == null) return;
 
-        Alert votoAlert = new Alert(Alert.AlertType.CONFIRMATION);
-        votoAlert.setTitle("Votar Solución");
-        votoAlert.setHeaderText("Solución: " + solucionSeleccionada.getTitulo());
-        votoAlert.setContentText("¿Desea dar like, dislike o quitar su voto?");
+        Alert votoAlert = crearStyledAlert(Alert.AlertType.CONFIRMATION, "Votar Solución", "Solución: " + solucionSeleccionada.getTitulo(), "¿Desea dar like, dislike o quitar su voto?");
 
         ButtonType darLikeBtn = new ButtonType("👍 Dar Like");
         ButtonType darDislikeBtn = new ButtonType("👎 Dar Dislike");
@@ -1542,7 +1507,7 @@ public class GestionForo_Controller implements Initializable {
                     eliminarComentarioSolucion(foro, usuarioActual);
                     break;
                 case "Votar Comentario":
-                    votarComentario(foro, usuarioActual); // Nuevo método
+                    votarComentario(foro, usuarioActual);
                     break;
                 default:
                     mostrarMensajeError("⚠️ Seleccione una acción válida para comentarios.", txtInformacionCompartir);
@@ -1577,27 +1542,30 @@ public class GestionForo_Controller implements Initializable {
         Solucion solucionSeleccionada = seleccionarSolucion(soluciones, txtInformacionCompartir);
         if (solucionSeleccionada == null) return;
 
-        TextInputDialog comentarioDialog = new TextInputDialog();
-        comentarioDialog.setTitle("Comentar Solución");
-        comentarioDialog.setHeaderText("Comentando la solución: '" + solucionSeleccionada.getTitulo() + "'");
-        comentarioDialog.setContentText("Escriba su comentario:");
+        TextInputDialog comentarioDialog = crearTextInputDialog("Comentar Solución", "Comentando la solución: '" + solucionSeleccionada.getTitulo() + "'", "Escriba su comentario:");
 
         Optional<String> result = comentarioDialog.showAndWait();
         if (result.isPresent() && !result.get().trim().isEmpty()) {
             String contenidoComentario = result.get().trim();
-            solucionSeleccionada.comentar(contenidoComentario, autorComentario);
+            // Crear un comentario temporal para obtener los votos iniciales (vacíos)
+            Comentario tempComentario = new Comentario(UUID.randomUUID().toString(), contenidoComentario, autorComentario);
 
-            // Guardar el comentario en persistencia
+            // Guardar el comentario en persistencia para obtener el ID real
             String nombreComunidad = ContextoSistema.getInstance().getComunidadActual().getNombre();
-            Comentario nuevoComentario = solucionSeleccionada.getComentarios().stream()
-                    .filter(c -> c.getContenido().equals(contenidoComentario) && c.getAutor().equals(autorComentario))
-                    .findFirst().orElse(null);
-            if (nuevoComentario != null) {
-                PersistenciaService.guardarComentarioSolucion(nombreComunidad, grupoSeleccionado.getTitulo(), solucionSeleccionada.getIdSolucion(), nuevoComentario.getIdComentario(), nuevoComentario.getContenido(), nuevoComentario.getAutor().getUsername(), nuevoComentario.getVotosUsuarios());
-                mostrarMensajeExito("✅ Comentario añadido a la solución.", txtInformacionCompartir);
-            } else {
-                mostrarMensajeError("❌ Error al añadir comentario.", txtInformacionCompartir);
-            }
+            String idComentarioGenerado = PersistenciaService.guardarComentarioSolucion(nombreComunidad, grupoSeleccionado.getTitulo(), solucionSeleccionada.getIdSolucion(), contenidoComentario, autorComentario.getUsername(), tempComentario.getVotosUsuarios());
+
+            // Crear el objeto Comentario con el ID real y añadirlo a la solución
+            Comentario nuevoComentario = new Comentario(idComentarioGenerado, contenidoComentario, autorComentario);
+            solucionSeleccionada.comentar(nuevoComentario.getContenido(), nuevoComentario.getAutor());
+
+            // Buscar el comentario recién añadido y actualizar su ID
+            solucionSeleccionada.getComentarios().stream()
+                    .filter(c -> c.getContenido().equals(contenidoComentario) && c.getAutor().equals(autorComentario) && c.getIdComentario().equals(tempComentario.getIdComentario()))
+                    .findFirst()
+                    .ifPresent(c -> c.setIdComentario(idComentarioGenerado));
+
+
+            mostrarMensajeExito("✅ Comentario añadido a la solución.", txtInformacionCompartir);
         } else {
             mostrarMensajeInfo("ℹ️ Comentario cancelado o vacío.", txtInformacionCompartir);
         }
@@ -1651,10 +1619,7 @@ public class GestionForo_Controller implements Initializable {
                     (i + 1), comentario.toString())); // Usar toString de Comentario
         }
 
-        TextInputDialog comentarioDialog = new TextInputDialog();
-        comentarioDialog.setTitle("Eliminar Comentario");
-        comentarioDialog.setHeaderText(comentariosInfo.toString());
-        comentarioDialog.setContentText("Seleccione el número del comentario a eliminar:");
+        TextInputDialog comentarioDialog = crearTextInputDialog("Eliminar Comentario", comentariosInfo.toString(), "Seleccione el número del comentario a eliminar:");
 
         Optional<String> result = comentarioDialog.showAndWait();
         if (result.isPresent()) {
@@ -1715,10 +1680,7 @@ public class GestionForo_Controller implements Initializable {
         Comentario comentarioSeleccionado = seleccionarComentario(comentarios, txtInformacionCompartir);
         if (comentarioSeleccionado == null) return;
 
-        Alert votoAlert = new Alert(Alert.AlertType.CONFIRMATION);
-        votoAlert.setTitle("Votar Comentario");
-        votoAlert.setHeaderText("Comentario de: " + comentarioSeleccionado.getAutor().getNombre());
-        votoAlert.setContentText("¿Desea dar like, dislike o quitar su voto?");
+        Alert votoAlert = crearStyledAlert(Alert.AlertType.CONFIRMATION, "Votar Comentario", "Comentario de: " + comentarioSeleccionado.getAutor().getNombre(), "¿Desea dar like, dislike o quitar su voto?");
 
         ButtonType darLikeBtn = new ButtonType("👍 Dar Like");
         ButtonType darDislikeBtn = new ButtonType("👎 Dar Dislike");
@@ -1753,17 +1715,13 @@ public class GestionForo_Controller implements Initializable {
         }
     }
 
-    // Métodos auxiliares para selección de elementos (adaptados para usar TextArea)
-    // Estos métodos ahora reciben una lista de grupos ya filtrada por la membresía del usuario
+    // Métodos auxiliares para selección de elementos
     private GrupoDiscusion seleccionarGrupoDiscusion(List<GrupoDiscusion> gruposDisponibles, TextArea areaTexto) {
         StringBuilder info = new StringBuilder("=== GRUPOS DE DISCUSIÓN DISPONIBLES ===\n\n");
         for (int i = 0; i < gruposDisponibles.size(); i++) {
             info.append(String.format("%d. %s\n", (i + 1), gruposDisponibles.get(i).getTitulo()));
         }
-        TextInputDialog dialog = new TextInputDialog();
-        dialog.setTitle("Seleccionar Grupo de Discusión");
-        dialog.setHeaderText(info.toString());
-        dialog.setContentText("Seleccione el grupo (número):");
+        TextInputDialog dialog = crearTextInputDialog("Seleccionar Grupo de Discusión", info.toString(), "Seleccione el grupo (número):");
         Optional<String> result = dialog.showAndWait();
         if (result.isPresent()) {
             try {
@@ -1782,10 +1740,7 @@ public class GestionForo_Controller implements Initializable {
         for (int i = 0; i < gruposDisponibles.size(); i++) {
             info.append(String.format("%d. %s\n", (i + 1), gruposDisponibles.get(i).getTitulo()));
         }
-        TextInputDialog dialog = new TextInputDialog();
-        dialog.setTitle("Seleccionar Grupo de Compartir");
-        dialog.setHeaderText(info.toString());
-        dialog.setContentText("Seleccione el grupo (número):");
+        TextInputDialog dialog = crearTextInputDialog("Seleccionar Grupo de Compartir", info.toString(), "Seleccione el grupo (número):");
         Optional<String> result = dialog.showAndWait();
         if (result.isPresent()) {
             try {
@@ -1805,10 +1760,7 @@ public class GestionForo_Controller implements Initializable {
             info.append(String.format("%d. %s (Autor: %s, 👍%d 👎%d, Estado: %s)\n", // Mostrar likes/dislikes y estado
                     (i + 1), hilos.get(i).getTitulo(), hilos.get(i).getAutor().getNombre(), hilos.get(i).getVotosPositivos(), hilos.get(i).getVotosNegativos(), hilos.get(i).getEstado()));
         }
-        TextInputDialog dialog = new TextInputDialog();
-        dialog.setTitle("Seleccionar Hilo");
-        dialog.setHeaderText(info.toString());
-        dialog.setContentText("Seleccione el hilo (número):");
+        TextInputDialog dialog = crearTextInputDialog("Seleccionar Hilo", info.toString(), "Seleccione el hilo (número):");
         Optional<String> result = dialog.showAndWait();
         if (result.isPresent()) {
             try {
@@ -1825,14 +1777,11 @@ public class GestionForo_Controller implements Initializable {
     private Respuesta seleccionarRespuesta(List<Respuesta> respuestas, TextArea areaTexto) {
         StringBuilder info = new StringBuilder("=== RESPUESTAS DISPONIBLES ===\n\n");
         for (int i = 0; i < respuestas.size(); i++) {
-            info.append(String.format("%d. %s: %.50s... (👍%d 👎%d, Solución: %b)\n", // Modificado para mostrar likes y dislikes
+            info.append(String.format("%d. %s: %.50s... (👍%d 👎%d, Solución: %b)\n",
                     (i + 1), respuestas.get(i).getAutor().getNombre(), respuestas.get(i).getContenido(),
                     respuestas.get(i).getVotosPositivos(), respuestas.get(i).getVotosNegativos(), respuestas.get(i).getEsSolucion()));
         }
-        TextInputDialog dialog = new TextInputDialog();
-        dialog.setTitle("Seleccionar Respuesta");
-        dialog.setHeaderText(info.toString());
-        dialog.setContentText("Seleccione la respuesta (número):");
+        TextInputDialog dialog = crearTextInputDialog("Seleccionar Respuesta", info.toString(), "Seleccione la respuesta (número):");
         Optional<String> result = dialog.showAndWait();
         if (result.isPresent()) {
             try {
@@ -1849,13 +1798,10 @@ public class GestionForo_Controller implements Initializable {
     private Solucion seleccionarSolucion(List<Solucion> soluciones, TextArea areaTexto) {
         StringBuilder info = new StringBuilder("=== SOLUCIONES DISPONIBLES ===\n\n");
         for (int i = 0; i < soluciones.size(); i++) {
-            info.append(String.format("%d. %s (Autor: %s, 👍%d 👎%d)\n", // Modificado
+            info.append(String.format("%d. %s (Autor: %s, 👍%d 👎%d)\n",
                     (i + 1), soluciones.get(i).getTitulo(), soluciones.get(i).getAutor().getNombre(), soluciones.get(i).getLikes(), soluciones.get(i).getDislikes()));
         }
-        TextInputDialog dialog = new TextInputDialog();
-        dialog.setTitle("Seleccionar Solución");
-        dialog.setHeaderText(info.toString());
-        dialog.setContentText("Seleccione la solución (número):");
+        TextInputDialog dialog = crearTextInputDialog("Seleccionar Solución", info.toString(), "Seleccione la solución (número):");
         Optional<String> result = dialog.showAndWait();
         if (result.isPresent()) {
             try {
@@ -1875,10 +1821,7 @@ public class GestionForo_Controller implements Initializable {
             info.append(String.format("%d. %s\n",
                     (i + 1), comentarios.get(i).toString())); // Usar toString de Comentario
         }
-        TextInputDialog dialog = new TextInputDialog();
-        dialog.setTitle("Seleccionar Comentario");
-        dialog.setHeaderText(info.toString());
-        dialog.setContentText("Seleccione el comentario (número):");
+        TextInputDialog dialog = crearTextInputDialog("Seleccionar Comentario", info.toString(), "Seleccione el comentario (número):");
         Optional<String> result = dialog.showAndWait();
         if (result.isPresent()) {
             try {
@@ -2013,7 +1956,7 @@ public class GestionForo_Controller implements Initializable {
                 int hilosPersistidos = 0;
                 int solucionesPersistidas = 0;
                 int respuestasPersistidas = 0;
-                int comentariosPersistidos = 0; // Nuevo
+                int comentariosPersistidos = 0;
 
                 // Contar membresías y contenido de grupos de discusión
                 for (GrupoDiscusion grupo : foro.getGruposDiscusion()) {
@@ -2043,7 +1986,7 @@ public class GestionForo_Controller implements Initializable {
                 infoCompartir.append("\n💾 Datos Persistidos (Compartir):\n");
                 infoCompartir.append("   • Membresías guardadas: ").append(membresiasPersistidas).append("\n");
                 infoCompartir.append("   • Soluciones persistidas: ").append(solucionesPersistidas).append("\n");
-                infoCompartir.append("   • Comentarios persistidos: ").append(comentariosPersistidos).append("\n"); // Nuevo
+                infoCompartir.append("   • Comentarios persistidos: ").append(comentariosPersistidos).append("\n");
 
             } catch (Exception e) {
                 infoDiscusion.append("\n⚠️ Error al cargar datos persistidos: ").append(e.getMessage()).append("\n");
@@ -2138,7 +2081,8 @@ public class GestionForo_Controller implements Initializable {
         try {
             Stage stage = (Stage) btnVolver.getScene().getWindow();
             MetodosFrecuentes.cambiarVentana(stage, "/Modulo_Comunidad/Views/Comunidad.fxml");
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             System.err.println("Error al volver: " + e.getMessage());
         }
     }
@@ -2167,7 +2111,7 @@ public class GestionForo_Controller implements Initializable {
         try {
             Comunidad comunidadActual = ContextoSistema.getInstance().getComunidadActual();
             if (comunidadActual == null) {
-                mostrarMensajeError("❌ No hay comunidad activa.", txtInformacionDiscusion); // Se elige una de las áreas
+                mostrarMensajeError("❌ No hay comunidad activa.", txtInformacionDiscusion);
                 return;
             }
 
@@ -2187,7 +2131,7 @@ public class GestionForo_Controller implements Initializable {
             int totalHilos = 0;
             int totalSoluciones = 0;
             int totalRespuestas = 0;
-            int totalComentarios = 0; // Nuevo
+            int totalComentarios = 0;
 
             // Contar membresías y contenido de grupos de discusión
             for (String grupo : gruposDiscusion) {
@@ -2223,15 +2167,15 @@ public class GestionForo_Controller implements Initializable {
             info.append("  • Hilos de Discusión: ").append(totalHilos).append("\n");
             info.append("  • Respuestas a Hilos: ").append(totalRespuestas).append("\n");
             info.append("  • Soluciones Compartidas: ").append(totalSoluciones).append("\n");
-            info.append("  • Comentarios en Soluciones: ").append(totalComentarios).append("\n\n"); // Nuevo
+            info.append("  • Comentarios en Soluciones: ").append(totalComentarios).append("\n\n");
 
             info.append("✅ Toda la actividad del foro se está guardando correctamente.\n");
             info.append("📁 Los datos persisten entre sesiones de la aplicación.");
 
-            mostrarMensajeInfo(info.toString(), txtInformacionDiscusion); // Se elige una de las áreas
+            mostrarMensajeInfo(info.toString(), txtInformacionDiscusion);
 
         } catch (Exception e) {
-            mostrarMensajeError("❌ Error al obtener estadísticas: " + e.getMessage(), txtInformacionDiscusion); // Se elige una de las áreas
+            mostrarMensajeError("❌ Error al obtener estadísticas: " + e.getMessage(), txtInformacionDiscusion);
         }
     }
 
@@ -2248,5 +2192,142 @@ public class GestionForo_Controller implements Initializable {
             System.err.println("Error al verificar membresía persistida: " + e.getMessage());
             return false;
         }
+    }
+
+    /**
+     * Aplica estilos personalizados a un DialogPane.
+     * @param dialogPane El DialogPane al que se aplicarán los estilos.
+     */
+    private void applyDialogStyles(DialogPane dialogPane) {
+        dialogPane.setPrefWidth(360);
+        dialogPane.setMaxWidth(360);
+        dialogPane.setMaxHeight(640);
+
+        dialogPane.setStyle(
+                "-fx-background-color: #DCD6F7; " +
+                        "-fx-border-color: #424874; " +
+                        "-fx-border-width: 2; " +
+                        "-fx-border-radius: 10; " +
+                        "-fx-background-radius: 10;"
+        );
+
+        dialogPane.lookup(".header-panel").setStyle(
+                "-fx-background-color: #A6B1E1; " +
+                        "-fx-font-size: 14px; " +
+                        "-fx-font-weight: bold; " +
+                        "-fx-text-fill: #23243a;"
+        );
+
+        dialogPane.lookup(".content.label").setStyle(
+                "-fx-font-size: 12px; " +
+                        "-fx-text-fill: #23243a;"
+        );
+
+        // Estilo para los botones
+        dialogPane.lookupAll(".button").forEach(node -> node.setStyle(
+                "-fx-background-color: #6B7A99; " +
+                        "-fx-text-fill: #DCD6F7; " +
+                        "-fx-font-weight: bold; " +
+                        "-fx-border-radius: 5; " +
+                        "-fx-background-radius: 5;"
+        ));
+
+        // Estilo para el botón de hover
+        dialogPane.lookupAll(".button").forEach(node -> node.setOnMouseEntered(e -> node.setStyle(
+                "-fx-background-color: #424874; " +
+                        "-fx-text-fill: #DCD6F7; " +
+                        "-fx-font-weight: bold; " +
+                        "-fx-border-radius: 5; " +
+                        "-fx-background-radius: 5;"
+        )));
+
+        // Estilo para el botón al salir del hover
+        dialogPane.lookupAll(".button").forEach(node -> node.setOnMouseExited(e -> node.setStyle(
+                "-fx-background-color: #6B7A99; " +
+                        "-fx-text-fill: #DCD6F7; " +
+                        "-fx-font-weight: bold; " +
+                        "-fx-border-radius: 5; " +
+                        "-fx-background-radius: 5;"
+        )));
+
+        if (dialogPane.getScene().getWindow() instanceof Stage) {
+            Stage stage = (Stage) dialogPane.getScene().getWindow();
+            stage.getIcons().clear(); // Elimina cualquier icono predeterminado
+        }
+    }
+
+    /**
+     * Crea un TextInputDialog con estilos personalizados y ScrollPane para el header.
+     * @param title El título del diálogo.
+     * @param headerText El texto del encabezado (puede contener listas).
+     * @param contentText El texto del contenido.
+     * @return El TextInputDialog estilizado.
+     */
+    private TextInputDialog crearTextInputDialog(String title, String headerText, String contentText) {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle(title);
+
+        // Crear un ScrollPane para el headerText
+        TextArea headerTextArea = new TextArea(headerText);
+        headerTextArea.setEditable(false);
+        headerTextArea.setWrapText(true);
+        headerTextArea.setPrefHeight(Region.USE_COMPUTED_SIZE);
+        headerTextArea.setMaxHeight(Double.MAX_VALUE);
+        headerTextArea.setStyle(
+                "-fx-control-inner-background: #fbf6ff; " +
+                        "-fx-text-fill: #23243a; " +
+                        "-fx-font-size: 12px; " +
+                        "-fx-border-color: #A6B1E1; " +
+                        "-fx-border-width: 1; " +
+                        "-fx-border-radius: 5; " +
+                        "-fx-background-radius: 5;"
+        );
+
+        ScrollPane scrollPane = new ScrollPane(headerTextArea);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setPrefHeight(Region.USE_COMPUTED_SIZE);
+        scrollPane.setMaxHeight(200);
+        scrollPane.setStyle(
+                "-fx-background-color: transparent; " +
+                        "-fx-border-color: transparent;"
+        );
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+
+        dialog.getDialogPane().setHeader(scrollPane);
+        dialog.setContentText(contentText);
+
+        applyDialogStyles(dialog.getDialogPane());
+
+        // Ocultar el icono de interrogación
+        dialog.getDialogPane().getScene().getWindow().setOnShown(event -> {
+            Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
+            stage.getIcons().clear();
+        });
+
+        return dialog;
+    }
+
+    /**
+     * Crea un Alert con estilos personalizados.
+     * @param alertType El tipo de alerta.
+     * @param title El título del diálogo.
+     * @param headerText El texto del encabezado.
+     * @param contentText El texto del contenido.
+     * @return El Alert estilizado.
+     */
+    private Alert crearStyledAlert(Alert.AlertType alertType, String title, String headerText, String contentText) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(headerText);
+        alert.setContentText(contentText);
+        applyDialogStyles(alert.getDialogPane());
+
+        // Ocultar el icono de interrogación
+        alert.getDialogPane().getScene().getWindow().setOnShown(event -> {
+            Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+            stage.getIcons().clear();
+        });
+
+        return alert;
     }
 }

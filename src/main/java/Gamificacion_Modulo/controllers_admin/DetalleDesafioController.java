@@ -47,7 +47,7 @@ public class DetalleDesafioController {
     }
 
     private void cargarDatosDesafios() {
-        List<ProgresoEstudiante> progresos = Main.getProgresos();
+        List<ProgresoEstudiante> progresos = ProgresoEstudiante.getProgresos();
 
         if (!progresos.isEmpty()) {
             progresoActual = progresos.size() > 1 ? progresos.get(1) : progresos.get(0);

@@ -4,7 +4,6 @@ import Modulo_Usuario.Clases.UsuarioComunidad;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 public class Comentario {
     private String idComentario;
@@ -13,8 +12,9 @@ public class Comentario {
     private LocalDateTime fechaPublicacion;
     private Map<String, Integer> votosUsuarios;
 
-    public Comentario(String contenido, UsuarioComunidad autor) {
-        this.idComentario = UUID.randomUUID().toString();
+    // Constructor para crear un nuevo comentario
+    public Comentario(String idComentario, String contenido, UsuarioComunidad autor) {
+        this.idComentario = idComentario;
         this.contenido = contenido;
         this.autor = autor;
         this.fechaPublicacion = LocalDateTime.now();
@@ -33,6 +33,11 @@ public class Comentario {
     // Getters y setters
     public String getIdComentario() {
         return idComentario;
+    }
+
+    // Setter para idComentario
+    public void setIdComentario(String idComentario) {
+        this.idComentario = idComentario;
     }
 
     public String getContenido() {
@@ -76,21 +81,55 @@ public class Comentario {
     /**
      * Permite a un usuario votar (like o dislike) un comentario.
      * Si el usuario ya votó, su voto se actualiza. Si el voto es 0, se quita el voto.
-     * @param usuario El usuario que vota.
+     * @param usuarioVotante El usuario que vota.
      * @param voto El voto (1 para like, -1 para dislike, 0 para quitar voto).
      */
-    public void votar(UsuarioComunidad usuario, int voto) {
-        if (voto == 1 || voto == -1) {
-            votosUsuarios.put(usuario.getUsername(), voto);
-        } else if (voto == 0) {
-            votosUsuarios.remove(usuario.getUsername());
-        } else {
-            throw new IllegalArgumentException("El voto debe ser 1 (like), -1 (dislike) o 0 (quitar voto).");
+    public void votar(UsuarioComunidad usuarioVotante, int voto) {
+        if (usuarioVotante == null) {
+            throw new IllegalArgumentException("El usuario votante no puede ser nulo.");
         }
-    }
+        String username = usuarioVotante.getUsername();
+        int votoAnterior = votosUsuarios.getOrDefault(username, 0);
 
-    public void editar(String nuevoContenido) {
-        this.contenido = nuevoContenido;
+        if (voto == 1) {
+            if (votoAnterior == 1) {
+                System.out.println("ℹ️ El usuario " + username + " ya había dado voto positivo a este comentario.");
+            } else {
+                votosUsuarios.put(username, 1);
+                if (votoAnterior == -1) {
+                    autor.incrementarReputacion(2);
+                } else {
+                    autor.incrementarReputacion(1);
+                }
+                System.out.println("✅ Usuario " + username + " dio voto positivo al comentario.");
+            }
+        } else if (voto == -1) {
+            if (votoAnterior == -1) {
+                System.out.println("ℹ️ El usuario " + username + " ya había dado voto negativo a este comentario.");
+            } else {
+                votosUsuarios.put(username, -1);
+                if (votoAnterior == 1) {
+                    autor.decrementarReputacion(2);
+                } else {
+                    autor.decrementarReputacion(1);
+                }
+                System.out.println("✅ Usuario " + username + " dio voto negativo al comentario.");
+            }
+        } else if (voto == 0) { // Quitar Voto
+            if (votoAnterior == 0) {
+                System.out.println("ℹ️ El usuario " + username + " no había votado este comentario.");
+            } else {
+                votosUsuarios.remove(username);
+                if (votoAnterior == 1) {
+                    autor.decrementarReputacion(1);
+                } else if (votoAnterior == -1) {
+                    autor.incrementarReputacion(1);
+                }
+                System.out.println("✅ Usuario " + username + " quitó su voto del comentario.");
+            }
+        } else {
+            System.out.println("⚠️ Tipo de voto inválido. Use 1 (voto positivo), -1 (voto negativo) o 0 (quitar voto).");
+        }
     }
 
     @Override
