@@ -1,6 +1,7 @@
 package Modulo_Ejercicios.Controladores;
 
-import MetodosGlobales.MetodosFrecuentes;
+import Conexion.MetodosFrecuentes;
+import Conexion.SesionManager;
 import Modulo_Ejercicios.logic.EjercicioSeleccion;
 import Modulo_Ejercicios.logic.Respuesta;
 import Modulo_Ejercicios.logic.RespuestaString;
@@ -24,9 +25,6 @@ import java.util.ArrayList;
 import java.util.function.Consumer;
 import java.util.List;
 import java.util.ResourceBundle;
-
-
-import Modulo_Ejercicios.otrosModulos.Usuario; // Importar Usuario para manejar vidas
 
 
 public class EjercicioSeleccionController implements Initializable {
@@ -229,7 +227,7 @@ public class EjercicioSeleccionController implements Initializable {
 
     /**
      * Método para configurar un solo ejercicio individual
-    */
+     */
     public void setEjercicio(EjercicioSeleccion ejercicio) {
         this.ejercicioActual = ejercicio;
         cargarInstruccion(ejercicio);
@@ -237,19 +235,19 @@ public class EjercicioSeleccionController implements Initializable {
     }
 
     //Carga un ejercicio individual en la interfaz
-     private void cargarInstruccion(EjercicioSeleccion ejercicio) {
+    private void cargarInstruccion(EjercicioSeleccion ejercicio) {
         // Establecer la instrucción
         if (lblInstruccion != null) {
             lblInstruccion.setText(ejercicio.getInstruccion());
         }
-        
+
         // Limpiar selecciones anteriores
         limpiarSelecciones();
-        
+
         // Crear botones según las opciones disponibles
         List<String> opciones = ejercicio.getListOpciones();
         setOpciones(opciones);
-        
+
         // Resetear estado de UI
         if (btnComprobar != null) {
             btnComprobar.setVisible(false);
@@ -258,7 +256,7 @@ public class EjercicioSeleccionController implements Initializable {
         if (feedbackPanel != null) {
             feedbackPanel.setVisible(false);
         }
-        
+
     }
 
 
@@ -309,7 +307,7 @@ public class EjercicioSeleccionController implements Initializable {
             for (String opcionSeleccionada : opcionesSeleccionadas) {
                 respuestasUsuario.add(new RespuestaString(opcionSeleccionada));
             }
-            
+
             ResultadoDeEvaluacion resultado = ejercicioActual.evaluarRespuestas(respuestasUsuario);
 
             // Notificar primero a Lección para que gestione vidas si corresponde (<100)
@@ -325,7 +323,7 @@ public class EjercicioSeleccionController implements Initializable {
             actualizarColoresBotones(respuestasCorrectas);
 
             TipoRespuesta tipoRespuesta = determinarTipoRespuesta(resultado.getPorcentajeDeAcerto(), respuestasUsuario.size(), respuestasCorrectas.size());
-            
+
             switch (tipoRespuesta) {
                 case CORRECTO:
                     respuestasCorrectasUsuario.add(true);
@@ -354,7 +352,7 @@ public class EjercicioSeleccionController implements Initializable {
 
         }
     }
-    
+
     //Determina el tipo de respuesta basado en el porcentaje de acierto
     private TipoRespuesta determinarTipoRespuesta(double porcentajeAcierto, int numRespuestasUsuario, int numRespuestasCorrectas) {
         // Correcto solo si el usuario seleccionó exactamente todas las correctas y nada más
@@ -391,14 +389,14 @@ public class EjercicioSeleccionController implements Initializable {
                 mostrarPanelCorrecto(mensaje, explicacion);
                 break;
             case INCORRECTO:
-                if (Usuario.getVidas() <= 0) {
+                if (getVidasActuales()<= 0) {
                     mostrarPanelGameOver();
                 } else {
                     mostrarPanelIncorrecto(mensaje, explicacion);
                 }
                 break;
             case PARCIALMENTE_CORRECTO:
-                if (Usuario.getVidas() <= 0) {
+                if (getVidasActuales() <= 0) {
                     // Si al quedar parcialmente correcto se agotaron las vidas, mostrar Game Over
                     mostrarPanelGameOver();
                 } else {
@@ -408,7 +406,7 @@ public class EjercicioSeleccionController implements Initializable {
         }
 
         // Configurar y mostrar el botón siguiente solo si NO es Game Over
-    if (Usuario.getVidas() <= 0) {
+        if (getVidasActuales() <= 0) {
             if (btnSiguiente != null) {
                 btnSiguiente.setVisible(false);
                 btnSiguiente.setManaged(false);
@@ -496,7 +494,7 @@ public class EjercicioSeleccionController implements Initializable {
             btnSiguiente.setDisable(false);
             btnSiguiente.setOpacity(1.0);
 
-            if (Usuario.getVidas() <= 0) {
+            if (getVidasActuales() <= 0) {
                 btnSiguiente.setText("REINICIAR");
             } else {
                 btnSiguiente.setText("SIGUIENTE");
@@ -507,7 +505,7 @@ public class EjercicioSeleccionController implements Initializable {
     private void cerrarVentanaYAvanzar() {
         try {
             Nuevo_Modulo_Leccion.controllers.LeccionUIController.avanzarAlSiguienteEjercicio();
-            
+
             if (btnComprobar != null && btnComprobar.getScene() != null) {
                 btnComprobar.getScene().getWindow().hide();
             }
@@ -578,7 +576,7 @@ public class EjercicioSeleccionController implements Initializable {
 
     }
 
-        /**
+    /**
      * Actualiza la barra de progreso basada en el progreso de la lección
      */
     private void actualizarProgressBar() {
@@ -586,7 +584,7 @@ public class EjercicioSeleccionController implements Initializable {
             // Obtener el progreso actual de la lección desde LeccionUIController
             int indiceActual = Nuevo_Modulo_Leccion.controllers.LeccionUIController.getIndiceEjercicioActual();
             int totalEjercicios = Nuevo_Modulo_Leccion.controllers.LeccionUIController.getTotalEjercicios();
-            
+
             if (totalEjercicios > 0) {
                 double progreso = (double) indiceActual / totalEjercicios;
                 if (progressBar != null) {
@@ -602,9 +600,15 @@ public class EjercicioSeleccionController implements Initializable {
         }
     }
 
+    private int getVidasActuales() {
+        return SesionManager.getInstancia().getUsuarioAutenticado().getVidas();
+    }
+
     private void actualizarVidasUI() {
         if (txtLiveCount != null) {
-            txtLiveCount.setText(String.valueOf(Usuario.getVidas()));
+            txtLiveCount.setText(String.valueOf(getVidasActuales()));
         }
     }
+
+
 }

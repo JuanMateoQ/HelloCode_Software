@@ -3,7 +3,7 @@ package Gamificacion_Modulo.clases;
 import java.util.ArrayList;
 import java.util.List;
 
-import MetodosGlobales.SesionManager;
+import Conexion.SesionManager;
 import Modulo_Usuario.Clases.Roles;
 import Modulo_Usuario.Clases.Usuario;
 import javafx.application.Application;
@@ -53,7 +53,7 @@ public class Main extends Application {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Gamificacion_Modulo/fxml/PerfilUsuario.fxml"));
             Parent root = loader.load();
 
-            Scene scene = new Scene(root, 360, 720);
+            Scene scene = new Scene(root, 360, 640);
             stage.setTitle("Sistema de Gamificación - HelloCode");
             stage.setScene(scene);
             stage.setResizable(false);
@@ -69,7 +69,7 @@ public class Main extends Application {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/Gamificacion_Modulo/fxml/Desafios.fxml"));
                 Parent root = loader.load();
 
-                Scene scene = new Scene(root, 393, 852);
+                Scene scene = new Scene(root, 360, 720);
                 stage.setTitle("Sistema de Gamificación - HelloCode");
                 stage.setScene(scene);
                 stage.setResizable(false);
@@ -92,7 +92,7 @@ public class Main extends Application {
             FXMLLoader loader = new FXMLLoader(Main.class.getResource(fxmlPath));
             Parent root = loader.load();
 
-            Scene scene = new Scene(root, 360, 720);
+            Scene scene = new Scene(root, 360, 640);
 
             // Encontrar el Stage activo en lugar de usar primaryStage
             Stage stageActivo = null;
@@ -109,7 +109,14 @@ public class Main extends Application {
             }
 
             if (stageActivo != null) {
+                // Configurar el primaryStage si no estaba configurado
+                if (primaryStage == null) {
+                    primaryStage = stageActivo;
+                }
+                
                 stageActivo.setScene(scene);
+                stageActivo.setTitle("Sistema de Gamificación - HelloCode");
+                stageActivo.setResizable(false);  // Asegurar que no sea redimensionable
                 stageActivo.centerOnScreen();
                 System.out.println(">>> Navegación exitosa a: " + fxmlPath);
             } else {

@@ -1,8 +1,7 @@
 package Modulo_Usuario.Controladores;
 
 
-import MetodosGlobales.MetodosFrecuentes;
-import MetodosGlobales.SesionManager;
+import Conexion.SesionManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;

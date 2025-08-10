@@ -1,6 +1,5 @@
 package Nuevo_Modulo_Leccion.controllers;
 
-import MetodosGlobales.MetodosFrecuentes;
 import Modulo_Ejercicios.logic.Lenguaje;
 import Modulo_Ejercicios.logic.NivelDificultad;
 import Nuevo_Modulo_Leccion.dataBase.LeccionRepository;

@@ -15,8 +15,8 @@ import java.util.*;
 public class MainGUIEjerciciosEmparejar extends Application {
 
     public static void main(String[] args) {
-        ejecutarDemoConsola();
-        //launch(args);
+        //ejecutarDemoConsola();
+        launch(args);
 
     }
 
@@ -27,7 +27,7 @@ public class MainGUIEjerciciosEmparejar extends Application {
             System.out.println("No se encontraron ejercicios de emparejar.");
             return;
         }
-        EjercicioEmparejar ejercicio = ejercicios.get(1);
+        EjercicioEmparejar ejercicio = ejercicios.get(0);
         System.out.println("Instrucción: " + ejercicio.getInstruccion());
 
         List<String> izquierda = ejercicio.obtenerColumnaIzquierda();
@@ -62,11 +62,11 @@ public class MainGUIEjerciciosEmparejar extends Application {
             return;
         }
 
-    // Map letra -> valor derecha
-    // Se usa este HashMap para convertir rápidamente cada letra (A, B, C, ...) digitada por el
-    // usuario a la opción real de la columna derecha que se mostró desordenada. Al barajar la
-    // lista 'derecha', las posiciones cambian; el mapa conserva la asociación letra-opción en
-    // O(1) para validar el orden ingresado sin tener que buscar linealmente cada vez.
+        // Map letra -> valor derecha
+        // Se usa este HashMap para convertir rápidamente cada letra (A, B, C, ...) digitada por el
+        // usuario a la opción real de la columna derecha que se mostró desordenada. Al barajar la
+        // lista 'derecha', las posiciones cambian; el mapa conserva la asociación letra-opción en
+        // O(1) para validar el orden ingresado sin tener que buscar linealmente cada vez.
         Map<String, String> mapaDerecha = new HashMap<>();
         for (int i = 0; i < derecha.size(); i++) {
             mapaDerecha.put(String.valueOf((char)('A' + i)).toUpperCase(), derecha.get(i));
@@ -100,7 +100,7 @@ public class MainGUIEjerciciosEmparejar extends Application {
         Leccion leccion = new Leccion();
         leccion.agregarEjercicio(ejercicio);
 
-    // Tercer parámetro es la ruta FXML final a mostrar tras terminar la lección; se deja vacío por ahora
-    LeccionUIController.mostrarUnaLeccion(leccion, primaryStage, "src\\main\\resources\\Modulo_GestorEjercicios\\Views\\Leccion.fxml");
+        // Tercer parámetro es la ruta FXML final a mostrar tras terminar la lección; se deja vacío por ahora
+        LeccionUIController.mostrarUnaLeccion(leccion, primaryStage, "Modulo_Usuario/views/homeUsuario.fxml");
     }
 }

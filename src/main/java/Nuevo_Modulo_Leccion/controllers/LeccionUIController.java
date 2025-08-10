@@ -1,6 +1,7 @@
 package Nuevo_Modulo_Leccion.controllers;
 
-import MetodosGlobales.MetodosFrecuentes;
+import Conexion.MetodosFrecuentes;
+import Conexion.SesionManager;
 import Modulo_Ejercicios.Controladores.EjercicioCompletarController;
 import Modulo_Ejercicios.Controladores.EjercicioSeleccionController;
 import Modulo_Ejercicios.logic.EjercicioBase;
@@ -16,10 +17,8 @@ import javafx.stage.Stage;
 import java.util.function.Consumer;
 
 
-import Modulo_Ejercicios.otrosModulos.Usuario; //import para mostrar los ejercicios solo si el usuario tiene mas de una vida
-
 public class LeccionUIController {
-    
+
     // Variables estáticas para manejar la secuencia de ejercicios
     private static Leccion leccionActual;
     private static int indiceEjercicioActual = 0;
@@ -32,20 +31,20 @@ public class LeccionUIController {
 
         try {
             // Cerrar la ventana actual
-            
+
             // Inicializar la secuencia de ejercicios
             leccionActual = leccionAMostrar;
             indiceEjercicioActual = 0;
             rutaFXMLVentanaFinal = rutaFXML;
-            
+
             // Verifica si el usuario tiene al menos una vida
-            if (Usuario.getVidas() > 0) { 
+            if (SesionManager.getInstancia().getUsuarioAutenticado().getVidas() > 0) {
                 ventanaActual.close();
                 mostrarSiguienteEjercicio();
             } else {
                 MetodosFrecuentes.mostrarAlerta("No tienes suficientes vidas", "Debes tener más de una vida para acceder a los ejercicios.");
 
-                
+
             }
 
         } catch (Exception e) {
@@ -64,9 +63,9 @@ public class LeccionUIController {
                 mostrarLeccionCompletada();
                 return;
             }
-            
+
             EjercicioBase ejercicioActual = leccionActual.getListEjercicios().get(indiceEjercicioActual);
-            
+
             if (ejercicioActual instanceof EjercicioSeleccion) {
                 mostrarEjercicioSeleccion((EjercicioSeleccion) ejercicioActual);
             } else if (ejercicioActual instanceof EjercicioCompletarCodigo) {
@@ -78,7 +77,7 @@ public class LeccionUIController {
                 indiceEjercicioActual++;
                 mostrarSiguienteEjercicio();
             }
-            
+
         } catch (Exception e) {
             e.printStackTrace();
             MetodosFrecuentes.mostrarAlerta("Error", "Error al cargar el ejercicio: " + e.getMessage());
@@ -97,12 +96,12 @@ public class LeccionUIController {
     public static int getTotalEjercicios() {
         return leccionActual != null ? leccionActual.getListEjercicios().size() : 0;
     }
-    
+
     // Permite a los controladores de ejercicios conocer la ruta final configurada por Lección
     public static String getRutaFXMLVentanaFinal() {
         return rutaFXMLVentanaFinal;
     }
-    
+
 
     private static void mostrarEjercicioSeleccion(EjercicioSeleccion ejercicio) {
         mostrarVentanaEjercicio(
@@ -143,12 +142,12 @@ public class LeccionUIController {
 
             // Inyectar callback opcional: el controller puede declarar setOnResultado(Consumer<ResultadoDeEvaluacion>)
             try {
-                var metodo = ctrl.getClass().getMethod("setOnResultado", java.util.function.Consumer.class);
+                var metodo = ctrl.getClass().getMethod("setOnResultado", Consumer.class);
                 Consumer<ResultadoDeEvaluacion> onResultado = (res) -> {
                     if (res == null) return;
                     boolean fallo = res.getPorcentajeDeAcerto() < 100.0;
                     if (fallo) {
-                        Usuario.restarVida();
+                        SesionManager.getInstancia().getUsuarioAutenticado().quitarVida();
                     }
                 };
                 metodo.invoke(ctrl, onResultado);

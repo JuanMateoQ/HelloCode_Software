@@ -1,7 +1,8 @@
 package Modulo_Ejercicios.logic;
 
-import java.util.ArrayList;
 import Nuevo_Modulo_Leccion.logic.TemaLeccion;
+
+import java.util.ArrayList;
 
 public class EjercicioEmparejar extends EjercicioBase {
     private ArrayList<String> columnaIzquierda;
@@ -60,6 +61,7 @@ public class EjercicioEmparejar extends EjercicioBase {
         int comparables = Math.min(total, respuestasUsuario.size());
         int aciertos = 0;
         for (int i = 0; i < comparables; i++) {
+            //valor verdadero o falso, float
             Object ru = respuestasUsuario.get(i).getRespuesta();
             String esperado = respuestasCorrectas.get(i);
             if (ru != null && esperado.equals(ru.toString())) {
@@ -189,7 +191,7 @@ public class EjercicioEmparejar extends EjercicioBase {
                 throw new IllegalArgumentException("El lenguaje es requerido");
             }
 
-            return new EjercicioEmparejar(instruccion, columnaIzquierda, columnaDerecha, respuestasCorrectas, 
+            return new EjercicioEmparejar(instruccion, columnaIzquierda, columnaDerecha, respuestasCorrectas,
                     nivelDificultad, lenguaje, temaLeccion);
         }
     }

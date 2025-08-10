@@ -7,7 +7,7 @@ public class UsuarioComunidad extends Usuario {
     private String idUsuario;
     private NivelJava nivelJava;
     private Integer reputacion;
-    private List<UsuarioTemp> amigos;
+    private List<Usuario> amigos;
 
     // Constructor por defecto
     public UsuarioComunidad() {
@@ -61,23 +61,23 @@ public class UsuarioComunidad extends Usuario {
         this.reputacion = reputacion;
     }
 
-    public List<UsuarioTemp> getAmigos() {
+    public List<Usuario> getAmigos() {
         return amigos;
     }
 
-    public void setAmigos(List<UsuarioTemp> amigos) {
+    public void setAmigos(List<Usuario> amigos) {
         this.amigos = amigos;
     }
 
 
     // Métodos para gestionar amigos
-    public void agregarAmigo(UsuarioTemp amigo) {
+    public void agregarAmigo(Usuario amigo) {
         if (amigo != null && !amigos.contains(amigo)) {
             amigos.add(amigo);
         }
     }
 
-    public void eliminarAmigo(UsuarioTemp amigo) {
+    public void eliminarAmigo(Usuario amigo) {
         amigos.remove(amigo);
     }
 

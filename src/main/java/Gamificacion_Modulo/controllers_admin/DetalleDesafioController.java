@@ -3,9 +3,8 @@ package Gamificacion_Modulo.controllers_admin;
 import java.util.List;
 
 import Gamificacion_Modulo.clases.Desafio;
-import Gamificacion_Modulo.clases.DesafioSemanal;
 import Gamificacion_Modulo.clases.DesafioMensual;
-import Gamificacion_Modulo.clases.Main;
+import Gamificacion_Modulo.clases.DesafioSemanal;
 import Gamificacion_Modulo.clases.ProgresoEstudiante;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -126,7 +125,7 @@ public class DetalleDesafioController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Gamificacion_Modulo/GUI/MainGamificacion.fxml"));
             Parent root = loader.load();
-            Scene scene = new Scene(root, 360, 720);
+            Scene scene = new Scene(root, 360, 640);
             Stage stage = (Stage) iconHome.getScene().getWindow();
             stage.setScene(scene);
             stage.setTitle("Sistema de Gamificación - HelloCode");
@@ -143,7 +142,7 @@ public class DetalleDesafioController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Gamificacion_Modulo/GUI/PerfilUsuario.fxml"));
             Parent root = loader.load();
-            Scene scene = new Scene(root, 393, 852);
+            Scene scene = new Scene(root, 360, 640);
             Stage stage = (Stage) iconProfile.getScene().getWindow();
             stage.setScene(scene);
             stage.setTitle("Perfil - Sistema de Gamificación");
@@ -160,7 +159,7 @@ public class DetalleDesafioController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Gamificacion_Modulo/GUI/Ranking.fxml"));
             Parent root = loader.load();
-            Scene scene = new Scene(root, 393, 852);
+            Scene scene = new Scene(root, 360, 640);
             Stage stage = (Stage) iconRanking.getScene().getWindow();
             stage.setScene(scene);
             stage.setTitle("Ranking - Sistema de Gamificación");

@@ -1,4 +1,4 @@
-package MetodosGlobales;
+package Conexion;
 
 import Gamificacion_Modulo.clases.ProgresoEstudiante;
 import Gamificacion_Modulo.clases.Ranking;

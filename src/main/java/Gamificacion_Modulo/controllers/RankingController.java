@@ -25,12 +25,18 @@ import javafx.scene.text.FontWeight;
 
 public class RankingController implements Initializable {
 
-    @FXML private VBox mainContainer;
     @FXML private Label titleLabel;
     @FXML private ComboBox<String> usuarioSelector;
     @FXML private VBox rankingEntriesContainer;
+    @FXML private javafx.scene.image.ImageView profilePicture;
 
-    @FXML private Button volverComunidadBtn;
+    // Botones de navegación inferior (IGUALES que HomeUsuarioController)
+    @FXML private Button btnHome;
+    @FXML private Button btnPerfil2;
+    @FXML private Button btnRanking;
+    @FXML private Button btnComunidad;
+    @FXML private Button btnHomeUsuario;
+    
     // Usuario actual será siempre el logueado
     private String currentUserName = null;
     // Ya no necesitamos índice porque siempre mostramos el usuario logueado
@@ -91,6 +97,9 @@ public class RankingController implements Initializable {
                     "Selecciona un usuario para ver su posición";
             titleLabel.setText(mensaje);
 
+            // Actualizar imagen según la posición
+            actualizarImagenRanking(posicionUsuario);
+
             // Obtener estudiantes para mostrar
             List<EstudianteRanking> topEstudiantes = estudiantesRanking.stream()
                     .limit(100)
@@ -126,6 +135,40 @@ public class RankingController implements Initializable {
         return estudiantesRanking.size(); // Si no se encuentra, última posición
     }
 
+    private void actualizarImagenRanking(int posicion) {
+        try {
+            String nombreImagen;
+            
+            // Determinar qué imagen usar según la posición
+            switch (posicion) {
+                case 1:
+                    nombreImagen = "Top1.png";
+                    break;
+                case 2:
+                    nombreImagen = "Top2.png";
+                    break;
+                case 3:
+                    nombreImagen = "Top3.png";
+                    break;
+                default:
+                    nombreImagen = "Top.png";
+                    break;
+            }
+            
+            // Actualizar la imagen del ImageView
+            if (profilePicture != null) {
+                javafx.scene.image.Image nuevaImagen = new javafx.scene.image.Image(
+                    getClass().getResourceAsStream("/Gamificacion_Modulo/images/" + nombreImagen)
+                );
+                profilePicture.setImage(nuevaImagen);
+                System.out.println(">>> Imagen actualizada a: " + nombreImagen + " para posición: " + posicion);
+            }
+        } catch (Exception e) {
+            System.err.println("Error al actualizar imagen de ranking: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
     private void crearEntradasRanking(List<EstudianteRanking> topEstudiantes) {
         rankingEntriesContainer.getChildren().clear();
 
@@ -154,8 +197,8 @@ public class RankingController implements Initializable {
                 nameLabel.setTextFill(Color.BLUE);
                 expLabel.setTextFill(Color.BLUE);
             } else {
-                nameLabel.setTextFill(Color.BLACK);
-                expLabel.setTextFill(Color.BLACK);
+                nameLabel.setTextFill(Color.web("#2C2C54")); // Color más oscuro para mejor contraste
+                expLabel.setTextFill(Color.web("#2C2C54"));
             }
 
             rankingItem.getChildren().addAll(nameLabel, spacer, expLabel);
@@ -167,10 +210,13 @@ public class RankingController implements Initializable {
         rankingEntriesContainer.getChildren().clear();
         Label mensajeVacio = new Label("No hay estudiantes registrados");
         mensajeVacio.setFont(Font.font("Inter", FontWeight.NORMAL, 16));
-        mensajeVacio.setTextFill(Color.GRAY);
+        mensajeVacio.setTextFill(Color.web("#6C6C6C")); // Gris más oscuro para mejor visibilidad
         rankingEntriesContainer.getChildren().add(mensajeVacio);
 
         titleLabel.setText("Ranking no disponible");
+        
+        // Mostrar imagen por defecto
+        actualizarImagenRanking(5); // Posición > 3 para mostrar Top.png
     }
 
     private void mostrarMensajeError() {
@@ -181,32 +227,11 @@ public class RankingController implements Initializable {
         rankingEntriesContainer.getChildren().add(mensajeError);
 
         titleLabel.setText("Error en el ranking");
+        
+        // Mostrar imagen por defecto
+        actualizarImagenRanking(5); // Posición > 3 para mostrar Top.png
     }
 
-
-    @FXML
-    private void regresarHomeUsuario() {
-        try {
-            System.out.println(">>> Regresando al módulo de usuarios");
-
-            // Cargar la pantalla de Home del módulo de usuarios
-            javafx.fxml.FXMLLoader fxmlLoader = new javafx.fxml.FXMLLoader(
-                    getClass().getResource("/Modulo_Usuario/views/homeUsuario.fxml"));
-            javafx.scene.Scene scene = new javafx.scene.Scene(fxmlLoader.load(), 360, 720);
-
-            // Obtener el Stage actual
-            javafx.stage.Stage currentStage = (javafx.stage.Stage) volverComunidadBtn.getScene().getWindow();
-
-            // Cambiar la escena
-            currentStage.setTitle("Hello Code Software - Panel Principal");
-            currentStage.setScene(scene);
-            currentStage.centerOnScreen();
-
-        } catch (Exception e) {
-            System.err.println("Error al volver al módulo de usuarios: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
 
     // Métodos de navegación
     @FXML
@@ -283,6 +308,79 @@ public class RankingController implements Initializable {
     public void actualizarDatosUsuario() {
         cargarUsuarios();
         cargarRanking();
+    }
+
+    // Métodos de navegación de la barra inferior (EXACTAMENTE IGUALES que PerfilUsuarioController)
+    @FXML
+    private void irAHome() {
+        try {
+            // Navegar al módulo de gestión de aprendizaje
+            javafx.fxml.FXMLLoader fxmlLoader = new javafx.fxml.FXMLLoader(
+                    getClass().getResource("/GestionAprendizaje_Modulo/Vistas/Ruta.fxml"));
+            javafx.scene.Scene scene = new javafx.scene.Scene(fxmlLoader.load(), 360, 640);
+
+            javafx.stage.Stage currentStage = (javafx.stage.Stage) btnHome.getScene().getWindow();
+            currentStage.setTitle("Ruta de Aprendizaje");
+            currentStage.setScene(scene);
+            currentStage.centerOnScreen();
+        } catch (Exception e) {
+            System.err.println("Error al navegar a Inicio: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void irAPerfil() {
+        try {
+            // PASO 1: Inicializar el backend del módulo de gamificación
+            Main.inicializarDesdeModuloExterno();
+            // Cargar PerfilUsuario.fxml
+            Main.cambiarEscena("/Gamificacion_Modulo/fxml/PerfilUsuario.fxml");
+        } catch (Exception e) {
+            System.err.println("Error al navegar a Perfil: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void irARanking() {
+        // Ya estamos en ranking, solo actualizar datos
+        cargarRanking();
+    }
+
+    @FXML
+    private void irAComunidad() {
+        try {
+            // Navegar al módulo de comunidad
+            javafx.fxml.FXMLLoader fxmlLoader = new javafx.fxml.FXMLLoader(
+                    getClass().getResource("/Modulo_Comunidad/Views/Comunidad.fxml"));
+            javafx.scene.Scene scene = new javafx.scene.Scene(fxmlLoader.load(), 360, 640);
+
+            javafx.stage.Stage currentStage = (javafx.stage.Stage) btnComunidad.getScene().getWindow();
+            currentStage.setTitle("Comunidad");
+            currentStage.setScene(scene);
+            currentStage.centerOnScreen();
+        } catch (Exception e) {
+            System.err.println("Error al navegar a Comunidad: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void irAHomeUsuario() {
+        try {
+            // Navegar al módulo de usuario (homeUsuario)
+            javafx.fxml.FXMLLoader fxmlLoader = new javafx.fxml.FXMLLoader(
+                    getClass().getResource("/Modulo_Usuario/views/homeUsuario.fxml"));
+            javafx.scene.Scene scene = new javafx.scene.Scene(fxmlLoader.load(), 360, 640);
+
+            javafx.stage.Stage currentStage = (javafx.stage.Stage) btnHomeUsuario.getScene().getWindow();
+            currentStage.setTitle("Hello Code Software - Panel Principal");
+            currentStage.setScene(scene);
+            currentStage.centerOnScreen();
+        } catch (Exception e) {
+            System.err.println("Error al navegar a HomeUsuario: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     // Clase interna para manejar datos de ranking

@@ -2,7 +2,6 @@ package Modulo_Usuario.Controladores;
 
 import Modulo_Usuario.Clases.Roles;
 import Modulo_Usuario.Clases.Usuario;
-import Modulo_Usuario.Clases.UsuarioAdministrador;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -118,10 +117,6 @@ public class RegisterController {
         if(comboRol.getValue() == Roles.ADMINISTRADOR){
             if(passwordAdmin.isEmpty()){
                 mostrarMensaje("Por favor complete todos los campos", true);
-                return;
-            }
-            if(!passwordAdmin.equals(UsuarioAdministrador.getPasswordCreacion())){
-                mostrarMensaje("Incorrecto password de creacion", true);
                 return;
             }
         }

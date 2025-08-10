@@ -105,7 +105,7 @@ public class ProgresoEstudiante {
 
     public static ProgresoEstudiante getProgresoUsuarioLogueado() {
         try {
-            MetodosGlobales.SesionManager sesionManager = MetodosGlobales.SesionManager.getInstancia();
+            Conexion.SesionManager sesionManager = Conexion.SesionManager.getInstancia();
             Modulo_Usuario.Clases.Usuario usuarioLogueado = sesionManager.getUsuarioAutenticado();
 
             if (usuarioLogueado == null) {

@@ -1,11 +1,11 @@
 package Modulo_Ejercicios.DataBase;
 
+import Modulo_Ejercicios.logic.*;
+import Nuevo_Modulo_Leccion.logic.TemaLeccion;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-
-import Modulo_Ejercicios.logic.*;
-import Nuevo_Modulo_Leccion.logic.TemaLeccion;
 
 /**
  * Clase responsable de la persistencia de ejercicios
@@ -262,7 +262,7 @@ public class EjercicioRepository {
                         builder.conOpcionIzquierda(izquierda);
                         builder.conOpcionDerecha(derecha);
                         // En este diseño las respuestas correctas son el orden de la columna derecha
-                        builder.conRespuestaCorrecta(derecha);
+                        builder.conRespuestaCorrecta(pareja);
                     } else {
                         System.out.println("Pareja inválida (se omite): " + p);
                     }
@@ -328,13 +328,13 @@ public class EjercicioRepository {
         List<EjercicioSeleccion> seleccion = cargarEjerciciosSeleccion();
         ejercicios.addAll(seleccion);
 
-    // Cargar ejercicios de completar código
-    List<EjercicioCompletarCodigo> completar = cargarEjerciciosCompletarCodigo();
-    ejercicios.addAll(completar);
+        // Cargar ejercicios de completar código
+        List<EjercicioCompletarCodigo> completar = cargarEjerciciosCompletarCodigo();
+        ejercicios.addAll(completar);
 
-    // Cargar ejercicios de emparejar
-    List<EjercicioEmparejar> emparejar = cargarEjerciciosEmparejar();
-    ejercicios.addAll(emparejar);
+        // Cargar ejercicios de emparejar
+        List<EjercicioEmparejar> emparejar = cargarEjerciciosEmparejar();
+        ejercicios.addAll(emparejar);
 
         return ejercicios;
     }

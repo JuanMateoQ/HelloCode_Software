@@ -11,11 +11,11 @@ public class EjercicioSeleccion extends EjercicioBase {
      * Constructor privado para usar con Builder
      */
     private EjercicioSeleccion(String instruccion, ArrayList<String> opcionesDeSeleccion, ArrayList<String> respuestasCorrectas,
-                              NivelDificultad nivelDeDificultad, Lenguaje lenguaje, TemaLeccion temaLeccion) {
+                               NivelDificultad nivelDeDificultad, Lenguaje lenguaje, TemaLeccion temaLeccion) {
         super(instruccion, respuestasCorrectas, nivelDeDificultad, lenguaje, temaLeccion);
         this.opcionesDeSeleccion = opcionesDeSeleccion;
     }
-    
+
     public ArrayList<String> getListOpciones() {
         return opcionesDeSeleccion;
     }
@@ -41,7 +41,7 @@ public class EjercicioSeleccion extends EjercicioBase {
 
         // Convertir a strings para comparar
         ArrayList<String> respuestasUsuarioStrings = new ArrayList<>();
-        
+
         for (Respuesta respuesta : respuestasUsuario) {
             respuestasUsuarioStrings.add(respuesta.getRespuesta().toString());
         }
@@ -50,7 +50,7 @@ public class EjercicioSeleccion extends EjercicioBase {
                 && respuestasCorrectas.containsAll(respuestasUsuarioStrings)) {
             return new ResultadoDeEvaluacion(100.0);
         }
-        
+
         // Conteo de aciertos: cuántas correctas fueron seleccionadas por el usuario
         int totalCorrectas = respuestasCorrectas.size();
         int aciertos = 0;

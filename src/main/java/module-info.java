@@ -1,7 +1,7 @@
 module Modulo_Ejercicio {
     requires javafx.controls;
     requires javafx.fxml;
-    requires transitive javafx.graphics; // transitive para exponer Stage a módulos que usen nuestras APIs
+    requires javafx.graphics;
     requires javafx.web;
 
     requires org.controlsfx.controls;
@@ -12,14 +12,15 @@ module Modulo_Ejercicio {
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
     requires java.desktop;
+    requires java.logging;
 
-    // Abre paquetes para FXML    opens GestionAprendizaje_Modulo.Controladores to javafx.fxml;
+    // Abre paquetes para FXML
     //    opens GestionAprendizaje_Modulo.Aplicacion to javafx.graphics, javafx.fxml;
 
 
     opens Modulo_Ejercicios.Controladores to javafx.fxml;
     opens Modulo_Usuario.Controladores to javafx.fxml;
-    opens MetodosGlobales to javafx.fxml;
+    opens Conexion to javafx.fxml;
 
     opens Comunidad_Modulo.Controladores_GUI to javafx.fxml;
     opens Comunidad_Modulo.controladores to javafx.fxml;
@@ -60,12 +61,10 @@ module Modulo_Ejercicio {
     exports Gamificacion_Modulo.controllers_admin;
     exports Gamificacion_Modulo.controllers;
 
-    exports MetodosGlobales;
+    exports Conexion;
 
     //Exports y opens del nuevo modulo de lecciones
     exports Nuevo_Modulo_Leccion.application;
-    exports Nuevo_Modulo_Leccion.logic;
-    exports Nuevo_Modulo_Leccion.controllers; // necesario para acceder desde otros paquetes
     opens Nuevo_Modulo_Leccion.application to javafx.graphics, javafx.fxml;
     opens Nuevo_Modulo_Leccion.controllers to javafx.graphics, javafx.fxml;
 

@@ -1,6 +1,6 @@
 package Modulo_Ejercicios.Controladores;
 
-import MetodosGlobales.MetodosFrecuentes;
+import Conexion.MetodosFrecuentes;
 import Modulo_Ejercicios.logic.EjercicioCompletarCodigo;
 import Modulo_Ejercicios.logic.Respuesta;
 import Modulo_Ejercicios.logic.RespuestaString;
@@ -19,9 +19,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
 
-
-//borrar luego
-import Modulo_Ejercicios.otrosModulos.Usuario; // Importar Usuario para manejar vidas
+import Conexion.SesionManager;
 
 public class EjercicioCompletarController implements Initializable {
 
@@ -70,7 +68,7 @@ public class EjercicioCompletarController implements Initializable {
     @FXML
     private Button btnClose;
 
-    
+
     /**
      * COMENTADO: Campo usado para listas de ejercicios, no necesario para ejercicios individuales
      */
@@ -92,7 +90,7 @@ public class EjercicioCompletarController implements Initializable {
     public void setEjercicio(EjercicioCompletarCodigo ejercicio) {
         this.ejercicioIndividual = ejercicio;
         this.respuestasCorrectasUsuario.clear();
-        
+
         if (ejercicio != null) {
             cargarEjercicio(ejercicio);
             // Configurar la barra de progreso para un solo ejercicio
@@ -108,15 +106,15 @@ public class EjercicioCompletarController implements Initializable {
         if (TextInstruccion != null) {
             TextInstruccion.setText(ejercicio.getInstruccion());
         }
-        
+
         if (Ejercicio != null) {
             Ejercicio.setText(ejercicio.obtenerCodigoIncompleto());
         }
-        
+
         if (textEntrada != null) {
             textEntrada.clear();
         }
-        
+
         if (AvisoCorrecto != null) {
             AvisoCorrecto.setVisible(false);
         }
@@ -132,12 +130,12 @@ public class EjercicioCompletarController implements Initializable {
         if (Avisos != null) {
             Avisos.setVisible(false);
         }
-        
+
         if (btnSiguiente != null) {
             btnSiguiente.setDisable(true);
             btnSiguiente.setOpacity(0.0);
         }
-        
+
         if (btnComprobar != null) {
             btnComprobar.setDisable(false);
         }
@@ -147,7 +145,7 @@ public class EjercicioCompletarController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
 
         ProgressBar.setProgress(0);
-    actualizarVidasUI();
+        actualizarVidasUI();
 
 
         // Configurar eventos de botones
@@ -156,7 +154,7 @@ public class EjercicioCompletarController implements Initializable {
         if (btnClose != null) {
             btnClose.setOnAction(e -> confirmarSalida());
         }
-        
+
         // Inicialmente ocultar el botón siguiente
         btnSiguiente.setDisable(true);
         btnSiguiente.setOpacity(0.0);
@@ -180,7 +178,7 @@ public class EjercicioCompletarController implements Initializable {
 
     private void comprobarCodigo() {
         String input = textEntrada.getText().trim();
-        
+
         if (input.isEmpty()) {
             mostrarMensajeError("Por favor, ingresa una respuesta antes de comprobar.");
             return;
@@ -209,7 +207,7 @@ public class EjercicioCompletarController implements Initializable {
 
                 actualizarVidasUI();
 
-                if (Usuario.getVidas() > 0) {
+                if (getVidasActuales() > 0) {
                     mostrarFeedbackIncorrecto(ejercicioIndividual);
                 } else {
                     mostrarGameOver();
@@ -232,9 +230,14 @@ public class EjercicioCompletarController implements Initializable {
      */
     private void actualizarVidasUI() {
         if (TexVida != null) {
-            TexVida.setText(String.valueOf(Usuario.getVidas()));
+            TexVida.setText(String.valueOf(getVidasActuales()));
         }
     }
+
+    private int getVidasActuales() {
+        return SesionManager.getInstancia().getUsuarioAutenticado().getVidas();
+    }
+
 
     //Muestra feedback para respuesta correcta
     private void mostrarFeedbackCorrecto() {
@@ -248,7 +251,7 @@ public class EjercicioCompletarController implements Initializable {
         if (Avisos != null) {
             Avisos.setVisible(false);
         }
-        
+
         // Mostrar feedback positivo
         if (AvisoCorrecto != null) {
             AvisoCorrecto.setVisible(true);
@@ -256,7 +259,7 @@ public class EjercicioCompletarController implements Initializable {
         if (labelBien != null) {
             labelBien.setVisible(true);
         }
-        
+
     }
 
     //Muestra feedback para respuesta incorrecta
@@ -268,21 +271,21 @@ public class EjercicioCompletarController implements Initializable {
         if (labelBien != null) {
             labelBien.setVisible(false);
         }
-        
+
         // Mostrar feedback de error
         if (AvisoIncorrecto != null) {
             AvisoIncorrecto.setVisible(true);
         }
-        
+
         // Obtener LA respuesta esperada (sabemos que es una sola)
         ArrayList<String> respuestasEsperadas = ejercicio.obtenerRespuestasEsperadas();
         String respuestaCorrecta = respuestasEsperadas.isEmpty() ? "No disponible" : respuestasEsperadas.get(0);
-        
+
         if (labelRetroalimentacion != null) {
             labelRetroalimentacion.setText("La respuesta correcta es: " + respuestaCorrecta);
             labelRetroalimentacion.setVisible(true);
         }
-        
+
     }
 
 
@@ -291,7 +294,7 @@ public class EjercicioCompletarController implements Initializable {
         try {
             // Llamar al LeccionUIController para avanzar al siguiente ejercicio
             Nuevo_Modulo_Leccion.controllers.LeccionUIController.avanzarAlSiguienteEjercicio();
-            
+
             if (btnComprobar != null && btnComprobar.getScene() != null) {
                 btnComprobar.getScene().getWindow().hide();
             }
@@ -303,7 +306,7 @@ public class EjercicioCompletarController implements Initializable {
     private void mostrarGameOver() {
         Avisos.setText("¡Se han agotado tus vidas!");
         Avisos.setVisible(true);
-        
+
         PauseTransition pauseAvisos = new PauseTransition(Duration.seconds(3));
         pauseAvisos.setOnFinished(event -> {
             Avisos.setVisible(false);
@@ -315,7 +318,7 @@ public class EjercicioCompletarController implements Initializable {
     private void mostrarMensajeError(String mensaje) {
         Avisos.setText(mensaje);
         Avisos.setVisible(true);
-        
+
         PauseTransition pause = new PauseTransition(Duration.seconds(2));
         pause.setOnFinished(event -> Avisos.setVisible(false));
         pause.play();
@@ -338,7 +341,7 @@ public class EjercicioCompletarController implements Initializable {
             // Obtener el progreso actual de la lección desde LeccionUIController
             int indiceActual = Nuevo_Modulo_Leccion.controllers.LeccionUIController.getIndiceEjercicioActual();
             int totalEjercicios = Nuevo_Modulo_Leccion.controllers.LeccionUIController.getTotalEjercicios();
-            
+
             if (totalEjercicios > 0) {
                 double progreso = (double) indiceActual / totalEjercicios;
                 if (ProgressBar != null) {

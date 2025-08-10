@@ -1,4 +1,4 @@
-package MetodosGlobales;
+package Conexion;
 
 
 import java.io.IOException;

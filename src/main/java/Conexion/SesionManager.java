@@ -1,4 +1,4 @@
-package MetodosGlobales;
+package Conexion;
 
 import Modulo_Usuario.Clases.Usuario;
 import Modulo_Usuario.Clases.UsuarioComunidad;

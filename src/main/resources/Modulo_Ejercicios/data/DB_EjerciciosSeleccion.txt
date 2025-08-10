@@ -101,3 +101,4 @@
 ¿Con qué se reserva memoria en C?|malloc,new,alloc,reserve|malloc|AVANZADO|C|FUNCIONES_Y_METODOS|FUNCIONES_Y_METODOS
 ¿Con qué se concatena texto en PHP?|.,+,::,->|.|INTERMEDIO|PHP|TIPOS_Y_OPERADORES|TIPOS_Y_OPERADORES
 ¿Con qué palabra se define una clase en PHP?|class,object,define,type|class|BASICO|PHP|CLASES_Y_ESTRUCTURAS|CLASES_Y_ESTRUCTURAS
+HOLA COMO ESTA|bien|mal|BASICO|JAVA|OTRO

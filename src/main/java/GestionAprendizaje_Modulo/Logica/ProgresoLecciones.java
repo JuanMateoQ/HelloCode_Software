@@ -1,6 +1,6 @@
 package GestionAprendizaje_Modulo.Logica;
 
-import MetodosGlobales.SesionManager;
+import Conexion.SesionManager;
 import Modulo_Usuario.Clases.Usuario;
 
 /**

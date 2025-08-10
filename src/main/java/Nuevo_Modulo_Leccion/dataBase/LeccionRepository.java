@@ -14,8 +14,6 @@ import java.util.List;
 public class LeccionRepository {
     static List<EjercicioBase> ejercicios = EjercicioRepository.cargarTodosLosEjercicios();
 
-
-
     public static List<Leccion> getListaLecciones(Lenguaje lenguaje, NivelDificultad nivelDificultad, TemaLeccion temaLeccion, int numEjercicioPorLeccion) {
         // Copia y mezcla los ejercicios
         List<EjercicioBase> copiaEjercicios = new ArrayList<>(ejercicios);
