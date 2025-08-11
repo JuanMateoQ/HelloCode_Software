@@ -12,14 +12,15 @@ module Modulo_Ejercicio {
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
     requires java.desktop;
+    requires java.logging;
 
-    // Abre paquetes para FXML    opens GestionAprendizaje_Modulo.Controladores to javafx.fxml;
+    // Abre paquetes para FXML
     //    opens GestionAprendizaje_Modulo.Aplicacion to javafx.graphics, javafx.fxml;
 
 
     opens Modulo_Ejercicios.Controladores to javafx.fxml;
     opens Modulo_Usuario.Controladores to javafx.fxml;
-    opens MetodosGlobales to javafx.fxml;
+    opens Conexion to javafx.fxml;
 
     opens Comunidad_Modulo.Controladores_GUI to javafx.fxml;
     opens Comunidad_Modulo.controladores to javafx.fxml;
@@ -60,7 +61,7 @@ module Modulo_Ejercicio {
     exports Gamificacion_Modulo.controllers_admin;
     exports Gamificacion_Modulo.controllers;
 
-    exports MetodosGlobales;
+    exports Conexion;
 
     //Exports y opens del nuevo modulo de lecciones
     exports Nuevo_Modulo_Leccion.application;

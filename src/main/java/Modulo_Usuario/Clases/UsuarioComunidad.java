@@ -7,7 +7,7 @@ public class UsuarioComunidad extends Usuario {
     private String idUsuario;
     private NivelJava nivelJava;
     private Integer reputacion;
-    private List<Usuario> amigos; 
+    private List<Usuario> amigos;
 
     // Constructor por defecto
     public UsuarioComunidad() {

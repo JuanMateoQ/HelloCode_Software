@@ -6,8 +6,19 @@ Prueba;123456;Prueba;prueba@prueba.com;0;3;USUARIO
 Pr;123;pr;pr@pr.com;0;3;USUARIO
 prueba;123456;Prueba2;prueb2a@prueba.com;100;3;USUARIO
 hola;abcdefg;Hola;hola@epn.edu.ec;0;3;USUARIO
-JuanMateo;123456;Juan Mateo;juan.quisilema@epn.edu.ec;0;3;ADMINISTRADOR
+JuanMateo;123456;Juan Mateo;juan.quisilema@epn.edu.ec;0;3;USUARIO
 Evelin;123456;Evelin Rocha;evelinrocha@epn.edu;0;3;USUARIO
-Jose;1234567;Jose;joserocapod0842@gmail.com;0;3;USUARIO
-esteban;esteban;esteban;esteban@god.ec;0;3;USUARIO
-tarek;tarek;tarek;tarek@god.com;0;3;ADMINISTRADOR
+Jose;1234567;Jose;joserocapod0842@gmail.com;3;3;USUARIO
+esteban;esteban;esteban;esteban@god.ec;1000;3;USUARIO
+tarek;tarek;tarek;tarek@god.com;0;0;USUARIO
+zack;123456;Isaac;isaacmh@gmail.com;0;3;USUARIO
+isaac;123456;isaac;isaacm1@gmail.com;0;3;USUARIO
+Fernando;fernando;Fernando;fernando.huilca@epn.edu.ec;0;3;USUARIO
+pruebita;pruebita;pruebita;hola@gmail.com;0;3;USUARIO
+JON;JONJON;JON;JON@JON.COM;0;3;USUARIO
+DOE;DOEDOE;DOE;DOE@DOE.COM;0;3;USUARIO
+danielito1;123456;danielito;danielito@gmail.com;0;3;USUARIO
+JONJON;JONJON;JONJON;JON@JONJON.com;0;3;USUARIO
+POLLO;POLLO123;POLLO;POLLO@POLLO.com;0;3;USUARIO
+COITO;COITO123;COITO;COITO@COITO.COM;0;3;USUARIO
+GOKU;COKU123;GOKU;GOKU@ZAMBRANO.COM;0;3;USUARIO

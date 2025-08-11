@@ -328,13 +328,13 @@ public class EjercicioRepository {
         List<EjercicioSeleccion> seleccion = cargarEjerciciosSeleccion();
         ejercicios.addAll(seleccion);
 
-    // Cargar ejercicios de completar código
-    List<EjercicioCompletarCodigo> completar = cargarEjerciciosCompletarCodigo();
-    ejercicios.addAll(completar);
+        // Cargar ejercicios de completar código
+        List<EjercicioCompletarCodigo> completar = cargarEjerciciosCompletarCodigo();
+        ejercicios.addAll(completar);
 
-    // Cargar ejercicios de emparejar
-    List<EjercicioEmparejar> emparejar = cargarEjerciciosEmparejar();
-    ejercicios.addAll(emparejar);
+        // Cargar ejercicios de emparejar
+        List<EjercicioEmparejar> emparejar = cargarEjerciciosEmparejar();
+        ejercicios.addAll(emparejar);
 
         return ejercicios;
     }

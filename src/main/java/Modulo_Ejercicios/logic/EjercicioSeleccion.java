@@ -11,11 +11,11 @@ public class EjercicioSeleccion extends EjercicioBase {
      * Constructor privado para usar con Builder
      */
     private EjercicioSeleccion(String instruccion, ArrayList<String> opcionesDeSeleccion, ArrayList<String> respuestasCorrectas,
-                              NivelDificultad nivelDeDificultad, Lenguaje lenguaje, TemaLeccion temaLeccion) {
+                               NivelDificultad nivelDeDificultad, Lenguaje lenguaje, TemaLeccion temaLeccion) {
         super(instruccion, respuestasCorrectas, nivelDeDificultad, lenguaje, temaLeccion);
         this.opcionesDeSeleccion = opcionesDeSeleccion;
     }
-    
+
     public ArrayList<String> getListOpciones() {
         return opcionesDeSeleccion;
     }
@@ -34,29 +34,43 @@ public class EjercicioSeleccion extends EjercicioBase {
 
     @Override
     public ResultadoDeEvaluacion evaluarRespuestas(ArrayList<Respuesta> respuestasUsuario) {
-        //Verificar que el usuario haya proporcionado al menos una respuesta
+        // Validación básica
         if (respuestasUsuario == null || respuestasUsuario.isEmpty()) {
             return new ResultadoDeEvaluacion(0);
         }
-        
-        //Verificar que el número de respuestas del usuario coincida con el número de respuestas correctas
-        if (respuestasUsuario.size() != respuestasCorrectas.size()) {
-            return new ResultadoDeEvaluacion(0);
-        }
-        
-        //Convertir las respuestas del usuario a strings para comparación
+
+        // Convertir a strings para comparar
         ArrayList<String> respuestasUsuarioStrings = new ArrayList<>();
+
         for (Respuesta respuesta : respuestasUsuario) {
             respuestasUsuarioStrings.add(respuesta.getRespuesta().toString());
         }
-        
-        //Verificar que todas las respuestas del usuario estén en las respuestas correctas
-        //y que todas las respuestas correctas estén en las del usuario
-        if(respuestasUsuarioStrings.containsAll(respuestasCorrectas) && 
-               respuestasCorrectas.containsAll(respuestasUsuarioStrings) ){
-                return new ResultadoDeEvaluacion(100);
-        };
-        return new ResultadoDeEvaluacion(0);
+
+        if (respuestasUsuarioStrings.containsAll(respuestasCorrectas)
+                && respuestasCorrectas.containsAll(respuestasUsuarioStrings)) {
+            return new ResultadoDeEvaluacion(100.0);
+        }
+
+        // Conteo de aciertos: cuántas correctas fueron seleccionadas por el usuario
+        int totalCorrectas = respuestasCorrectas.size();
+        int aciertos = 0;
+
+        ArrayList<String> restantes = new ArrayList<>(respuestasCorrectas);
+        for (String u : respuestasUsuarioStrings) {
+            int idx = restantes.indexOf(u);
+            if (idx >= 0) {
+                aciertos++;
+                restantes.remove(idx);
+            }
+        }
+
+
+        // Porcentaje basado en el máximo entre correctas y seleccionadas
+        int seleccionadas = respuestasUsuarioStrings.size();
+        int denominador = Math.max(totalCorrectas, seleccionadas);
+        double porcentaje = denominador == 0 ? 0.0 : (aciertos * 100.0 / denominador);
+
+        return new ResultadoDeEvaluacion(porcentaje);
     }
 
     /**

@@ -1,7 +1,7 @@
 package Comunidad_Modulo.Controladores_GUI;
 
 import Gamificacion_Modulo.clases.Main;
-import MetodosGlobales.MetodosFrecuentes;
+import Conexion.MetodosFrecuentes;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;

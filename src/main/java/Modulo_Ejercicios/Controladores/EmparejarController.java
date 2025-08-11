@@ -4,6 +4,8 @@ import Modulo_Ejercicios.logic.EjercicioEmparejar;
 import Modulo_Ejercicios.logic.Respuesta;
 import Modulo_Ejercicios.logic.RespuestaString;
 import Modulo_Ejercicios.logic.ResultadoDeEvaluacion;
+import Modulo_Usuario.Clases.Usuario;
+import Conexion.SesionManager;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -23,10 +25,6 @@ public class EmparejarController implements Initializable {
     public enum TipoRespuesta {
         CORRECTO, INCORRECTO, PARCIALMENTE_CORRECTO
     }
-
-    // Variables para el sistema de vidas
-    private int vidasActuales = 3;
-    private final int VIDAS_MAXIMAS = 3;
 
     // Elementos del header
     @FXML private Text txtLiveCount;
@@ -54,6 +52,8 @@ public class EmparejarController implements Initializable {
     @FXML private Text textPuntuacion;
     @FXML private Text textIncorrecto;
     @FXML private Text textIncorrectoDetalle;
+    @FXML private Text textGameOver;
+    @FXML private Text textGameOverDetalle;
     @FXML private Button btnSiguienteCompleto;
 
     // Variables del juego
@@ -133,7 +133,16 @@ public class EmparejarController implements Initializable {
 
         // Inicializar contador de vidas
         if (txtLiveCount != null) {
-            txtLiveCount.setText(String.valueOf(vidasActuales));
+            Usuario usuarioActual = SesionManager.getInstancia().getUsuarioAutenticado();
+            if (usuarioActual != null) {
+                // Sincronizar vidas desde archivo para asegurar datos actualizados
+                usuarioActual.sincronizarVidasDesdeArchivo();
+                int vidasActuales = usuarioActual.getVidas();
+                txtLiveCount.setText(String.valueOf(vidasActuales));
+                System.out.println("🔄 UI Emparejar inicializada - Vidas: " + vidasActuales);
+            } else {
+                txtLiveCount.setText("3"); // Valor por defecto
+            }
         }
     }
 
@@ -324,10 +333,17 @@ public class EmparejarController implements Initializable {
             aplicarEstiloIncorrecto(opcionSeleccionadaIzquierda);
             aplicarEstiloIncorrecto(opcionSeleccionadaDerecha);
 
-            // Reducir vidas
-            vidasActuales--;
-            if (txtLiveCount != null) {
-                txtLiveCount.setText(String.valueOf(vidasActuales));
+            // Reducir vidas usando el sistema principal de usuario
+            Usuario usuarioActual = SesionManager.getInstancia().getUsuarioAutenticado();
+            if (usuarioActual != null) {
+                usuarioActual.quitarVida();
+                // Sincronizar y actualizar UI con las vidas actuales después de la pérdida
+                usuarioActual.sincronizarVidasDesdeArchivo();
+                if (txtLiveCount != null) {
+                    int vidasActuales = usuarioActual.getVidas();
+                    txtLiveCount.setText(String.valueOf(vidasActuales));
+                    System.out.println("💔 Vida perdida - Vidas restantes: " + vidasActuales);
+                }
             }
 
             respuestasCorrectasUsuario.add(false);
@@ -392,8 +408,16 @@ public class EmparejarController implements Initializable {
     }
 
     private void verificarEstadoDelJuego() {
-        if (vidasActuales <= 0) {
+        Usuario usuarioActual = SesionManager.getInstancia().getUsuarioAutenticado();
+        
+        // Sincronizar datos antes de verificar vidas
+        if (usuarioActual != null) {
+            usuarioActual.sincronizarVidasDesdeArchivo();
+        }
+        
+        if (usuarioActual != null && usuarioActual.getVidas() <= 0) {
             // Game Over - Se agotaron las vidas
+            System.out.println("🔴 Game Over (Emparejar) - Vidas: " + usuarioActual.getVidas());
             ejercicioCompletado = true;
             mostrarFeedback(TipoRespuesta.INCORRECTO, "Se han agotado las vidas.", null);
         } else if (emparejamientosCompletados >= emparejamientosCorrectos.size()) {
@@ -508,6 +532,27 @@ public class EmparejarController implements Initializable {
     private void mostrarPanelGameOver() {
         if (panelGameOver != null) {
             panelGameOver.setVisible(true);
+            
+            Usuario usuarioActual = SesionManager.getInstancia().getUsuarioAutenticado();
+            if (usuarioActual != null) {
+                usuarioActual.sincronizarVidasDesdeArchivo();
+            }
+            
+            if (textGameOver != null) {
+                // Mensaje dinámico basado en las vidas reales del usuario
+                if (usuarioActual != null && usuarioActual.getVidas() <= 0) {
+                    textGameOver.setText("¡Se agotaron las vidas!");
+                } else {
+                    textGameOver.setText("¡Ejercicio fallido!");
+                }
+            }
+            if (textGameOverDetalle != null) {
+                String detalle = "No te preocupes, puedes intentarlo nuevamente.";
+                if (usuarioActual != null) {
+                    detalle += "\nVidas actuales: " + usuarioActual.getVidas();
+                }
+                textGameOverDetalle.setText(detalle);
+            }
         }
     }
 
@@ -516,7 +561,8 @@ public class EmparejarController implements Initializable {
             btnSiguienteCompleto.setDisable(false);
             btnSiguienteCompleto.setVisible(true);
 
-            if (vidasActuales <= 0) {
+            Usuario usuarioActual = SesionManager.getInstancia().getUsuarioAutenticado();
+            if (usuarioActual != null && usuarioActual.getVidas() <= 0) {
                 btnSiguienteCompleto.setText("SALIR");
             } else {
                 btnSiguienteCompleto.setText("SIGUIENTE");

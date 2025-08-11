@@ -59,10 +59,23 @@ public class PerfilUsuarioController {
     private ComboBox<String> estudianteSelector;
 
     @FXML
-    private Button volverComunidadBtn;
+    private Button adminBtn;
+
+    // Botones de navegación inferior (IGUALES que HomeUsuarioController)
+    @FXML
+    private Button btnHome;
 
     @FXML
-    private Button adminBtn;
+    private Button btnPerfil2;
+
+    @FXML
+    private Button btnRanking;
+
+    @FXML
+    private Button btnComunidad;
+
+    @FXML
+    private Button btnHomeUsuario;
 
     // Ya no necesitamos índice porque siempre mostramos el usuario logueado
     // private int estudianteActualIndex = 0;
@@ -113,32 +126,6 @@ public class PerfilUsuarioController {
             actualizarDatosPerfil();
         }
     }
-
-    // Método para volver al módulo de usuarios
-    @FXML
-    private void regresarHomeUsuario() {
-        try {
-            System.out.println(">>> Regresando al módulo de usuarios");
-
-            // Cargar la pantalla de Home del módulo de usuarios
-            javafx.fxml.FXMLLoader fxmlLoader = new javafx.fxml.FXMLLoader(
-                    getClass().getResource("/Modulo_Usuario/views/homeUsuario.fxml"));
-            javafx.scene.Scene scene = new javafx.scene.Scene(fxmlLoader.load(), 360, 720);
-
-            // Obtener el Stage actual
-            javafx.stage.Stage currentStage = (javafx.stage.Stage) volverComunidadBtn.getScene().getWindow();
-
-            // Cambiar la escena
-            currentStage.setTitle("Hello Code Software - Panel Principal");
-            currentStage.setScene(scene);
-            currentStage.centerOnScreen();
-
-        } catch (Exception e) {
-            System.err.println("Error al volver al módulo de usuarios: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
 
     // TODO: Corregir el Main.getprogresos() para que no use el Main directamente, sino que use un método de acceso
     // Ahora ya no usa Main directamente, usa la clase ProgresoEstudiante
@@ -466,6 +453,80 @@ public class PerfilUsuarioController {
         if (userName != null) userName.setText(nombre);
         if (userEmail != null) userEmail.setText("@" + tag);
         if (expPoints != null) expPoints.setText(experiencia);
+    }
+
+    // Métodos de navegación de la barra inferior (EXACTAMENTE IGUALES que HomeUsuarioController)
+    @FXML
+    private void irARanking() {
+        try {
+            // PASO 1: Inicializar el backend del módulo de gamificación
+            Main.inicializarDesdeModuloExterno();
+            // Cargar Ranking.fxml
+            Main.cambiarEscena("/Gamificacion_Modulo/fxml/Ranking.fxml");
+        } catch (Exception e) {
+            System.err.println("Error al navegar a Ranking: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void irAComunidad() {
+        try {
+            // Navegar al módulo de comunidad
+            javafx.fxml.FXMLLoader fxmlLoader = new javafx.fxml.FXMLLoader(
+                    getClass().getResource("/Modulo_Comunidad/Views/Comunidad.fxml"));
+            javafx.scene.Scene scene = new javafx.scene.Scene(fxmlLoader.load(), 360, 640);
+
+            javafx.stage.Stage currentStage = (javafx.stage.Stage) btnComunidad.getScene().getWindow();
+            currentStage.setTitle("Comunidad");
+            currentStage.setScene(scene);
+            currentStage.centerOnScreen();
+        } catch (Exception e) {
+            System.err.println("Error al navegar a Comunidad: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void irAHome() {
+        try {
+            // Navegar al módulo de gestión de aprendizaje
+            javafx.fxml.FXMLLoader fxmlLoader = new javafx.fxml.FXMLLoader(
+                    getClass().getResource("/GestionAprendizaje_Modulo/Vistas/Ruta.fxml"));
+            javafx.scene.Scene scene = new javafx.scene.Scene(fxmlLoader.load(), 360, 640);
+
+            javafx.stage.Stage currentStage = (javafx.stage.Stage) btnHome.getScene().getWindow();
+            currentStage.setTitle("Ruta de Aprendizaje");
+            currentStage.setScene(scene);
+            currentStage.centerOnScreen();
+        } catch (Exception e) {
+            System.err.println("Error al navegar a Inicio: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void irAPerfil() {
+        // Ya estamos en perfil, solo actualizar datos
+        actualizarDatosPerfil();
+    }
+
+    @FXML
+    private void irAHomeUsuario() {
+        try {
+            // Navegar de vuelta al home del módulo de usuarios
+            javafx.fxml.FXMLLoader fxmlLoader = new javafx.fxml.FXMLLoader(
+                    getClass().getResource("/Modulo_Usuario/views/homeUsuario.fxml"));
+            javafx.scene.Scene scene = new javafx.scene.Scene(fxmlLoader.load(), 360, 640);
+
+            javafx.stage.Stage currentStage = (javafx.stage.Stage) btnHomeUsuario.getScene().getWindow();
+            currentStage.setTitle("Hello Code Software - Panel Principal");
+            currentStage.setScene(scene);
+            currentStage.centerOnScreen();
+        } catch (Exception e) {
+            System.err.println("Error al navegar a Home Usuario: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
 

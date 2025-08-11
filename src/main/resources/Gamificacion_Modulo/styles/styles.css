@@ -6,7 +6,7 @@
 
 /* Imagen de perfil (parte superior con fondo violeta oscuro) */
 .profile-header {
-    -fx-background-color: #5A4B8B;
+    -fx-background-color: #424874;
     -fx-padding: 30;
     -fx-alignment: center;
 }

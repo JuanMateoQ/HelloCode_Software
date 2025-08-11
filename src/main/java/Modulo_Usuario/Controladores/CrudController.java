@@ -25,13 +25,13 @@ public class CrudController {
     @FXML private Label usuarioActualLabel;
     @FXML private Label contadorUsuarios;
     @FXML private VBox mensajeContainer;
-    
+
     // Nuevos controles para tipos de usuario
     @FXML private ComboBox<String> tipoUsuarioCombo;
     @FXML private VBox camposComunidad;
     @FXML private ComboBox<NivelJava> nivelJavaCombo;
     @FXML private TextField reputacionField;
-    
+
     private final String ARCHIVO_USUARIOS = "src/main/java/Modulo_Usuario/Usuarios/usuarios.txt";
     private List<Usuario> usuarios = new ArrayList<>();
     private Usuario usuarioSeleccionado = null;
@@ -44,10 +44,10 @@ public class CrudController {
         configurarEventos();
         cargarUsuarios();
         usuarioActualLabel.setText("Panel de administración");
-        
+
         // Inicializar el contador
         actualizarContadorUsuarios();
-        
+
         // Ocultar mensaje inicialmente
         if (mensajeContainer != null) {
             mensajeContainer.setVisible(false);
@@ -57,7 +57,7 @@ public class CrudController {
     private void configurarComboBoxes() {
         // Configurar tipos de usuario
         ObservableList<String> tiposUsuario = FXCollections.observableArrayList(
-           "Usuario Básico", "Usuario Comunidad"
+                "Usuario Básico", "Usuario Comunidad"
         );
         tipoUsuarioCombo.setItems(tiposUsuario);
         tipoUsuarioCombo.getSelectionModel().selectFirst();
@@ -75,10 +75,10 @@ public class CrudController {
 
     private void mostrarCamposEspecificos() {
         String tipoSeleccionado = tipoUsuarioCombo.getValue();
-        
+
         // Ocultar campos específicos
         camposComunidad.setVisible(false);
-        
+
         // Mostrar campos según el tipo
         switch (tipoSeleccionado) {
             case "Usuario Comunidad":
@@ -98,13 +98,13 @@ public class CrudController {
                     setStyle("");
                 } else {
                     String tipo = obtenerTipoUsuario(usuario);
-                    String info = String.format("👤 %s - %s (%s) [%s]", 
-                        usuario.getUsername(), 
-                        usuario.getNombre() != null ? usuario.getNombre() : "Sin nombre",
-                        usuario.getEmail() != null ? usuario.getEmail() : "Sin email",
-                        tipo);
+                    String info = String.format("👤 %s - %s (%s) [%s]",
+                            usuario.getUsername(),
+                            usuario.getNombre() != null ? usuario.getNombre() : "Sin nombre",
+                            usuario.getEmail() != null ? usuario.getEmail() : "Sin email",
+                            tipo);
                     setText(info);
-                    
+
                     // Estilo más visible para las celdas
                     setStyle("-fx-background-color: #f8f9fa; " +
                             "-fx-text-fill: #2d3436; " +
@@ -113,7 +113,7 @@ public class CrudController {
                             "-fx-padding: 8px; " +
                             "-fx-border-color: #dee2e6; " +
                             "-fx-border-width: 0 0 1 0;");
-                    
+
                     // Resaltar selección
                     setOnMouseEntered(e -> {
                         if (!isEmpty()) {
@@ -126,7 +126,7 @@ public class CrudController {
                                     "-fx-border-width: 0 0 1 0;");
                         }
                     });
-                    
+
                     setOnMouseExited(e -> {
                         if (!isEmpty() && !isSelected()) {
                             setStyle("-fx-background-color: #f8f9fa; " +
@@ -138,7 +138,7 @@ public class CrudController {
                                     "-fx-border-width: 0 0 1 0;");
                         }
                     });
-                    
+
                     // Estilo para elemento seleccionado
                     if (isSelected()) {
                         setStyle("-fx-background-color: #2196f3; " +
@@ -190,13 +190,13 @@ public class CrudController {
                         }
                     }
                 }
-                
+
                 actualizarListView();
                 actualizarContadorUsuarios();
                 mostrarMensaje("✅ Usuarios cargados correctamente: " + contador, "success");
-                
+
             }
-            
+
         } catch (Exception e) {
             e.printStackTrace();
             mostrarMensaje("❌ Error al cargar usuarios: " + e.getMessage(), "error");
@@ -206,19 +206,19 @@ public class CrudController {
     private void actualizarListView() {
         ObservableList<Usuario> observableList = FXCollections.observableArrayList(usuarios);
         listaUsuarios.setItems(observableList);
-        
+
         // Debug: verificar que la lista se está actualizando
         System.out.println("ListView actualizado con " + usuarios.size() + " usuarios:");
         for (Usuario u : usuarios) {
             System.out.println("- " + u.getUsername() + " (" + u.getNombre() + ")");
         }
-        
+
         // Forzar refresh del ListView
         listaUsuarios.refresh();
-        
+
         actualizarContadorUsuarios();
     }
-    
+
     private void actualizarContadorUsuarios() {
         if (contadorUsuarios != null) {
             int total = usuarios.size();
@@ -260,7 +260,7 @@ public class CrudController {
         }
 
         Usuario nuevoUsuario = crearUsuarioSegunTipo(username, password, nombre, email, tipoSeleccionado);
-        
+
         if (nuevoUsuario != null) {
             usuarios.add(nuevoUsuario);
             guardarUsuarios();
@@ -305,7 +305,7 @@ public class CrudController {
         nuevaContrasena.setText(usuarioSeleccionado.getPassword());
         nuevoNombre.setText(usuarioSeleccionado.getNombre() != null ? usuarioSeleccionado.getNombre() : "");
         nuevoEmail.setText(usuarioSeleccionado.getEmail() != null ? usuarioSeleccionado.getEmail() : "");
-        
+
         // Configurar tipo de usuario
         String tipo = obtenerTipoUsuario(usuarioSeleccionado);
         switch (tipo) {
@@ -324,7 +324,7 @@ public class CrudController {
             default:
                 tipoUsuarioCombo.setValue("Usuario Básico");
         }
-        
+
         mostrarCamposEspecificos();
         mostrarMensaje("Modo edición: " + usuarioSeleccionado.getUsername(), "info");
     }
@@ -396,12 +396,12 @@ public class CrudController {
     private void mostrarMensaje(String mensaje, String tipo) {
         if (mensajeLabel != null) {
             mensajeLabel.setText(mensaje);
-            
+
             // Mostrar el contenedor de mensajes
             if (mensajeContainer != null) {
                 mensajeContainer.setVisible(true);
             }
-            
+
             switch (tipo) {
                 case "error":
                     mensajeLabel.setStyle("-fx-text-fill: #e74c3c; -fx-font-weight: bold;");
@@ -422,7 +422,7 @@ public class CrudController {
                     }
                     break;
             }
-            
+
             // Auto-ocultar mensajes después de 5 segundos (excepto errores)
             if (!tipo.equals("error")) {
                 new Thread(() -> {

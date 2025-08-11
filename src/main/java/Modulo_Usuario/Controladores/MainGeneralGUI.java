@@ -11,7 +11,7 @@ public class MainGeneralGUI extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(MainGeneralGUI.class.getResource("/Modulo_Usuario/views/Splash.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 360, 720);
+        Scene scene = new Scene(fxmlLoader.load(), 360, 640);
         stage.setTitle("Hello Code Software - Cargando...");
         stage.setScene(scene);
         stage.show();

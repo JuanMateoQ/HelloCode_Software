@@ -1,7 +1,6 @@
 package Gamificacion_Modulo.controllers_admin;
 
 import Gamificacion_Modulo.clases.Logro;
-import Gamificacion_Modulo.controllers_admin.AsignarDesafioController;
 import Gamificacion_Modulo.clases.Main;
 import Gamificacion_Modulo.clases.ProgresoEstudiante;
 import javafx.event.ActionEvent;
@@ -131,7 +130,7 @@ public class AdminMainController {
             Stage stage = new Stage();
             stage.setTitle(titulo);
             // Forzar dimensiones específicas para todas las ventanas admin
-            Scene scene = new Scene(root, 360, 720);
+            Scene scene = new Scene(root, 360, 640);
             stage.setScene(scene);
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setResizable(false);
@@ -158,7 +157,7 @@ public class AdminMainController {
 
             Stage stage = new Stage();
             stage.setTitle("Panel de Administración - HelloCode");
-            Scene scene = new Scene(root, 360, 720);
+            Scene scene = new Scene(root, 360, 640);
             stage.setScene(scene);
             stage.setResizable(false);
             stage.centerOnScreen();

@@ -12,8 +12,8 @@ import java.util.List;
 public class MainConsolaPruebas {
 
     public static void main(String[] args) {
-//        List<Leccion> lecciones = LeccionRepository.getListaLecciones(NivelDificultad.BASICO, Lenguaje.JAVA, TemaLeccion.CONTROL_DE_FLUJO, 3);
 
+//        List<Leccion> lecciones = LeccionRepository.getListaLecciones(NivelDificultad.BASICO, Lenguaje.JAVA, TemaLeccion.CONTROL_DE_FLUJO, 3);
 
 
 

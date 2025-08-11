@@ -1,9 +1,7 @@
 package Modulo_Usuario.Controladores;
 
 
-import MetodosGlobales.MetodosFrecuentes;
-import MetodosGlobales.SesionManager;
-import Modulo_Usuario.Clases.Usuario;
+import Conexion.SesionManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -15,19 +13,6 @@ import javafx.stage.Stage;
 
 
 public class HomeController {
-    
-    private Usuario usuario;
-    
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
-        System.out.println("Usuario establecido en HomeController: " + usuario.getNombre() + " (Rol: " + usuario.getRol() + ")");
-    }
-
-    @FXML
-    private void abrirLeccion(MouseEvent event) {
-        // Aquí puedes cargar el módulo de lección cuando lo tengas
-        mostrarMensaje("Módulo Lecciones", "Este módulo estará disponible próximamente.");
-    }
 
     @FXML
     private void abrirUsuarios(MouseEvent event) {
@@ -55,10 +40,10 @@ public class HomeController {
     private void abrirEjercicios(MouseEvent event) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/Modulo_Ejercicios/views/CrudEjercicios.fxml"));
-            Scene scene = new Scene(fxmlLoader.load(), 360, 720);
+            Scene scene = new Scene(fxmlLoader.load(), 360, 640);
 
             Stage stage = new Stage();
-            stage.setTitle("Hello Code Software - Gestión de Ejercicios");
+            stage.setTitle("Hello Code Software - Módulo Ejercicios");
             stage.setScene(scene);
             stage.setResizable(false);
             stage.show();
@@ -66,10 +51,14 @@ public class HomeController {
             // Cerrar la pantalla actual
             Stage thisStage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
             thisStage.close();
+            //mostrarMensaje("Módulo Lecciones", "Este módulo estará disponible próximamente.");
         } catch (Exception e) {
             e.printStackTrace();
-            mostrarError("Error al abrir el módulo de ejercicios: " + e.getMessage());
+            mostrarError("Error al abrir el módulo de usuarios: " + e.getMessage());
         }
+        // Aquí puedes cargar el módulo de ejercicios cuando lo tengas
+        //mostrarMensaje("Módulo Ejercicios", "Este módulo estará disponible próximamente.");
+
     }
 
     @FXML
@@ -127,7 +116,7 @@ public class HomeController {
             SesionManager.getInstancia().cerrarSesion();
             // Volver a la pantalla de login
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(rutaFXML));
-            Scene scene = new Scene(fxmlLoader.load(), 360, 720);
+            Scene scene = new Scene(fxmlLoader.load(), 360, 640);
 
             Stage stage = new Stage();
             stage.setTitle(titulo);

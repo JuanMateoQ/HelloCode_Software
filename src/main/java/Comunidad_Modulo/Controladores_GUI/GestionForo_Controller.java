@@ -24,8 +24,8 @@ import Comunidad_Modulo.enums.TipoSolucion;
 import Comunidad_Modulo.enums.EstadoHilo;
 import Comunidad_Modulo.servicios.ComunidadService;
 import Comunidad_Modulo.servicios.PersistenciaService;
-import MetodosGlobales.MetodosFrecuentes;
-import MetodosGlobales.SesionManager;
+import Conexion.MetodosFrecuentes;
+import Conexion.SesionManager;
 
 /**
  * Controlador para la gestión del foro en la interfaz JavaFX
@@ -1872,7 +1872,7 @@ public class GestionForo_Controller implements Initializable {
         StringBuilder infoCompartir = new StringBuilder();
 
         if (contexto.tieneComunidadActiva()) {
-            Comunidad comunidad = contexto.getComunidadActual();
+            Comunidad_Modulo.modelo.Comunidad comunidad = contexto.getComunidadActual();
             ForoGeneral foro = comunidad.getForoGeneral();
             UsuarioComunidad usuarioActual = SesionManager.getInstancia().getUsuarioComunidad();
 
@@ -2059,7 +2059,7 @@ public class GestionForo_Controller implements Initializable {
         StringBuilder estado = new StringBuilder();
 
         if (contexto.tieneComunidadActiva()) {
-            Comunidad comunidad = contexto.getComunidadActual();
+            Comunidad_Modulo.modelo.Comunidad comunidad = contexto.getComunidadActual();
             estado.append("✅ Comunidad: ").append(comunidad.getNombre());
 
             int usuariosConectados = comunidad.getUsuariosConectados().size();

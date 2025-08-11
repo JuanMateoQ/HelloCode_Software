@@ -1,6 +1,6 @@
 package Modulo_Ejercicios.Controladores;
 
-import MetodosGlobales.MetodosFrecuentes;
+import Conexion.MetodosFrecuentes;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;

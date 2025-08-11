@@ -9,24 +9,24 @@
             fx:controller="Modulo_Usuario.Controladores.CrudController"
             prefWidth="360.0" prefHeight="800.0"
             style="-fx-background-color: linear-gradient(to bottom, #f8f9fa, #e9ecef);">
-    
+
     <!-- ScrollPane principal -->
-    <ScrollPane fitToWidth="true" fitToHeight="true" 
+    <ScrollPane fitToWidth="true" fitToHeight="true"
                 style="-fx-background: transparent; -fx-background-color: transparent; -fx-border-color: transparent;"
                 AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0">
-        
+
         <VBox spacing="20" alignment="TOP_CENTER" prefWidth="340">
             <padding>
                 <Insets top="20" right="15" bottom="15" left="15"/>
             </padding>
 
             <!-- Header moderno -->
-            <VBox spacing="12" alignment="CENTER" 
+            <VBox spacing="12" alignment="CENTER"
                   style="-fx-background-color: white; -fx-background-radius: 16; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 8, 0, 0, 2);">
                 <padding>
                     <Insets top="20" right="20" bottom="20" left="20"/>
                 </padding>
-                
+
                 <HBox alignment="CENTER_LEFT" spacing="12">
                     <Button text="←" onAction="#regresarAlHome"
                             style="-fx-background-color: #6c5ce7; -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold; -fx-background-radius: 50; -fx-effect: dropshadow(one-pass-box, rgba(108,92,231,0.3), 4, 0, 0, 2);"
@@ -42,12 +42,12 @@
             </VBox>
 
             <!-- Panel de lista mejorado -->
-            <VBox spacing="20" 
+            <VBox spacing="20"
                   style="-fx-background-color: white; -fx-background-radius: 16; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 8, 0, 0, 2);">
                 <padding>
                     <Insets top="25" right="25" bottom="25" left="25"/>
                 </padding>
-                
+
                 <HBox alignment="CENTER_LEFT" spacing="12">
                     <Label text="📋"
                            style="-fx-font-size: 22px;"/>
@@ -57,11 +57,11 @@
                     <Label fx:id="contadorUsuarios" text="0 usuarios"
                            style="-fx-font-size: 12px; -fx-text-fill: #636e72; -fx-background-color: #f1f2f6; -fx-background-radius: 12; -fx-padding: 6 12 6 12;"/>
                 </HBox>
-                
+
                 <ListView fx:id="listaUsuarios"
                           style="-fx-background-color: white; -fx-background-radius: 12; -fx-border-radius: 12; -fx-border-color: #333; -fx-border-width: 2; -fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2d3436;"
                           prefHeight="350" maxHeight="400" minHeight="300"/>
-                
+
                 <HBox spacing="16" alignment="CENTER">
                     <Button text="🔄 Actualizar"
                             onAction="#actualizarLista"
@@ -73,12 +73,12 @@
             </VBox>
 
             <!-- Panel de formulario mejorado -->
-            <VBox spacing="14" 
+            <VBox spacing="14"
                   style="-fx-background-color: white; -fx-background-radius: 16; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 8, 0, 0, 2);">
                 <padding>
                     <Insets top="20" right="20" bottom="20" left="20"/>
                 </padding>
-                
+
                 <HBox alignment="CENTER_LEFT" spacing="10">
                     <Label text="✏️"
                            style="-fx-font-size: 18px;"/>
@@ -101,7 +101,7 @@
                         <ColumnConstraints hgrow="ALWAYS" percentWidth="50"/>
                         <ColumnConstraints hgrow="ALWAYS" percentWidth="50"/>
                     </columnConstraints>
-                    
+
                     <!-- Usuario -->
                     <VBox spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="0">
                         <Label text="👤 Usuario" style="-fx-font-weight: bold; -fx-font-size: 12px; -fx-text-fill: #2d3436;"/>
@@ -110,7 +110,7 @@
                                    style="-fx-background-color: #f8f9fa; -fx-background-radius: 8; -fx-border-color: #e9ecef; -fx-border-radius: 8; -fx-border-width: 1;"
                                    prefHeight="34"/>
                     </VBox>
-                    
+
                     <!-- Contraseña -->
                     <VBox spacing="6" GridPane.columnIndex="1" GridPane.rowIndex="0">
                         <Label text="🔒 Contraseña" style="-fx-font-weight: bold; -fx-font-size: 12px; -fx-text-fill: #2d3436;"/>
@@ -119,7 +119,7 @@
                                        style="-fx-background-color: #f8f9fa; -fx-background-radius: 8; -fx-border-color: #e9ecef; -fx-border-radius: 8; -fx-border-width: 1;"
                                        prefHeight="34"/>
                     </VBox>
-                    
+
                     <!-- Nombre -->
                     <VBox spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="1">
                         <Label text="🏷️ Nombre" style="-fx-font-weight: bold; -fx-font-size: 12px; -fx-text-fill: #2d3436;"/>
@@ -128,7 +128,7 @@
                                    style="-fx-background-color: #f8f9fa; -fx-background-radius: 8; -fx-border-color: #e9ecef; -fx-border-radius: 8; -fx-border-width: 1;"
                                    prefHeight="34"/>
                     </VBox>
-                    
+
                     <!-- Email -->
                     <VBox spacing="6" GridPane.columnIndex="1" GridPane.rowIndex="1">
                         <Label text="📧 Email" style="-fx-font-weight: bold; -fx-font-size: 12px; -fx-text-fill: #2d3436;"/>
@@ -143,13 +143,13 @@
                 <VBox fx:id="camposComunidad" spacing="12" visible="false">
                     <Separator style="-fx-background-color: #e9ecef;"/>
                     <Label text="🎯 Configuración Comunidad" style="-fx-font-weight: bold; -fx-font-size: 13px; -fx-text-fill: #6c5ce7;"/>
-                    
+
                     <GridPane hgap="12" vgap="12">
                         <columnConstraints>
                             <ColumnConstraints hgrow="ALWAYS" percentWidth="50"/>
                             <ColumnConstraints hgrow="ALWAYS" percentWidth="50"/>
                         </columnConstraints>
-                        
+
                         <VBox spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="0">
                             <Label text="☕ Nivel Java" style="-fx-font-weight: bold; -fx-font-size: 12px; -fx-text-fill: #2d3436;"/>
                             <ComboBox fx:id="nivelJavaCombo"
@@ -157,7 +157,7 @@
                                       style="-fx-background-color: #f8f9fa; -fx-background-radius: 8; -fx-border-color: #e9ecef; -fx-border-radius: 8; -fx-border-width: 1;"
                                       prefHeight="34"/>
                         </VBox>
-                        
+
                         <VBox spacing="6" GridPane.columnIndex="1" GridPane.rowIndex="0">
                             <Label text="⭐ Reputación" style="-fx-font-weight: bold; -fx-font-size: 12px; -fx-text-fill: #2d3436;"/>
                             <TextField fx:id="reputacionField"
@@ -186,7 +186,7 @@
             </VBox>
 
             <!-- Mensaje de estado mejorado -->
-            <VBox fx:id="mensajeContainer" visible="false" 
+            <VBox fx:id="mensajeContainer" visible="false"
                   style="-fx-background-color: white; -fx-background-radius: 12; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 6, 0, 0, 2);">
                 <padding>
                     <Insets top="12" right="16" bottom="12" left="16"/>

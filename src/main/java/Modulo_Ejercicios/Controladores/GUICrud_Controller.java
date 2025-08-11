@@ -1,8 +1,7 @@
 package Modulo_Ejercicios.Controladores;
 
-import Modulo_Ejercicios.logic.*;
-import Nuevo_Modulo_Leccion.logic.TemaLeccion;
 import Modulo_Ejercicios.DataBase.EjercicioRepository;
+import Modulo_Ejercicios.logic.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -123,20 +122,12 @@ public class GUICrud_Controller implements Initializable {
         todosLosEjercicios.clear();
         
         // Cargar ejercicios de selección
-        try {
-            List<EjercicioSeleccion> ejerciciosSeleccion = EjercicioRepository.cargarEjerciciosSeleccion();
-            todosLosEjercicios.addAll(ejerciciosSeleccion);
-        } catch (Exception e) {
-            mostrarMensaje("Error", "Error al cargar ejercicios de selección: " + e.getMessage(), Alert.AlertType.ERROR);
-        }
+        List<EjercicioSeleccion> ejerciciosSeleccion = EjercicioRepository.cargarEjerciciosSeleccion();
+        todosLosEjercicios.addAll(ejerciciosSeleccion);
         
         // Cargar ejercicios de completar código
-        try {
-            List<EjercicioCompletarCodigo> ejerciciosCompletar = EjercicioRepository.cargarEjerciciosCompletarCodigo();
-            todosLosEjercicios.addAll(ejerciciosCompletar);
-        } catch (Exception e) {
-            mostrarMensaje("Error", "Error al cargar ejercicios de completar código: " + e.getMessage(), Alert.AlertType.ERROR);
-        }
+        List<EjercicioCompletarCodigo> ejerciciosCompletar = EjercicioRepository.cargarEjerciciosCompletarCodigo();
+        todosLosEjercicios.addAll(ejerciciosCompletar);
         
         // Actualizar lista filtrada
         filtrarEjercicios();
@@ -244,7 +235,6 @@ public class GUICrud_Controller implements Initializable {
             .conRespuestasCorrectas(respuestas)
             .conNivel(comboNivel.getValue())
             .conLenguaje(comboLenguaje.getValue())
-            .conTema(null) // Tema por defecto (null permitido)
             .construir();
         
         // Guardar en repositorio
@@ -282,7 +272,6 @@ public class GUICrud_Controller implements Initializable {
             .conRespuestasEsperadas(respuestas)
             .conNivel(comboNivel.getValue())
             .conLenguaje(comboLenguaje.getValue())
-            .conTema(null) // Tema por defecto (null permitido)
             .construir();
         
         // Guardar en repositorio

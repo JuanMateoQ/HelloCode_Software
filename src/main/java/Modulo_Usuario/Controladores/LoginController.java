@@ -9,7 +9,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-import MetodosGlobales.SesionManager;
+import Conexion.SesionManager;
+import GestionAprendizaje_Modulo.Controladores.ConfiguracionUsuarioService;
 import Modulo_Usuario.Clases.Roles;
 import Modulo_Usuario.Clases.Usuario;
 import javafx.event.ActionEvent;
@@ -65,7 +66,7 @@ public class LoginController {
         }
     }
 
-    @FXML
+ @FXML
     protected void handleLogin(ActionEvent event) {
         String username = usuarioField.getText().trim();
         String password = contrasenaField.getText().trim();
@@ -88,43 +89,42 @@ public class LoginController {
             try {
                 SesionManager.getInstancia().iniciarSesion(usuarioEncontrado);
                 
-                // Debug: verificar rol del usuario
-                System.out.println("Login exitoso - Usuario: " + usuarioEncontrado.getUsername() + 
-                                 ", Rol: " + usuarioEncontrado.getRol());
-                
-                // Si es usuario normal, va a homeUsuario.fxml
+                // Si es usuario normal, verificar si es primera vez o ya configurado
                 if (usuarioEncontrado.getRol() == Roles.USUARIO) {
-                    System.out.println("Redirigiendo a Panel Usuario");
-                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/Modulo_Usuario/views/homeUsuario.fxml"));
-                    Parent root = fxmlLoader.load();
-                    HomeUsuarioController homeController = fxmlLoader.getController();
-                    homeController.setUsuario(usuarioEncontrado);
-                    Scene scene = new Scene(root, 360, 640);
-                    Stage stage = new Stage();
-                    stage.setTitle("Hello Code Software - Panel Usuario");
-                    stage.setScene(scene);
-                    stage.setResizable(false);
-                    stage.show();
-                } else if (usuarioEncontrado.getRol() == Roles.ADMINISTRADOR) {
-                    // Si es administrador, va a home.fxml con HomeController
-                    System.out.println("Redirigiendo a Panel Administrador");
-                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/Modulo_Usuario/views/home.fxml"));
-                    Parent root = fxmlLoader.load();
-                    HomeController homeController = fxmlLoader.getController();
-                    homeController.setUsuario(usuarioEncontrado);
-                    Scene scene = new Scene(root, 360, 640);
-                    Stage stage = new Stage();
-                    stage.setTitle("Hello Code Software - Panel Administrador");
-                    stage.setScene(scene);
-                    stage.setResizable(false);
-                    stage.show();
+                    ConfiguracionUsuarioService configService = ConfiguracionUsuarioService.getInstancia();
+                    
+                    // Verificar si es primera vez del usuario
+                    if (configService.esPrimeraVez(usuarioEncontrado.getUsername())) {
+                        // Usuario nuevo o sin configuración: ir a CursosController
+                        System.out.println("Usuario primera vez, redirigiendo a selección de cursos: " + usuarioEncontrado.getUsername());
+                        
+                        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/GestionAprendizaje_Modulo/Vistas/Cursos.fxml"));
+                        Parent root = fxmlLoader.load();
+                        Scene scene = new Scene(root, 360, 640);
+                        Stage stage = new Stage();
+                        stage.setTitle("Hello Code Software - Selección de Curso");
+                        stage.setScene(scene);
+                        stage.setResizable(false);
+                        stage.show();
+                    } else {
+                        // Usuario ya configurado: ir a HomeUsuario
+                        System.out.println("Usuario ya configurado, redirigiendo a home: " + usuarioEncontrado.getUsername());
+                        
+                        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/Modulo_Usuario/views/homeUsuario.fxml"));
+                        Parent root = fxmlLoader.load();
+                        HomeUsuarioController homeController = fxmlLoader.getController();
+                        homeController.setUsuario(usuarioEncontrado);
+                        Scene scene = new Scene(root, 360, 640);
+                        Stage stage = new Stage();
+                        stage.setTitle("Hello Code Software - Panel Usuario");
+                        stage.setScene(scene);
+                        stage.setResizable(false);
+                        stage.show();
+                    }
                 } else {
-                    // Para cualquier otro rol futuro, también va al panel admin
-                    System.out.println("Rol no reconocido, redirigiendo a Panel Admin");
+                    // Cualquier otro rol va a home.fxml (administradores)
                     FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/Modulo_Usuario/views/home.fxml"));
                     Parent root = fxmlLoader.load();
-                    HomeController homeController = fxmlLoader.getController();
-                    homeController.setUsuario(usuarioEncontrado);
                     Scene scene = new Scene(root, 360, 640);
                     Stage stage = new Stage();
                     stage.setTitle("Hello Code Software - Panel Admin");
@@ -132,6 +132,7 @@ public class LoginController {
                     stage.setResizable(false);
                     stage.show();
                 }
+                
                 Stage thisStage = (Stage) usuarioField.getScene().getWindow();
                 thisStage.close();
             } catch (Exception e) {
@@ -149,7 +150,7 @@ public class LoginController {
     public void irARegistro(ActionEvent event) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/Modulo_Usuario/views/register.fxml"));
-            Scene scene = new Scene(fxmlLoader.load(), 360, 720);
+            Scene scene = new Scene(fxmlLoader.load(), 360, 640);
 
             Stage stage = new Stage();
             stage.setTitle("Hello Code Software - Registro de Usuario");

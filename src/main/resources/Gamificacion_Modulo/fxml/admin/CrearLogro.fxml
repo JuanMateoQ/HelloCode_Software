@@ -5,89 +5,143 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" 
-            prefHeight="720.0" prefWidth="360.0" stylesheets="@../../styles/styles.css"
-            xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="Gamificacion_Modulo.controllers_admin.CrearLogroController">
-   <VBox fx:id="mainVBox" spacing="12">
-      <padding>
-         <Insets top="15" left="15" right="15" bottom="15"/>
-      </padding>
-   
-   <!-- Header -->
-   <VBox spacing="5" styleClass="header">
-      <Label text="🏆 Crear Logro Personalizado" styleClass="title"/>
-      <Label text="Define un nuevo logro para el sistema de gamificación" styleClass="subtitle"/>
-   </VBox>
-   
-      <!-- Información Básica -->
-      <VBox spacing="6" styleClass="card">
-         <padding>
-            <Insets top="12" left="12" right="12" bottom="12"/>
-         </padding>
-         <Label text="📝 Información Básica" styleClass="section-title"/>
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="Gamificacion_Modulo.controllers_admin.CrearLogroController"
+            prefWidth="360.0" prefHeight="640.0"
+            style="-fx-background-color: #424874;">
+    
+    <!-- Navbar superior -->
+    <HBox style="-fx-background-color: #A6B1E1; -fx-effect: dropshadow(gaussian, #23243a, 4, 0.2, 0, 2);" 
+          AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0" prefHeight="60">
+        <padding>
+            <Insets top="12" right="20" bottom="12" left="20"/>
+        </padding>
+        <HBox alignment="CENTER_LEFT" spacing="12" HBox.hgrow="ALWAYS">
+            <Button text="←" onAction="#onCancelarClicked"
+                    style="-fx-background-color: transparent; -fx-font-size: 20px; -fx-text-fill: #424874; -fx-background-radius: 20;"
+                    prefWidth="40" prefHeight="40"/>
+            <VBox spacing="2">
+                <Label text="Crear Logro Personalizado" style="-fx-text-fill: #424874; -fx-font-size: 16px; -fx-font-weight: bold;"/>
+                <Label text="Define un nuevo logro del sistema" style="-fx-text-fill: #6B7A99; -fx-font-size: 11px;"/>
+            </VBox>
+        </HBox>
+    </HBox>
+
+    <!-- Contenido principal con ScrollPane -->
+    <ScrollPane fitToWidth="true" 
+                AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" 
+                AnchorPane.topAnchor="60" AnchorPane.bottomAnchor="0"
+                style="-fx-background: transparent; -fx-background-color: transparent;">
+        
+        <VBox fx:id="mainVBox" spacing="20" alignment="TOP_CENTER">
+            <padding>
+                <Insets top="20" right="16" bottom="20" left="16"/>
+            </padding>
+
+            <!-- Título de sección -->
+            <VBox alignment="CENTER" spacing="8">
+                <Label text="🏆 Nuevo Logro Personalizado" 
+                       style="-fx-text-fill: #DCD6F7; -fx-font-size: 24px; -fx-font-weight: bold;"/>
+                <Label text="Configura nombre, criterios y recompensas" 
+                       style="-fx-text-fill: #A6B1E1; -fx-font-size: 14px;"/>
+            </VBox>
+
+            <!-- Información Básica -->
+            <VBox spacing="15" maxWidth="320" 
+                  style="-fx-background-color: #DCD6F7; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0.3, 0, 2);">
+                <padding>
+                    <Insets top="20" right="20" bottom="20" left="20"/>
+                </padding>
+                
+                <Label text="📝 Información Básica" 
+                       style="-fx-text-fill: #424874; -fx-font-size: 18px; -fx-font-weight: bold;"/>
          
-         <VBox spacing="4">
-            <Label text="Nombre del logro:" styleClass="field-label"/>
-            <TextField fx:id="txtNombre" promptText="Ej: Programador Experto" prefWidth="350"/>
-         </VBox>
+                <VBox spacing="8">
+                    <Label text="Nombre del logro:" 
+                           style="-fx-text-fill: #424874; -fx-font-size: 14px; -fx-font-weight: bold;"/>
+                    <TextField fx:id="txtNombre" promptText="Ej: Programador Experto" prefWidth="280"
+                              style="-fx-background-color: white; -fx-text-fill: #424874; -fx-background-radius: 8; -fx-padding: 8;"/>
+                </VBox>
          
-         <VBox spacing="4">
-            <Label text="Descripción:" styleClass="field-label"/>
-            <TextArea fx:id="txtDescripcion" promptText="Describe qué debe hacer el usuario para obtener este logro..." 
-                      prefRowCount="2" prefWidth="350" wrapText="true"/>
-         </VBox>
-      </VBox>
+                <VBox spacing="8">
+                    <Label text="Descripción:" 
+                           style="-fx-text-fill: #424874; -fx-font-size: 14px; -fx-font-weight: bold;"/>
+                    <TextArea fx:id="txtDescripcion" promptText="Describe qué debe hacer el usuario para obtener este logro..." 
+                             prefRowCount="3" prefWidth="280" wrapText="true"
+                             style="-fx-background-color: white; -fx-text-fill: #424874; -fx-background-radius: 8; -fx-padding: 8;"/>
+                </VBox>
+            </VBox>
    
-      <!-- Criterios de Desbloqueo -->
-      <VBox spacing="6" styleClass="card">
-         <padding>
-            <Insets top="12" left="12" right="12" bottom="12"/>
-         </padding>
-         <Label text="🎯 Criterios de Desbloqueo" styleClass="section-title"/>
-         <Label text="Define cuántos puntos debe obtener el usuario para desbloquear este logro" styleClass="field-label"/>
+            <!-- Criterios de Desbloqueo -->
+            <VBox spacing="15" maxWidth="320" 
+                  style="-fx-background-color: #DCD6F7; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0.3, 0, 2);">
+                <padding>
+                    <Insets top="20" right="20" bottom="20" left="20"/>
+                </padding>
+                
+                <Label text="🎯 Criterios de Desbloqueo" 
+                       style="-fx-text-fill: #424874; -fx-font-size: 18px; -fx-font-weight: bold;"/>
+                <Label text="Define cuántos puntos debe obtener el usuario para desbloquear este logro" 
+                       style="-fx-text-fill: #6B7A99; -fx-font-size: 12px;" wrapText="true"/>
          
-         <VBox spacing="6">
-            <HBox spacing="8" alignment="CENTER_LEFT">
-               <Label text="Puntos requeridos:" styleClass="field-label"/>
-               <Spinner fx:id="spinnerPuntosRequeridos" prefWidth="100"/>
+                <HBox spacing="12" alignment="CENTER_LEFT">
+                    <Label text="Puntos requeridos:" 
+                           style="-fx-text-fill: #424874; -fx-font-size: 14px; -fx-font-weight: bold;"/>
+                    <Spinner fx:id="spinnerPuntosRequeridos" prefWidth="100"
+                            style="-fx-background-color: white; -fx-text-fill: #424874; -fx-background-radius: 6;"/>
+                </HBox>
+            </VBox>
+   
+            <!-- Recompensa -->
+            <VBox spacing="15" maxWidth="320" 
+                  style="-fx-background-color: #DCD6F7; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0.3, 0, 2);">
+                <padding>
+                    <Insets top="20" right="20" bottom="20" left="20"/>
+                </padding>
+                
+                <Label text="💎 Recompensa" 
+                       style="-fx-text-fill: #424874; -fx-font-size: 18px; -fx-font-weight: bold;"/>
+         
+                <VBox spacing="8">
+                    <Label text="Puntos de recompensa:" 
+                           style="-fx-text-fill: #424874; -fx-font-size: 14px; -fx-font-weight: bold;"/>
+                    <HBox spacing="12" alignment="CENTER_LEFT">
+                        <Slider fx:id="sliderPuntos" min="50" max="500" value="150" prefWidth="200"
+                               style="-fx-background-color: #A6B1E1;"/>
+                        <Label fx:id="lblPuntos" text="150" 
+                               style="-fx-text-fill: #424874; -fx-font-size: 16px; -fx-font-weight: bold;"/>
+                    </HBox>
+                </VBox>
+            </VBox>
+   
+            <!-- Vista Previa -->
+            <VBox spacing="15" maxWidth="320" 
+                  style="-fx-background-color: rgba(166, 177, 225, 0.3); -fx-background-radius: 12;">
+                <padding>
+                    <Insets top="20" right="20" bottom="20" left="20"/>
+                </padding>
+                
+                <Label text="👀 Vista Previa" 
+                       style="-fx-text-fill: #DCD6F7; -fx-font-size: 18px; -fx-font-weight: bold;"/>
+                <VBox fx:id="vboxVistaPrevia" spacing="8"
+                      style="-fx-background-color: #DCD6F7; -fx-background-radius: 8;">
+                    <padding>
+                        <Insets top="12" right="12" bottom="12" left="12"/>
+                    </padding>
+                    <!-- Contenido generado dinámicamente -->
+                </VBox>
+            </VBox>
+   
+            <!-- Botones de Acción -->
+            <HBox spacing="12" alignment="CENTER">
+                <Button fx:id="btnCancelar" text="Cancelar" onAction="#onCancelarClicked" 
+                        style="-fx-background-color: transparent; -fx-text-fill: #DCD6F7; -fx-font-weight: bold; -fx-border-color: #DCD6F7; -fx-border-radius: 8; -fx-border-width: 1; -fx-padding: 12 24;"
+                        prefWidth="120"/>
+                <Button fx:id="btnCrear" text="Crear Logro" onAction="#onCrearClicked" 
+                        style="-fx-background-color: #A6B1E1; -fx-text-fill: #424874; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 12 24;"
+                        prefWidth="120"/>
             </HBox>
-         </VBox>
-      </VBox>
-   
-      <!-- Recompensa -->
-      <VBox spacing="6" styleClass="card">
-         <padding>
-            <Insets top="12" left="12" right="12" bottom="12"/>
-         </padding>
-         <Label text="💎 Recompensa" styleClass="section-title"/>
-         
-         <VBox spacing="4">
-            <Label text="Puntos de recompensa:" styleClass="field-label"/>
-            <HBox spacing="8" alignment="CENTER_LEFT">
-               <Slider fx:id="sliderPuntos" min="50" max="500" value="150" prefWidth="250"/>
-               <Label fx:id="lblPuntos" text="150" styleClass="points-label"/>
-            </HBox>
-         </VBox>
-      </VBox>
-   
-      <!-- Vista Previa -->
-      <VBox spacing="6" styleClass="card preview-card">
-         <padding>
-            <Insets top="12" left="12" right="12" bottom="12"/>
-         </padding>
-         <Label text="👀 Vista Previa" styleClass="section-title"/>
-         <VBox fx:id="vboxVistaPrevia" spacing="4" styleClass="preview-content">
-            <!-- Contenido generado dinámicamente -->
-         </VBox>
-      </VBox>
-   
-      <!-- Botones de Acción -->
-      <HBox spacing="10" alignment="CENTER">
-         <Button fx:id="btnCancelar" text="Cancelar" onAction="#onCancelarClicked" 
-                 styleClass="secondary-button" prefWidth="120"/>
-         <Button fx:id="btnCrear" text="Crear Logro" onAction="#onCrearClicked" 
-                 styleClass="primary-button" prefWidth="120"/>
-      </HBox>
-   </VBox>
-</ScrollPane> 
+        </VBox>
+    </ScrollPane>
+</AnchorPane> 

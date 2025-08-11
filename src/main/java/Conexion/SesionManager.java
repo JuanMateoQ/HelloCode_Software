@@ -1,6 +1,5 @@
 package Conexion;
 
-import GestionAprendizaje_Modulo.Logica.Curso;
 import Modulo_Usuario.Clases.Usuario;
 import Modulo_Usuario.Clases.UsuarioComunidad;
 import Modulo_Usuario.Clases.NivelJava;
@@ -38,6 +37,7 @@ public class SesionManager {
         // Convertir Usuario a UsuarioComunidad para uso en el módulo de comunidad
         this.usuarioComunidad = convertirAUsuarioComunidad(usuario);
         System.out.println("Sesión iniciada para: " + usuario.getUsername());
+        System.out.println("📊 Datos del usuario en sesión: XP=" + usuario.getXp() + ", Vidas=" + usuario.getVidas() + ", Nombre=" + usuario.getNombre());
     }
     
     /**
@@ -133,9 +133,5 @@ public class SesionManager {
         if (usuarioComunidad != null) {
             usuarioComunidad.setReputacion(nuevaReputacion);
         }
-    }
-
-    public void setCurso(List<Curso> cursos) {
-        usuarioAutenticado.setCurso(cursos.get(0));
     }
 }

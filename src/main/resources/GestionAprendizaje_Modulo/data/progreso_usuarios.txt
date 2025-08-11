@@ -1,0 +1,3 @@
+GOKU;ruta-java-nodo-1
+esteban;ruta-c-nodo-1,ruta-java-nodo-4,ruta-java-nodo-3,ruta-c-nodo-4,ruta-java-nodo-2,ruta-java-nodo-1
+tarek;ruta-java-nodo-4,ruta-java-nodo-3,ruta-java-nodo-2,ruta-java-nodo-1
