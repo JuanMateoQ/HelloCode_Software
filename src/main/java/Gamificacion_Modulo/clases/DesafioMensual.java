@@ -1,45 +1,43 @@
 package Gamificacion_Modulo.clases;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class DesafioMensual extends Desafio {
-    private Integer objetivoMensual;
-    private Integer actividadesCompletadas;
-    private Integer leccionesCompletadas;
 
     public DesafioMensual(Integer metaSemanal, int puntos, List<Logro> logros) {
         super(logros, puntos, metaSemanal);
         this.meta = metaSemanal;
         this.leccionesCompletadas = 0;
+        activar();
     }
 
+
     @Override
-    public String definirCriterios() {
-        return "Completar " + objetivoMensual + " actividades mensuales";
+    public void activar() {
+        this.estaActivo = true;
+        this.fechaInicio = LocalDateTime.now();
+        this.fechaFin = this.fechaInicio.plusMonths(1);
     }
 
     @Override
     public Boolean estaCompletado() {
-        return actividadesCompletadas >= objetivoMensual;
+        return this.leccionesCompletadas >= this.meta;
     }
 
     public void actualizarAvance(Integer cantidad) {
-        this.actividadesCompletadas += cantidad;
-        System.out.println(">> Actividades mensuales: " + actividadesCompletadas + "/" + objetivoMensual);
+        this.leccionesCompletadas += cantidad;
     }
 
-    public void registrarLeccion() {
-        this.leccionesCompletadas++;
-        actualizarAvance(1);
-    }
 
     public Double getProgreso() {
-        if (objetivoMensual == 0) return 0.0;
-        double progreso = (actividadesCompletadas * 100.0) / objetivoMensual;
-        return Math.min(progreso, 100.0);
+        if (super.meta == 0) return 0.0;
+        double progreso = (leccionesCompletadas * 100.0) / this.meta;
+        return Math.min(progreso, 100.0); // Máximo 100%
     }
 
     // Getters
-    public Integer getObjetivoMensual() { return objetivoMensual; }
-    public Integer getActividadesCompletadas() { return actividadesCompletadas; }
-} 
+    public Integer getMetaMensual() { return this.meta; }
+    public Integer getLeccionesCompletadas() {
+        return leccionesCompletadas; }
+}

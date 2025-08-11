@@ -19,11 +19,6 @@
                 <Button fx:id="btnPhp" mnemonicParsing="false" prefHeight="40.0" prefWidth="180.0" style="-fx-background-color: #FF4081; -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold; -fx-background-radius: 25px; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 10, 0, 0, 5);" text="PHP" />
                 <Button fx:id="btnCplusplus" mnemonicParsing="false" prefHeight="40.0" prefWidth="180.0" style="-fx-background-color: #FF7043; -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold; -fx-background-radius: 25px; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 10, 0, 0, 5);" text="C++" />
 
-                <!-- Separador visual -->
-                <Label style="-fx-text-fill: #A6B1E1; -fx-font-size: 12px;" text="- o -" />
-
-                <!-- Botón para selección múltiple -->
-                <Button fx:id="btnSeleccionMultiple" mnemonicParsing="false" prefHeight="35.0" prefWidth="200.0" style="-fx-background-color: #28A745; -fx-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 20px; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 8, 0, 0, 4);" text="📚 Múltiples Lenguajes" />
             </children>
         </VBox>
 

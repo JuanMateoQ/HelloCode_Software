@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import Conexion.SesionManager;
-import GestionAprendizaje_Modulo.Controladores.ConfiguracionUsuarioService;
+import GestionAprendizaje_Modulo.Logica.ConfiguracionUsuarioService;
 import Modulo_Usuario.Clases.Roles;
 import Modulo_Usuario.Clases.Usuario;
 import javafx.event.ActionEvent;

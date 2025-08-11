@@ -1,11 +1,11 @@
 package Comunidad_Modulo.controladores;
 
+import Modulo_Usuario.Clases.NivelAprendizaje;
 import Modulo_Usuario.Clases.UsuarioComunidad;
 import Comunidad_Modulo.modelo.*;
 import Comunidad_Modulo.integracion.IModuloUsuarios;
 import Comunidad_Modulo.servicios.PersistenciaService;
 import Comunidad_Modulo.enums.TipoTema;
-import Modulo_Usuario.Clases.NivelJava;
 
 import java.util.*;
 
@@ -20,7 +20,7 @@ public class ContextoSistema {
     // Colecciones principales
     private List<UsuarioComunidad> usuarios;
     private List<Comunidad> comunidades;
-    private List<Moderador> moderadores;
+    private List<IModerador> moderadores; // Usando la nueva interfaz
     private Comunidad comunidadActual;
     
     // Módulo de integración con otros sistemas
@@ -69,7 +69,7 @@ public class ContextoSistema {
         return new ArrayList<>(comunidades);
     }
     
-    public List<Moderador> getModeradores() {
+    public List<IModerador> getModeradores() {
         return new ArrayList<>(moderadores);
     }
     
@@ -112,7 +112,7 @@ public class ContextoSistema {
     }
     
     // Métodos para gestionar moderadores
-    public void agregarModerador(Moderador moderador) {
+    public void agregarModerador(IModerador moderador) {
         if (!moderadores.contains(moderador)) {
             moderadores.add(moderador);
         }
@@ -126,7 +126,7 @@ public class ContextoSistema {
         }
     }
     
-    public void eliminarModerador(Moderador moderador) {
+    public void eliminarModerador(IModerador moderador) {
         moderadores.remove(moderador);
     }
     
@@ -299,7 +299,7 @@ public class ContextoSistema {
     /**
      * Guarda un grupo de foro en persistencia
      */
-    public void guardarGrupoForo(Comunidad comunidad, String tipoGrupo, String titulo, NivelJava nivel, TipoTema tema, String creador) {
+    public void guardarGrupoForo(Comunidad comunidad, String tipoGrupo, String titulo, NivelAprendizaje nivel, TipoTema tema, String creador) {
         if (persistenciaService != null) {
             persistenciaService.guardarGrupoForo(comunidad.getNombre(), tipoGrupo, titulo, nivel, tema, creador);
         }

@@ -6,9 +6,11 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
-import Gamificacion_Modulo.clases.Main;
+import Gamificacion_Modulo.clases.Ranking;
+import Gamificacion_Modulo.utils.GestorGamificacion;
 import Gamificacion_Modulo.clases.ProgresoEstudiante;
 import Modulo_Usuario.Clases.Usuario;
+import eu.hansolo.tilesfx.tools.Rank;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
@@ -68,8 +70,8 @@ public class RankingController implements Initializable {
     public void cargarRanking() {
         try {
             // Obtener solo usuarios con rol USUARIO (estudiantes)
-            List<Usuario> usuariosEstudiantes = Main.getUsuariosEstudiantes();
-            List<ProgresoEstudiante> progresos = ProgresoEstudiante.getProgresos();
+            List<Usuario> usuariosEstudiantes = GestorGamificacion.getUsuariosEstudiantes();
+            List<ProgresoEstudiante> progresos = Ranking.getProgresos();
 
             if (usuariosEstudiantes.isEmpty()) {
                 mostrarMensajeVacio();
@@ -238,7 +240,7 @@ public class RankingController implements Initializable {
     private void navButton1() {
         System.out.println(">>> Navegando a Desafíos desde Ranking");
         try {
-            Main.cambiarEscena("/Gamificacion_Modulo/fxml/Desafios.fxml");
+            GestorGamificacion.cambiarEscena("/Gamificacion_Modulo/fxml/Desafios.fxml");
         } catch (Exception e) {
             System.err.println("Error al navegar a Desafios: " + e.getMessage());
             e.printStackTrace();
@@ -249,7 +251,7 @@ public class RankingController implements Initializable {
     private void navButton2() {
         System.out.println(">>> Navegando a Perfil de Usuario desde Ranking");
         try {
-            Main.cambiarEscena("/Gamificacion_Modulo/fxml/PerfilUsuario.fxml");
+            GestorGamificacion.cambiarEscena("/Gamificacion_Modulo/fxml/PerfilUsuario.fxml");
         } catch (Exception e) {
             System.err.println("Error al navegar a PerfilUsuario: " + e.getMessage());
             e.printStackTrace();
@@ -269,7 +271,7 @@ public class RankingController implements Initializable {
                 usuarioSelector.getItems().clear();
 
                 // Obtener solo el usuario logueado actual
-                Usuario usuarioLogueado = Main.getUsuarioLogueado();
+                Usuario usuarioLogueado = GestorGamificacion.getUsuarioLogueado();
 
                 if (usuarioLogueado != null) {
                     usuarioSelector.getItems().add(usuarioLogueado.getNombre());
@@ -332,9 +334,9 @@ public class RankingController implements Initializable {
     private void irAPerfil() {
         try {
             // PASO 1: Inicializar el backend del módulo de gamificación
-            Main.inicializarDesdeModuloExterno();
+            GestorGamificacion.inicializarDesdeModuloExterno();
             // Cargar PerfilUsuario.fxml
-            Main.cambiarEscena("/Gamificacion_Modulo/fxml/PerfilUsuario.fxml");
+            GestorGamificacion.cambiarEscena("/Gamificacion_Modulo/fxml/PerfilUsuario.fxml");
         } catch (Exception e) {
             System.err.println("Error al navegar a Perfil: " + e.getMessage());
             e.printStackTrace();
@@ -397,4 +399,4 @@ public class RankingController implements Initializable {
         public int getPuntos() { return puntos; }
     }
 
-} 
+}

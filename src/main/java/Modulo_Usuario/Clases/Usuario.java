@@ -75,9 +75,18 @@ public class Usuario extends UsuarioBase {
         return xp;
     }
 
+    /**
+     * Obtiene el XP sincronizado desde el archivo
+     * Usar cuando necesites los datos más actualizados
+     */
+    public int getXpSincronizado() {
+        System.out.println("🔄 getXpSincronizado() llamado - Usuario: " + this.getUsername());
+        sincronizarXpDesdeArchivo();
+        System.out.println("🔄 Después de sincronizar XP - XP: " + xp);
+        return xp;
+    }
+
     public int getVidas() {
-        // Sincronizar ocasionalmente, no en cada llamada para evitar problemas de rendimiento
-        System.out.println("🔍 getVidas() llamado - Usuario: " + this.getUsername() + ", Vidas en memoria: " + vidas);
         return vidas;
     }
 
@@ -120,6 +129,15 @@ public class Usuario extends UsuarioBase {
         } else {
             this.xp = Math.max(0, xp); // No permitir XP negativo
         }
+    }
+
+    /**
+     * Establece el XP Y guarda los cambios en archivo
+     * Usar solo cuando se quiera persistir el cambio
+     */
+    public void setXpYGuardar(int xp) {
+        setXp(xp);
+        guardarCambiosEnArchivo();
     }
 
 
@@ -266,6 +284,99 @@ public class Usuario extends UsuarioBase {
     }
 
     /**
+     * Sincroniza el XP del usuario con el archivo
+     * Útil para actualizar el XP cuando otro proceso lo haya modificado
+     */
+    public void sincronizarXpDesdeArchivo() {
+        try {
+            File file = new File(ARCHIVO_USUARIOS);
+            if (!file.exists()) {
+                System.err.println("⚠️ Archivo usuarios.txt no encontrado para sincronizar XP");
+                return;
+            }
+
+            try (BufferedReader br = new BufferedReader(new FileReader(file, StandardCharsets.UTF_8))) {
+                String linea;
+                while ((linea = br.readLine()) != null) {
+                    linea = linea.trim();
+                    if (!linea.isEmpty()) {
+                        String[] datos = linea.split(";");
+                        // Verificar si es el usuario actual sin crear objeto completo
+                        if (datos.length >= 5 && datos[0].equals(this.getUsername())) {
+                            try {
+                                int xpArchivo = Integer.parseInt(datos[4]);
+                                if (this.xp != xpArchivo) {
+                                    System.out.println("🔄 Sincronizando XP: " + this.xp + " → " + xpArchivo);
+                                    this.xp = xpArchivo; // Asignación directa, sin setter
+                                }
+                                return;
+                            } catch (NumberFormatException e) {
+                                // Si hay error parseando, mantener valor actual
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+            
+        } catch (IOException e) {
+            System.err.println("❌ Error al sincronizar XP desde archivo: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Sincroniza tanto vidas como XP del usuario con el archivo
+     * Método conveniente para sincronizar ambos valores a la vez
+     */
+    public void sincronizarDatosDesdeArchivo() {
+        try {
+            File file = new File(ARCHIVO_USUARIOS);
+            if (!file.exists()) {
+                System.err.println("⚠️ Archivo usuarios.txt no encontrado para sincronizar datos");
+                return;
+            }
+
+            try (BufferedReader br = new BufferedReader(new FileReader(file, StandardCharsets.UTF_8))) {
+                String linea;
+                while ((linea = br.readLine()) != null) {
+                    linea = linea.trim();
+                    if (!linea.isEmpty()) {
+                        String[] datos = linea.split(";");
+                        // Verificar si es el usuario actual sin crear objeto completo
+                        if (datos.length >= 6 && datos[0].equals(this.getUsername())) {
+                            try {
+                                // Sincronizar XP
+                                int xpArchivo = Integer.parseInt(datos[4]);
+                                if (this.xp != xpArchivo) {
+                                    System.out.println("🔄 Sincronizando XP: " + this.xp + " → " + xpArchivo);
+                                    this.xp = xpArchivo;
+                                }
+                                
+                                // Sincronizar vidas
+                                int vidasArchivo = Integer.parseInt(datos[5]);
+                                if (this.vidas != vidasArchivo) {
+                                    System.out.println("🔄 Sincronizando vidas: " + this.vidas + " → " + vidasArchivo);
+                                    this.vidas = vidasArchivo;
+                                }
+                                
+                                return;
+                            } catch (NumberFormatException e) {
+                                // Si hay error parseando, mantener valores actuales
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+            
+        } catch (IOException e) {
+            System.err.println("❌ Error al sincronizar datos desde archivo: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * Recarga los datos del usuario actual desde el archivo
      * Útil para sincronizar cambios realizados por otros procesos
      */
@@ -284,7 +395,8 @@ public class Usuario extends UsuarioBase {
                     if (!linea.isEmpty()) {
                         Usuario usuarioTemp = Usuario.fromString(linea);
                         if (usuarioTemp != null && usuarioTemp.getUsername().equals(this.getUsername())) {
-                            // Actualizar solo los datos que pueden cambiar
+                            // Actualizar solo los datos que pueden cambiar usando asignación directa
+                            // para evitar bucles infinitos
                             this.xp = usuarioTemp.getXp();
                             this.vidas = usuarioTemp.getVidas();
                             this.nombre = usuarioTemp.getNombre();

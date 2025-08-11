@@ -1,6 +1,6 @@
 package Modulo_Usuario.Clases;
 
-public enum NivelJava {
+public enum NivelAprendizaje {
     PRINCIPIANTE("Principiante"),
     INTERMEDIO("Intermedio"),
     AVANZADO("Avanzado"),
@@ -8,7 +8,7 @@ public enum NivelJava {
 
     private final String descripcion;
 
-    NivelJava(String descripcion) {
+    NivelAprendizaje(String descripcion) {
         this.descripcion = descripcion;
     }
 
@@ -24,8 +24,8 @@ public enum NivelJava {
     /**
      * Convierte una descripción de vuelta al enum
      */
-    public static NivelJava fromDescripcion(String descripcion) {
-        for (NivelJava nivel : NivelJava.values()) {
+    public static NivelAprendizaje fromDescripcion(String descripcion) {
+        for (NivelAprendizaje nivel : NivelAprendizaje.values()) {
             if (nivel.getDescripcion().equals(descripcion)) {
                 return nivel;
             }

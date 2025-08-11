@@ -2,8 +2,12 @@ package Modulo_Usuario.Controladores;
 
 import Conexion.MetodosFrecuentes;
 import Conexion.SesionManager;
+
 import Gamificacion_Modulo.clases.Main;
+
+import Gamificacion_Modulo.utils.GestorGamificacion;
 import GestionAprendizaje_Modulo.Controladores.ConfiguracionUsuarioService;
+
 import GestionAprendizaje_Modulo.Controladores.DiagnosticoController;
 import Modulo_Usuario.Clases.Usuario;
 import javafx.event.ActionEvent;
@@ -45,9 +49,9 @@ public class HomeUsuarioController {
     private void irARanking(ActionEvent event) {
         try {
             // PASO 1: Inicializar el backend del módulo de gamificación
-            Main.inicializarDesdeModuloExterno();
+            GestorGamificacion.inicializarDesdeModuloExterno();
             // Cargar Ranking.fxml
-            Main.cambiarEscena("/Gamificacion_Modulo/fxml/Ranking.fxml");
+            GestorGamificacion.cambiarEscena("/Gamificacion_Modulo/fxml/Ranking.fxml");
         } catch (Exception e) {
             System.err.println("Error al navegar a Ranking: " + e.getMessage());
             e.printStackTrace();
@@ -121,9 +125,9 @@ public class HomeUsuarioController {
     private void irAPerfil(ActionEvent event) {
         try {
             // PASO 1: Inicializar el backend del módulo de gamificación
-            Main.inicializarDesdeModuloExterno();
+            GestorGamificacion.inicializarDesdeModuloExterno();
             // Cargar PerfilUsuario.fxml
-            Main.cambiarEscena("/Gamificacion_Modulo/fxml/PerfilUsuario.fxml");
+            GestorGamificacion.cambiarEscena("/Gamificacion_Modulo/fxml/PerfilUsuario.fxml");
         } catch (Exception e) {
             System.err.println("Error al navegar a Perfil: " + e.getMessage());
             e.printStackTrace();

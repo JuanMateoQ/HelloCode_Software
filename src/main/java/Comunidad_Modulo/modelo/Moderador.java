@@ -4,23 +4,21 @@ import Modulo_Usuario.Clases.UsuarioComunidad;
 import Comunidad_Modulo.servicios.ModeracionService;
 import Comunidad_Modulo.servicios.ModeracionService.ResultadoModeracion;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
-public class Moderador {
-    private String idModerador;
-    private String nombre;
-    private String username; // Nuevo campo para el nombre de usuario
-    private List<Comunidad> comunidadesGestionadas;
-    private ModeracionService moderacionService;
+/**
+ * CLASE LEGACY - DEPRECATED
+ * Esta clase se mantiene solo para compatibilidad con código existente.
+ * Se recomienda usar ModeradorManual o ModeradorAutomatico según el caso.
+ * 
+ * @deprecated Usar {@link ModeradorManual} o {@link ModeradorAutomatico}
+ */
+@Deprecated
+public class Moderador extends ModeradorBase {
 
     public Moderador(String nombre, String username) {
-        this.idModerador = UUID.randomUUID().toString();
-        this.nombre = nombre;
-        this.username = username; // Inicializar el nombre de usuario
-        this.comunidadesGestionadas = new ArrayList<>();
-        this.moderacionService = new ModeracionService();
+        super(nombre, username);
+        System.out.println("⚠️ AVISO: Usando clase Moderador deprecated. Considere usar ModeradorManual o ModeradorAutomatico.");
     }
 
     // Constructor existente para mantener compatibilidad
@@ -28,52 +26,7 @@ public class Moderador {
         this(nombre, "mod"); // Por defecto, el username será "mod"
     }
 
-    // Añadir getter y setter para username
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    // Getters y setters
-    public String getIdModerador() {
-        return idModerador;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public List<Comunidad> getComunidadesGestionadas() {
-        return new ArrayList<>(comunidadesGestionadas);
-    }
-
-    // Métodos de negocio
-    public void asignarComunidad(Comunidad comunidad) {
-        if (!comunidadesGestionadas.contains(comunidad)) {
-            comunidadesGestionadas.add(comunidad);
-        }
-    }
-
-    public void removerComunidad(Comunidad comunidad) {
-        comunidadesGestionadas.remove(comunidad);
-    }
-
-    public void moderarForo(ForoGeneral foro) {
-        // Lógica de moderación del foro
-        System.out.println("Moderando foro: " + foro.toString());
-    }
-
-    public void supervisarChats(List<ChatPrivado> chats) {
-        // Lógica de supervisión de chats
-        System.out.println("Supervisando " + chats.size() + " chats privados");
-    }
+    // === MÉTODOS LEGACY MANTENIDOS PARA COMPATIBILIDAD ===
 
     public void cerrarHilo(HiloDiscusion hilo) {
         hilo.cerrar();
@@ -90,69 +43,53 @@ public class Moderador {
         System.out.println("Usuario suspendido: " + usuario.getNombre());
     }
 
-    // === NUEVOS MÉTODOS DE MODERACIÓN AUTOMÁTICA ===
-
     /**
      * Modera un mensaje automáticamente antes de publicarlo
+     * @deprecated Usar ModeradorAutomatico.moderarMensajeAutomatico()
      */
+    @Deprecated
     public ResultadoModeracion moderarMensaje(String contenido, UsuarioComunidad autor) {
+        System.out.println("⚠️ Método deprecated. Use ModeradorAutomatico para moderación automática.");
         return moderacionService.moderarMensaje(contenido, autor, this.nombre);
     }
 
     /**
      * Aplica una sanción manual a un usuario
+     * @deprecated Usar ModeradorManual.aplicarSancionManual()
      */
+    @Deprecated
     public SancionUsuario aplicarSancionManual(UsuarioComunidad usuario, String razon, int duracionMinutos) {
+        System.out.println("⚠️ Método deprecated. Use ModeradorManual para sanciones manuales.");
         return moderacionService.aplicarSancion(usuario, razon, duracionMinutos, this.nombre);
     }
 
     /**
      * Levanta una sanción de un usuario
+     * @deprecated Usar ModeradorManual.levantarSancion()
      */
+    @Deprecated
     public boolean levantarSancion(UsuarioComunidad usuario) {
+        System.out.println("⚠️ Método deprecated. Use ModeradorManual para gestión de sanciones.");
         return moderacionService.levantarSancion(usuario, this.nombre);
     }
 
     /**
-     * Verifica si un usuario está sancionado
-     */
-    public boolean usuarioEstaSancionado(UsuarioComunidad usuario) {
-        return moderacionService.usuarioEstaSancionado(usuario);
-    }
-
-    /**
-     * Obtiene información de la sanción activa de un usuario
-     */
-    public SancionUsuario getSancionActiva(UsuarioComunidad usuario) {
-        return moderacionService.obtenerSancionActiva(usuario);
-    }
-
-    /**
-     * Obtiene todas las sanciones activas
-     */
-    public List<SancionUsuario> getSancionesActivas() {
-        return moderacionService.getSancionesActivas();
-    }
-
-    /**
-     * Obtiene el historial de sanciones de un usuario
-     */
-    public List<SancionUsuario> getHistorialSanciones(UsuarioComunidad usuario) {
-        return moderacionService.getHistorialSanciones(usuario);
-    }
-
-    /**
      * Obtiene estadísticas de moderación
+     * @deprecated Usar ModeradorManual.mostrarEstadisticasAccionesManual() o ModeradorAutomatico.mostrarEstadisticasAutomaticas()
      */
+    @Deprecated
     public ModeracionService.EstadisticasModeración getEstadisticasModeración() {
         return moderacionService.getEstadisticas();
     }
 
     /**
      * Método auxiliar para mostrar el estado de moderación
+     * @deprecated Usar ModeradorFactory.mostrarEstadoModeración()
      */
+    @Deprecated
     public void mostrarEstadoModeración() {
-        System.out.println("\n🛡️ === ESTADO DE MODERACIÓN ===");
+        System.out.println("\n🛡️ === ESTADO DE MODERACIÓN (LEGACY) ===");
+        System.out.println("⚠️ AVISO: Use ModeradorFactory.mostrarEstadoModeración() para información completa.");
         System.out.println("Moderador: " + this.nombre);
 
         ModeracionService.EstadisticasModeración stats = getEstadisticasModeración();
@@ -170,14 +107,18 @@ public class Moderador {
         System.out.println("=".repeat(35));
     }
 
-    // Getter para el servicio de moderación (por si se necesita acceso directo)
+    /**
+     * Getter para el servicio de moderación (por si se necesita acceso directo)
+     * @deprecated Acceder a través de ModeradorBase.getModeracionService()
+     */
+    @Deprecated
     public ModeracionService getModeracionService() {
         return moderacionService;
     }
 
     @Override
     public String toString() {
-        return String.format("Moderador: %s (gestiona %d comunidades)",
+        return String.format("Moderador LEGACY: %s (gestiona %d comunidades) - ⚠️ DEPRECATED",
                            nombre, comunidadesGestionadas.size());
     }
 }

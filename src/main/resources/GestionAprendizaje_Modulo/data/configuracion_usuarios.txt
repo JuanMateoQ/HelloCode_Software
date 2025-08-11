@@ -3,6 +3,4 @@
 # lenguajes: separados por comas (Java,Python,C)
 # niveles: separados por comas en el mismo orden que los lenguajes (Básico,Intermedio,Avanzado)
 # primeraVez: true = necesita configuración inicial, false = ya configurado
-esteban;Java;Básico;false
-tarek;Java;Básico;false
-GOKU;Java;Básico;false
+tarek;Java,Python;Avanzado,Básico;false

@@ -71,6 +71,22 @@
                            style="-fx-text-fill: #6B7A99; -fx-font-size: 12px;" wrapText="true"/>
                 </VBox>
             </VBox>
+            <!-- Recompensa de Puntos -->
+            <VBox spacing="15" maxWidth="320" 
+                  style="-fx-background-color: #DCD6F7; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0.3, 0, 2);">
+                <padding>
+                    <Insets top="20" right="20" bottom="20" left="20"/>
+                </padding>
+                <Label text="💎 Puntos de Recompensa" style="-fx-text-fill: #424874; -fx-font-size: 18px; -fx-font-weight: bold;"/>
+                <VBox spacing="8">
+                    <Label text="Puntos otorgados al completar el desafío:" style="-fx-text-fill: #424874; -fx-font-size: 14px; -fx-font-weight: bold;"/>
+                    <HBox spacing="12" alignment="CENTER_LEFT">
+                        <Slider fx:id="sliderPuntos" min="50" max="1000" value="200" prefWidth="200" showTickLabels="true" showTickMarks="true" style="-fx-background-color: #A6B1E1;"/>
+                        <Label fx:id="lblPuntos" text="200" style="-fx-text-fill: #424874; -fx-font-size: 16px; -fx-font-weight: bold;"/>
+                    </HBox>
+                    <Label text="Estos puntos se sumarán a la experiencia del usuario al completar la meta." wrapText="true" style="-fx-text-fill: #6B7A99; -fx-font-size: 12px;"/>
+                </VBox>
+            </VBox>
    
             <!-- Logros Asociados -->
             <VBox spacing="15" maxWidth="320" 

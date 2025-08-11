@@ -1,8 +1,8 @@
 package Comunidad_Modulo.servicios;
 
 import Comunidad_Modulo.modelo.*;
+import Modulo_Usuario.Clases.NivelAprendizaje;
 import Modulo_Usuario.Clases.UsuarioComunidad;
-import Modulo_Usuario.Clases.NivelJava;
 import Comunidad_Modulo.enums.TipoTema;
 import Comunidad_Modulo.enums.TipoSolucion;
 import Comunidad_Modulo.enums.EstadoHilo;
@@ -249,13 +249,13 @@ public class PersistenciaService {
                         int reputacion = Integer.parseInt(partes[4]);
 
                         // Convertir descripción a enum
-                        NivelJava nivel;
+                        NivelAprendizaje nivel;
                         try {
                             // Primero intentar como nombre del enum
-                            nivel = NivelJava.valueOf(nivelDescripcion);
+                            nivel = NivelAprendizaje.valueOf(nivelDescripcion);
                         } catch (IllegalArgumentException e) {
                             // Si falla, intentar como descripción
-                            nivel = NivelJava.fromDescripcion(nivelDescripcion);
+                            nivel = NivelAprendizaje.fromDescripcion(nivelDescripcion);
                         }
 
                         // Crear usuario
@@ -284,7 +284,7 @@ public class PersistenciaService {
      * Formato: nombreComunidad;tipoGrupo;titulo;nivelJava;tipoTema;creador
      */
     public void guardarGrupoForo(String nombreComunidad, String tipoGrupo, String titulo,
-                                 NivelJava nivel, TipoTema tema, String creador) {
+                                 NivelAprendizaje nivel, TipoTema tema, String creador) {
         try {
             String linea = String.format("%s;%s;%s;%s;%s;%s%n",
                     nombreComunidad,
@@ -323,15 +323,15 @@ public class PersistenciaService {
                         // String creador = partes[5]; // Para futuras funcionalidades
 
                         // Convertir descripciones a enums de forma robusta
-                        NivelJava nivel;
+                        NivelAprendizaje nivel;
                         TipoTema tema;
 
                         try {
                             // Intentar primero como nombre del enum
-                            nivel = NivelJava.valueOf(nivelDesc);
+                            nivel = NivelAprendizaje.valueOf(nivelDesc);
                         } catch (IllegalArgumentException e) {
                             // Si falla, intentar como descripción
-                            nivel = NivelJava.fromDescripcion(nivelDesc);
+                            nivel = NivelAprendizaje.fromDescripcion(nivelDesc);
                         }
 
                         try {
@@ -1427,7 +1427,7 @@ public class PersistenciaService {
 
                 // Si no se encuentra, crear un usuario temporal para mantener la referencia
                 UsuarioComunidad usuarioTemp = new UsuarioComunidad(username, "temp", username, username + "@temp.com");
-                usuarioTemp.setNivelJava(NivelJava.PRINCIPIANTE);
+                usuarioTemp.setNivelJava(NivelAprendizaje.PRINCIPIANTE);
                 return usuarioTemp;
             }
         } catch (Exception e) {
@@ -1436,7 +1436,7 @@ public class PersistenciaService {
 
         // Crear usuario temporal si no se encuentra
         UsuarioComunidad usuarioTemp = new UsuarioComunidad(username, "temp", username, username + "@temp.com");
-        usuarioTemp.setNivelJava(NivelJava.PRINCIPIANTE);
+        usuarioTemp.setNivelJava(NivelAprendizaje.PRINCIPIANTE);
         return usuarioTemp;
     }
 

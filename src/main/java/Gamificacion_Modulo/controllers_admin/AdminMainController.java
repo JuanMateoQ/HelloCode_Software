@@ -1,8 +1,9 @@
 package Gamificacion_Modulo.controllers_admin;
 
 import Gamificacion_Modulo.clases.Logro;
-import Gamificacion_Modulo.clases.Main;
 import Gamificacion_Modulo.clases.ProgresoEstudiante;
+import Gamificacion_Modulo.clases.Ranking;
+import Gamificacion_Modulo.utils.GestorGamificacion;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -26,9 +27,6 @@ public class AdminMainController {
 
     @FXML
     private Button btnCrearLogro;
-
-    @FXML
-    private Button btnAsignarDesafio;
 
     @FXML
     private Button btnSimularActividad;
@@ -70,11 +68,6 @@ public class AdminMainController {
         abrirVentana("/Gamificacion_Modulo/fxml/admin/CrearLogro.fxml", "Crear Logro Personalizado");
     }
 
-    @FXML
-    private void onAsignarDesafioClicked(ActionEvent event) {
-        System.out.println(">>> Abriendo asignador de desafío");
-        abrirVentana("/Gamificacion_Modulo/fxml/admin/AsignarDesafio.fxml", "Asignar Desafío a Usuario");
-    }
 
     @FXML
     private void onSimularActividadClicked(ActionEvent event) {
@@ -90,13 +83,13 @@ public class AdminMainController {
 
     private void actualizarEstadisticas() {
         try {
-            int totalUsuarios = Main.getUsuarios().size();
+            int totalUsuarios = GestorGamificacion.getUsuarios().size();
             int totalLogros = Logro.getLogrosDisponibles().size();
-            int totalProgresos = ProgresoEstudiante.getTotalProgresos();
+            int totalProgresos = Ranking.getTotalProgresos();
 
             // Contar desafíos activos
             int desafiosActivos = 0;
-            for (ProgresoEstudiante progreso : ProgresoEstudiante.getProgresos()) {
+            for (ProgresoEstudiante progreso : Ranking.getProgresos()) {
                 desafiosActivos += progreso.getDesafiosActivos().size();
             }
 
@@ -119,13 +112,7 @@ public class AdminMainController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
             Parent root = loader.load();
 
-            // Refrescar datos si es la ventana de asignar desafío
-            if (fxmlFile.contains("AsignarDesafio")) {
-                Object controller = loader.getController();
-                if (controller instanceof AsignarDesafioController) {
-                    ((AsignarDesafioController) controller).refrescarDatos();
-                }
-            }
+            // (Eliminado soporte para asignar desafíos manualmente)
 
             Stage stage = new Stage();
             stage.setTitle(titulo);
@@ -171,4 +158,4 @@ public class AdminMainController {
             e.printStackTrace();
         }
     }
-} 
+}

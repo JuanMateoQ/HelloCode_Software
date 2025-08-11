@@ -13,7 +13,6 @@ public final class Ranking {
     private List<ProgresoEstudiante> rankingGeneral;
 
 
-
     private Ranking() {
         this.rankingGeneral = new ArrayList<>();
     }
@@ -26,6 +25,13 @@ public final class Ranking {
         return INSTANCE;
     }
 
+    public static List<ProgresoEstudiante> getProgresos() {
+        return new ArrayList<>(obtenerRankingGlobal());
+    }
+
+    public static int getTotalProgresos() {
+        return obtenerRankingGlobal().size();
+    }
     public void actualizarRanking(ProgresoEstudiante estudiante) {
         // Agregar estudiante si no existe
         if (!rankingGeneral.contains(estudiante)) {
@@ -54,8 +60,8 @@ public final class Ranking {
         return getInstance();
     }
 
-    public static void actualizarRankingGlobal(ProgresoEstudiante estudiante) {
-        getInstance().actualizarRanking(estudiante);
+    public static void actualizarRankingGlobal(int a) {
+        a++;
     }
 
     public static List<ProgresoEstudiante> obtenerRankingGlobal() {

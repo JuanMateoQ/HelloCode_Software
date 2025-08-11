@@ -137,7 +137,7 @@ public class EmparejarController implements Initializable {
             if (usuarioActual != null) {
                 // Sincronizar vidas desde archivo para asegurar datos actualizados
                 usuarioActual.sincronizarVidasDesdeArchivo();
-                int vidasActuales = usuarioActual.getVidas();
+                int vidasActuales = usuarioActual.getVidasSincronizadas();
                 txtLiveCount.setText(String.valueOf(vidasActuales));
                 System.out.println("🔄 UI Emparejar inicializada - Vidas: " + vidasActuales);
             } else {
@@ -340,7 +340,7 @@ public class EmparejarController implements Initializable {
                 // Sincronizar y actualizar UI con las vidas actuales después de la pérdida
                 usuarioActual.sincronizarVidasDesdeArchivo();
                 if (txtLiveCount != null) {
-                    int vidasActuales = usuarioActual.getVidas();
+                    int vidasActuales = usuarioActual.getVidasSincronizadas();
                     txtLiveCount.setText(String.valueOf(vidasActuales));
                     System.out.println("💔 Vida perdida - Vidas restantes: " + vidasActuales);
                 }
@@ -415,9 +415,9 @@ public class EmparejarController implements Initializable {
             usuarioActual.sincronizarVidasDesdeArchivo();
         }
         
-        if (usuarioActual != null && usuarioActual.getVidas() <= 0) {
+        if (usuarioActual != null && usuarioActual.getVidasSincronizadas() <= 0) {
             // Game Over - Se agotaron las vidas
-            System.out.println("🔴 Game Over (Emparejar) - Vidas: " + usuarioActual.getVidas());
+            System.out.println("🔴 Game Over (Emparejar) - Vidas: " + usuarioActual.getVidasSincronizadas());
             ejercicioCompletado = true;
             mostrarFeedback(TipoRespuesta.INCORRECTO, "Se han agotado las vidas.", null);
         } else if (emparejamientosCompletados >= emparejamientosCorrectos.size()) {
@@ -540,7 +540,7 @@ public class EmparejarController implements Initializable {
             
             if (textGameOver != null) {
                 // Mensaje dinámico basado en las vidas reales del usuario
-                if (usuarioActual != null && usuarioActual.getVidas() <= 0) {
+                if (usuarioActual != null && usuarioActual.getVidasSincronizadas() <= 0) {
                     textGameOver.setText("¡Se agotaron las vidas!");
                 } else {
                     textGameOver.setText("¡Ejercicio fallido!");
@@ -549,7 +549,7 @@ public class EmparejarController implements Initializable {
             if (textGameOverDetalle != null) {
                 String detalle = "No te preocupes, puedes intentarlo nuevamente.";
                 if (usuarioActual != null) {
-                    detalle += "\nVidas actuales: " + usuarioActual.getVidas();
+                    detalle += "\nVidas actuales: " + usuarioActual.getVidasSincronizadas();
                 }
                 textGameOverDetalle.setText(detalle);
             }
@@ -562,7 +562,7 @@ public class EmparejarController implements Initializable {
             btnSiguienteCompleto.setVisible(true);
 
             Usuario usuarioActual = SesionManager.getInstancia().getUsuarioAutenticado();
-            if (usuarioActual != null && usuarioActual.getVidas() <= 0) {
+            if (usuarioActual != null && usuarioActual.getVidasSincronizadas() <= 0) {
                 btnSiguienteCompleto.setText("SALIR");
             } else {
                 btnSiguienteCompleto.setText("SIGUIENTE");

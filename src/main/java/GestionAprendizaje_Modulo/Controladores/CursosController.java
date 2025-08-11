@@ -3,6 +3,7 @@ package GestionAprendizaje_Modulo.Controladores;
 import java.io.IOException;
 
 import Conexion.SesionManager;
+import GestionAprendizaje_Modulo.Logica.ConfiguracionUsuarioService;
 import Modulo_Usuario.Clases.Usuario;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -31,9 +32,6 @@ public class CursosController {
     private Button btnVolver;
 
     @FXML
-    private Button btnSeleccionMultiple;
-
-    @FXML
     private void initialize() {
         // Acción para el botón de "Volver"
         btnVolver.setOnAction(event -> {
@@ -48,19 +46,6 @@ public class CursosController {
                 stage.show(); // Mostrar la nueva escena
             } catch (IOException e) {
                 e.printStackTrace(); // Mostrar el error si algo falla
-            }
-        });
-
-        // Configurar el botón de selección múltiple
-        btnSeleccionMultiple.setOnAction(event -> {
-            try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/GestionAprendizaje_Modulo/Vistas/SeleccionMultipleLenguajes.fxml"));
-                AnchorPane seleccionPane = loader.load();
-                Stage stage = (Stage) btnSeleccionMultiple.getScene().getWindow();
-                stage.setScene(new Scene(seleccionPane));
-                stage.show();
-            } catch (IOException e) {
-                e.printStackTrace();
             }
         });
 

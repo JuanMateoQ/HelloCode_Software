@@ -4,8 +4,8 @@ import Gamificacion_Modulo.clases.Desafio;
 import Gamificacion_Modulo.clases.DesafioMensual;
 import Gamificacion_Modulo.clases.DesafioSemanal;
 import Gamificacion_Modulo.clases.Logro;
-import Gamificacion_Modulo.clases.Main;
 import Gamificacion_Modulo.clases.ProgresoEstudiante;
+import Gamificacion_Modulo.utils.GestorGamificacion;
 import Modulo_Usuario.Clases.Usuario;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -89,7 +89,7 @@ public class PerfilUsuarioController {
         System.out.println(">>> Navegando a Desafíos desde Perfil de Usuario");
         try {
             // Cargar Desafios.fxml desde la carpeta fxml
-            Main.cambiarEscena("/Gamificacion_Modulo/fxml/Desafios.fxml");
+            GestorGamificacion.cambiarEscena("/Gamificacion_Modulo/fxml/Desafios.fxml");
         } catch (Exception e) {
             System.err.println("Error al navegar a Desafios: " + e.getMessage());
             e.printStackTrace();
@@ -110,7 +110,7 @@ public class PerfilUsuarioController {
         System.out.println(">>> Navegando a Ranking desde Perfil de Usuario");
         try {
             // Cargar Ranking.fxml
-            Main.cambiarEscena("/Gamificacion_Modulo/fxml/Ranking.fxml");
+            GestorGamificacion.cambiarEscena("/Gamificacion_Modulo/fxml/Ranking.fxml");
         } catch (Exception e) {
             System.err.println("Error al navegar a Ranking: " + e.getMessage());
             e.printStackTrace();
@@ -175,8 +175,8 @@ public class PerfilUsuarioController {
                             nombreDesafio = "Desafío Semanal #" + contadorDesafios + " (Meta: " + ds.getMetaSemanal() + " lecciones)";
                         } else if (desafio instanceof DesafioMensual) {
                             DesafioMensual dm = (DesafioMensual) desafio;
-                            Integer objetivo = (dm.getObjetivoMensual() != null) ? dm.getObjetivoMensual() : 1;
-                            Integer completadas = (dm.getActividadesCompletadas() != null) ? dm.getActividadesCompletadas() : 0;
+                            Integer objetivo = (dm.getMetaMensual() != null) ? dm.getMetaMensual() : 1;
+                            Integer completadas = (dm.getLeccionesCompletadas() != null) ? dm.getLeccionesCompletadas() : 0;
                             progreso_str = " - " + completadas + "/" + objetivo +
                                     " (" + String.format("%.1f", dm.getProgreso()) + "%)";
                             nombreDesafio = "Desafío Mensual #" + contadorDesafios + " (Meta: " + objetivo + " actividades)";
@@ -215,8 +215,7 @@ public class PerfilUsuarioController {
                     mensaje.append("   Aún no has obtenido ningún logro.\n\n");
                 } else {
                     for (Logro logro : progresoLogueado.getLogros()) {
-                        mensaje.append("   ✅ ").append(logro.getNombre())
-                                .append(" (+").append(logro.getPuntos()).append(" pts)\n");
+                        mensaje.append("   ✅ ").append(logro.getNombre()).append("\n");
                         mensaje.append("      ").append(logro.getDescripcion()).append("\n\n");
                     }
                 }
@@ -227,13 +226,11 @@ public class PerfilUsuarioController {
                 for (Logro logro : Logro.getLogrosDisponibles()) {
                     boolean obtenido = progresoLogueado.getLogros().contains(logro);
                     String estado = obtenido ? "✅" : "❌";
-                    mensaje.append("   ").append(estado).append(" ").append(logro.getNombre())
-                            .append(" (+").append(logro.getPuntos()).append(" pts)\n");
+                    mensaje.append("   ").append(estado).append(" ").append(logro.getNombre()).append("\n");
                     mensaje.append("      ").append(logro.getDescripcion()).append("\n\n");
                 }
 
-                int puntosLogros = progresoLogueado.getLogros().stream().mapToInt(Logro::getPuntos).sum();
-                mensaje.append("💰 PUNTOS TOTALES POR LOGROS: ").append(puntosLogros);
+                mensaje.append("💰 PUNTOS DE DESAFÍOS: ").append(progresoLogueado.getPuntosTotal());
             } else {
                 mensaje.append("No hay datos de progreso disponibles para el usuario logueado.");
             }
@@ -265,7 +262,7 @@ public class PerfilUsuarioController {
     public void actualizarDatosPerfil() {
         try {
             // Obtener el usuario logueado y su progreso
-            Usuario usuarioLogueado = Main.getUsuarioLogueado();
+            Usuario usuarioLogueado = GestorGamificacion.getUsuarioLogueado();
             ProgresoEstudiante progresoLogueado = ProgresoEstudiante.getProgresoUsuarioLogueado();
 
             if (usuarioLogueado == null) {
@@ -330,7 +327,7 @@ public class PerfilUsuarioController {
     private void cargarEstudiantesEnComboBox() {
         try {
             // Obtener solo el usuario logueado actual
-            Usuario usuarioLogueado = Main.getUsuarioLogueado();
+            Usuario usuarioLogueado = GestorGamificacion.getUsuarioLogueado();
 
             if (usuarioLogueado == null) {
                 System.out.println(">>> No hay usuario logueado, no se puede cargar ComboBox");
@@ -460,9 +457,9 @@ public class PerfilUsuarioController {
     private void irARanking() {
         try {
             // PASO 1: Inicializar el backend del módulo de gamificación
-            Main.inicializarDesdeModuloExterno();
+            GestorGamificacion.inicializarDesdeModuloExterno();
             // Cargar Ranking.fxml
-            Main.cambiarEscena("/Gamificacion_Modulo/fxml/Ranking.fxml");
+            GestorGamificacion.cambiarEscena("/Gamificacion_Modulo/fxml/Ranking.fxml");
         } catch (Exception e) {
             System.err.println("Error al navegar a Ranking: " + e.getMessage());
             e.printStackTrace();

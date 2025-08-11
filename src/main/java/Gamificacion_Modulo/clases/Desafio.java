@@ -88,7 +88,6 @@ public abstract class Desafio {
     // Getters
     public Boolean getEstaActivo() { return estaActivo; }
 
-    public abstract String definirCriterios();
     public abstract Boolean estaCompletado();
 
 

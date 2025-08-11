@@ -6,7 +6,6 @@ import java.util.List;
 import Gamificacion_Modulo.clases.Desafio;
 import Gamificacion_Modulo.clases.DesafioSemanal;
 import Gamificacion_Modulo.clases.Logro;
-import Gamificacion_Modulo.clases.Main;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -41,6 +40,12 @@ public class CrearDesafioSemanalController {
     @FXML
     private Button btnCrear;
 
+    @FXML
+    private Slider sliderPuntos;
+
+    @FXML
+    private Label lblPuntos;
+
     private List<CheckBox> checkBoxesLogros = new ArrayList<>();
     private List<Logro> logrosSeleccionados = new ArrayList<>();
 
@@ -55,6 +60,14 @@ public class CrearDesafioSemanalController {
             lblMeta.setText(String.valueOf(newVal.intValue()));
             actualizarVistaPrevia();
         });
+
+        if (sliderPuntos != null) {
+            sliderPuntos.valueProperty().addListener((o, ov, nv) -> {
+                if (lblPuntos != null) lblPuntos.setText(String.valueOf(nv.intValue()));
+                actualizarVistaPrevia();
+            });
+            if (lblPuntos != null) lblPuntos.setText(String.valueOf((int) sliderPuntos.getValue()));
+        }
     }
 
     private void configurarSlider() {
@@ -117,8 +130,10 @@ public class CrearDesafioSemanalController {
         Label lblMetaInfo = new Label("🎯 Meta: " + meta + " actividades semanales");
         Label lblLogros = new Label("🏆 Logros asociados: " + logrosSeleccionados.size());
         Label lblEstado = new Label("📊 Estado: Disponible para asignar");
+    int recompensa = sliderPuntos != null ? (int) sliderPuntos.getValue() : 0;
+    Label lblRecompensa = new Label("💎 Recompensa: +" + recompensa + " pts");
 
-        vboxVistaPrevia.getChildren().addAll(lblNombre, lblDescripcion, lblMetaInfo, lblLogros, lblEstado);
+    vboxVistaPrevia.getChildren().addAll(lblNombre, lblDescripcion, lblMetaInfo, lblLogros, lblRecompensa, lblEstado);
 
         // Mostrar logros seleccionados
         for (Logro logro : logrosSeleccionados) {
@@ -160,25 +175,36 @@ public class CrearDesafioSemanalController {
             }
 
             // Crear el desafío semanal
-            DesafioSemanal desafio = new DesafioSemanal(meta, 200, new ArrayList<>(logrosSeleccionados));
+            int recompensa = sliderPuntos != null ? (int) sliderPuntos.getValue() : 0;
+            DesafioSemanal desafio = new DesafioSemanal(meta, recompensa, new ArrayList<>(logrosSeleccionados));
 
             // Agregar a la lista central de desafíos
             Desafio.agregarDesafio(desafio);
 
+            // Asignar automáticamente el desafío a todos los usuarios logueados (estudiantes)
+            List<Modulo_Usuario.Clases.Usuario> usuarios = Gamificacion_Modulo.utils.GestorGamificacion.getUsuariosEstudiantes();
+            for (Modulo_Usuario.Clases.Usuario usuario : usuarios) {
+                Gamificacion_Modulo.clases.ProgresoEstudiante progreso = Gamificacion_Modulo.clases.Ranking.getProgresos().stream()
+                        .filter(p -> p.getUsuario().getUsername().equals(usuario.getUsername()))
+                        .findFirst().orElse(null);
+                if (progreso != null) {
+                    progreso.agregarDesafio(desafio);
+                }
+            }
+            System.out.println(">>> Desafío semanal asignado automáticamente a todos los usuarios logueados");
+
             // Mensaje de éxito
             String mensaje = String.format(
-                    "¡Desafío semanal creado exitosamente!\n\n" +
-                            "Meta: %d actividades semanales\n" +
-                            "Logros asociados: %d\n" +
-                            "Estado: Disponible para asignar\n\n" +
-                            "Usa 'Asignar Desafío a Usuario' para asignarlo.",
-                    meta,
-                    logrosSeleccionados.size()
+                "¡Desafío semanal creado exitosamente!\n\n" +
+                        "Meta: %d actividades semanales\n" +
+            "Logros asociados: %d\n" +
+            "Recompensa: +%d pts\n",
+        meta,
+        logrosSeleccionados.size(),
+        recompensa
             );
 
             mostrarAlerta("Éxito", mensaje);
-
-
 
             cerrarVentana();
 
@@ -210,4 +236,4 @@ public class CrearDesafioSemanalController {
         Stage stage = (Stage) btnCancelar.getScene().getWindow();
         stage.close();
     }
-} 
+}

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import Conexion.SesionManager;
+import GestionAprendizaje_Modulo.Logica.ConfiguracionUsuarioService;
 import Modulo_Usuario.Clases.Usuario;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -123,18 +124,21 @@ public class SeleccionMultipleLenguajesController {
     }
 
     private void configurarBotones() {
+        // Acción para el botón de "Volver"
         btnVolver.setOnAction(event -> {
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/GestionAprendizaje_Modulo/Vistas/Cursos.fxml"));
-                AnchorPane cursosPane = loader.load();
+                // Cargar el archivo FXML de la vista HomeUsuario (siempre volver al home)
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/GestionAprendizaje_Modulo/Vistas/Ruta.fxml"));
+                AnchorPane homePane = loader.load(); // Cargar la vista de home
+
+                // Obtener el stage actual y cambiar la escena
                 Stage stage = (Stage) btnVolver.getScene().getWindow();
-                stage.setScene(new Scene(cursosPane));
-                stage.show();
+                stage.setScene(new Scene(homePane)); // Cambiar la escena
+                stage.show(); // Mostrar la nueva escena
             } catch (IOException e) {
-                e.printStackTrace();
+                e.printStackTrace(); // Mostrar el error si algo falla
             }
         });
-
         btnContinuar.setOnAction(event -> {
             List<String> lenguajesSeleccionados = new ArrayList<>();
             List<String> nivelesSeleccionados = new ArrayList<>();

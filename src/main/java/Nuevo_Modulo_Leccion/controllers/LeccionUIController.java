@@ -45,13 +45,13 @@ public class LeccionUIController {
             if (usuarioActual != null) {
                 // Sincronizar antes de verificar las vidas para obtener datos actualizados
                 usuarioActual.sincronizarVidasDesdeArchivo();
-                System.out.println("🔍 Verificando vidas para lección - Usuario: " + usuarioActual.getUsername() + ", Vidas: " + usuarioActual.getVidas());
+                System.out.println("🔍 Verificando vidas para lección - Usuario: " + usuarioActual.getUsername() + ", Vidas: " + usuarioActual.getVidasSincronizadas());
                 
-                if (usuarioActual.getVidas() > 0) {
+                if (usuarioActual.getVidasSincronizadas() > 0) {
                     ventanaActual.close();
                     mostrarSiguienteEjercicio();
                 } else {
-                    MetodosFrecuentes.mostrarAlerta("No tienes suficientes vidas", "Debes tener al menos una vida para acceder a los ejercicios. Vidas actuales: " + usuarioActual.getVidas());
+                    MetodosFrecuentes.mostrarAlerta("No tienes suficientes vidas", "Debes tener al menos una vida para acceder a los ejercicios. Vidas actuales: " + usuarioActual.getVidasSincronizadas());
                 }
             } else {
                 MetodosFrecuentes.mostrarAlerta("Error de sesión", "No hay usuario autenticado.");
@@ -161,7 +161,7 @@ public class LeccionUIController {
                         if (usuarioActual != null) {
                             usuarioActual.quitarVida();
                             usuarioActual.sincronizarVidasDesdeArchivo();
-                            System.out.println("💔 Vida perdida en lección - Vidas restantes: " + usuarioActual.getVidas());
+                            System.out.println("💔 Vida perdida en lección - Vidas restantes: " + usuarioActual.getVidasSincronizadas());
                         }
                     }
                 };

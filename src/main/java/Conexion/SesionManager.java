@@ -1,8 +1,8 @@
 package Conexion;
 
+import Modulo_Usuario.Clases.NivelAprendizaje;
 import Modulo_Usuario.Clases.Usuario;
 import Modulo_Usuario.Clases.UsuarioComunidad;
-import Modulo_Usuario.Clases.NivelJava;
 
 import java.util.List;
 
@@ -37,7 +37,7 @@ public class SesionManager {
         // Convertir Usuario a UsuarioComunidad para uso en el módulo de comunidad
         this.usuarioComunidad = convertirAUsuarioComunidad(usuario);
         System.out.println("Sesión iniciada para: " + usuario.getUsername());
-        System.out.println("📊 Datos del usuario en sesión: XP=" + usuario.getXp() + ", Vidas=" + usuario.getVidas() + ", Nombre=" + usuario.getNombre());
+        System.out.println("📊 Datos del usuario en sesión: XP=" + usuario.getXp() + ", Vidas=" + usuario.getVidasSincronizadas() + ", Nombre=" + usuario.getNombre());
     }
     
     /**
@@ -110,7 +110,7 @@ public class SesionManager {
             nombreDisplay,
             emailDisplay,
             usuario.getUsername(), // usar username como ID
-            NivelJava.PRINCIPIANTE, // nivel por defecto
+            NivelAprendizaje.PRINCIPIANTE, // nivel por defecto
             0 // reputación inicial
         );
         
@@ -120,7 +120,7 @@ public class SesionManager {
     /**
      * Actualiza el nivel Java del usuario en la sesión
      */
-    public void actualizarNivelJava(NivelJava nuevoNivel) {
+    public void actualizarNivelJava(NivelAprendizaje nuevoNivel) {
         if (usuarioComunidad != null) {
             usuarioComunidad.setNivelJava(nuevoNivel);
         }

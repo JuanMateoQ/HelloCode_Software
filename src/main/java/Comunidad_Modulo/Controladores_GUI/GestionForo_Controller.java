@@ -1,5 +1,6 @@
 package Comunidad_Modulo.Controladores_GUI;
 
+import Modulo_Usuario.Clases.NivelAprendizaje;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -17,7 +18,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 import Comunidad_Modulo.controladores.ContextoSistema;
 import Comunidad_Modulo.modelo.*;
-import Modulo_Usuario.Clases.NivelJava;
 import Modulo_Usuario.Clases.UsuarioComunidad;
 import Comunidad_Modulo.enums.TipoTema;
 import Comunidad_Modulo.enums.TipoSolucion;
@@ -36,7 +36,7 @@ public class GestionForo_Controller implements Initializable {
 
     // Referencias FXML a los elementos de la interfaz
     @FXML private TextField txtTituloGrupo;
-    @FXML private ComboBox<NivelJava> comboNivelJava;
+    @FXML private ComboBox<NivelAprendizaje> comboNivelJava;
     @FXML private ComboBox<TipoTema> comboTema;
 
     @FXML private ComboBox<String> comboAccionHilo;
@@ -146,8 +146,8 @@ public class GestionForo_Controller implements Initializable {
      */
     private void configurarInterfaz() {
         // Configurar ComboBox de niveles de Java
-        comboNivelJava.setItems(FXCollections.observableArrayList(NivelJava.values()));
-        comboNivelJava.setValue(NivelJava.PRINCIPIANTE); // Valor por defecto
+        comboNivelJava.setItems(FXCollections.observableArrayList(NivelAprendizaje.values()));
+        comboNivelJava.setValue(NivelAprendizaje.PRINCIPIANTE); // Valor por defecto
 
         // Configurar ComboBox de temas
         comboTema.setItems(FXCollections.observableArrayList(TipoTema.values()));
@@ -315,7 +315,7 @@ public class GestionForo_Controller implements Initializable {
             }
 
             String titulo = txtTituloGrupo.getText().trim();
-            NivelJava nivel = comboNivelJava.getValue();
+            NivelAprendizaje nivel = comboNivelJava.getValue();
             TipoTema tema = comboTema.getValue();
 
             // Crear el grupo directamente usando el foro
@@ -369,7 +369,7 @@ public class GestionForo_Controller implements Initializable {
             }
 
             String titulo = txtTituloGrupo.getText().trim();
-            NivelJava nivel = comboNivelJava.getValue();
+            NivelAprendizaje nivel = comboNivelJava.getValue();
             TipoTema tema = comboTema.getValue();
 
             // Crear el grupo directamente usando el foro
@@ -1852,7 +1852,7 @@ public class GestionForo_Controller implements Initializable {
         }
 
         if (comboNivelJava.getValue() == null) {
-            mostrarMensajeError("⚠️ Debe seleccionar un nivel de Java.", areaTexto);
+            mostrarMensajeError("⚠️ Debe seleccionar un nivel", areaTexto);
             return false;
         }
 

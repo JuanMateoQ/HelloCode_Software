@@ -5,6 +5,7 @@ import java.util.List;
 
 import Conexion.MetodosFrecuentes;
 import Conexion.SesionManager;
+import GestionAprendizaje_Modulo.Logica.ConfiguracionUsuarioService;
 import Modulo_Usuario.Clases.Usuario;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -126,10 +127,10 @@ public class MisLenguajesController {
         // Botón Add
         btnAdd.setOnAction(event -> {
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/GestionAprendizaje_Modulo/Vistas/Cursos.fxml"));
-                AnchorPane cursosPane = loader.load();
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/GestionAprendizaje_Modulo/Vistas/SeleccionMultipleLenguajes.fxml"));
+                AnchorPane seleccionPane = loader.load();
                 Stage stage = (Stage) rootPane.getScene().getWindow();
-                stage.setScene(new Scene(cursosPane));
+                stage.setScene(new Scene(seleccionPane));
                 stage.show();
             } catch (IOException e) {
                 e.printStackTrace();

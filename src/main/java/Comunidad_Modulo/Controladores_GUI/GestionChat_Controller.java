@@ -28,9 +28,10 @@ import Conexion.MetodosFrecuentes;
 public class GestionChat_Controller implements Initializable {
 
     // Referencias FXML a los elementos de la interfaz
-    @FXML private TextField txtParticipantes;
-    @FXML private TextField txtMensaje;
-    @FXML private TextField txtIndice;
+    // Campos de texto no utilizados - la lógica usa diálogos dinámicos
+    // @FXML private TextField txtParticipantes;
+    // @FXML private TextField txtMensaje;
+    // @FXML private TextField txtIndice;
     @FXML private TextArea txtInformacion;
     @FXML private TextArea txtNotificacionesModerador;
     @FXML private Button btnVolver;
@@ -99,16 +100,6 @@ public class GestionChat_Controller implements Initializable {
             txtNotificacionesModerador.setStyle("-fx-background-color: #fff8dc; -fx-border-color: #ffa500; -fx-text-fill: #8b4513;");
             txtNotificacionesModerador.setText("=== NOTIFICACIONES DE MODERACIÓN ===\n\nAquí aparecerán los mensajes de sanciones, bloqueos y eventos de moderación...");
         }
-
-        // Configurar placeholder texts
-        txtParticipantes.setPromptText("No usado - se seleccionarán dinámicamente");
-        txtMensaje.setPromptText("No usado - se pedirá en el momento");
-        txtIndice.setPromptText("No usado - se seleccionará dinámicamente");
-
-        // Deshabilitar campos ya que usaremos la lógica de selección dinámica
-        txtParticipantes.setDisable(true);
-        txtMensaje.setDisable(true);
-        txtIndice.setDisable(true);
 
         // Estilo para el área de información
         txtInformacion.setStyle("-fx-background-color: #f4f4f4; -fx-border-color: #cccccc;");

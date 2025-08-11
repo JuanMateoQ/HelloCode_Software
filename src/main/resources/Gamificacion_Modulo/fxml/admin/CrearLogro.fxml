@@ -73,47 +73,7 @@
                 </VBox>
             </VBox>
    
-            <!-- Criterios de Desbloqueo -->
-            <VBox spacing="15" maxWidth="320" 
-                  style="-fx-background-color: #DCD6F7; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0.3, 0, 2);">
-                <padding>
-                    <Insets top="20" right="20" bottom="20" left="20"/>
-                </padding>
-                
-                <Label text="🎯 Criterios de Desbloqueo" 
-                       style="-fx-text-fill: #424874; -fx-font-size: 18px; -fx-font-weight: bold;"/>
-                <Label text="Define cuántos puntos debe obtener el usuario para desbloquear este logro" 
-                       style="-fx-text-fill: #6B7A99; -fx-font-size: 12px;" wrapText="true"/>
-         
-                <HBox spacing="12" alignment="CENTER_LEFT">
-                    <Label text="Puntos requeridos:" 
-                           style="-fx-text-fill: #424874; -fx-font-size: 14px; -fx-font-weight: bold;"/>
-                    <Spinner fx:id="spinnerPuntosRequeridos" prefWidth="100"
-                            style="-fx-background-color: white; -fx-text-fill: #424874; -fx-background-radius: 6;"/>
-                </HBox>
-            </VBox>
-   
-            <!-- Recompensa -->
-            <VBox spacing="15" maxWidth="320" 
-                  style="-fx-background-color: #DCD6F7; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0.3, 0, 2);">
-                <padding>
-                    <Insets top="20" right="20" bottom="20" left="20"/>
-                </padding>
-                
-                <Label text="💎 Recompensa" 
-                       style="-fx-text-fill: #424874; -fx-font-size: 18px; -fx-font-weight: bold;"/>
-         
-                <VBox spacing="8">
-                    <Label text="Puntos de recompensa:" 
-                           style="-fx-text-fill: #424874; -fx-font-size: 14px; -fx-font-weight: bold;"/>
-                    <HBox spacing="12" alignment="CENTER_LEFT">
-                        <Slider fx:id="sliderPuntos" min="50" max="500" value="150" prefWidth="200"
-                               style="-fx-background-color: #A6B1E1;"/>
-                        <Label fx:id="lblPuntos" text="150" 
-                               style="-fx-text-fill: #424874; -fx-font-size: 16px; -fx-font-weight: bold;"/>
-                    </HBox>
-                </VBox>
-            </VBox>
+            <!-- Se eliminan criterios y recompensa: ahora los logros no otorgan puntos directos -->
    
             <!-- Vista Previa -->
             <VBox spacing="15" maxWidth="320" 

@@ -18,8 +18,6 @@ public class ProgresoEstudiante {
         return logrosDesbloqueados;
     }
 
-    // Lista estática de todos los progresos
-    private static final List<ProgresoEstudiante> progresos = new ArrayList<>();
 
     public ProgresoEstudiante(Usuario usuario) {
         this.usuario = usuario;
@@ -29,13 +27,13 @@ public class ProgresoEstudiante {
         this.desafiosCompletados = 0;
 
         // Agregar automáticamente a la lista estática
-        progresos.add(this);
+       Ranking.getInstance().actualizarRanking(this);
     }
 
     public void setPuntosTotal(Integer puntosTotal) {
         this.puntosTotal = puntosTotal;
         // Actualizar automáticamente el ranking cuando cambian los puntos
-        Ranking.actualizarRankingGlobal(this);
+        Ranking.getInstance().actualizarRanking(this);
     }
 
     public void actualizarProgreso(Desafio desafio) {
@@ -66,8 +64,7 @@ public class ProgresoEstudiante {
     public void agregarLogro(Logro logro) {
         if (!logrosDesbloqueados.contains(logro)) {
             logrosDesbloqueados.add(logro);
-            puntosTotal += logro.getPuntos();
-            System.out.println("*** Logro desbloqueado: " + logro.getNombre() + "! (+" + logro.getPuntos() + " puntos)");
+                System.out.println("*** Logro desbloqueado: " + logro.getNombre());
         }
     }
 
@@ -81,7 +78,7 @@ public class ProgresoEstudiante {
     public void sumarPuntos(Integer puntos) {
         this.puntosTotal += puntos;
         // Actualizar automáticamente el ranking cuando cambian los puntos
-        Ranking.actualizarRankingGlobal(this);
+        Ranking.getInstance().actualizarRanking(this);
     }
 
     // Getters
@@ -92,16 +89,9 @@ public class ProgresoEstudiante {
     public HashMap<String, Double> getListaDesafios() { return listaDesafios; }
 
     // Métodos estáticos para gestionar la lista de progresos
-    public static List<ProgresoEstudiante> getProgresos() {
-        return new ArrayList<>(progresos);
-    }
 
-    public static ProgresoEstudiante buscarProgresoPorUsuario(String username) {
-        return progresos.stream()
-                .filter(p -> p.getUsuario().getUsername().equals(username))
-                .findFirst()
-                .orElse(null);
-    }
+
+
 
     public static ProgresoEstudiante getProgresoUsuarioLogueado() {
         try {
@@ -114,7 +104,7 @@ public class ProgresoEstudiante {
             }
 
             // Buscar el progreso del usuario logueado
-            for (ProgresoEstudiante progreso : progresos) {
+            for (ProgresoEstudiante progreso : Ranking.getProgresos()) {
                 if (progreso.getUsuario().getUsername().equals(usuarioLogueado.getUsername())) {
                     System.out.println(">>> Progreso encontrado para usuario logueado: " + usuarioLogueado.getNombre());
                     return progreso;
@@ -130,16 +120,5 @@ public class ProgresoEstudiante {
         }
     }
 
-    public static boolean existeProgreso(String username) {
-        return progresos.stream()
-                .anyMatch(p -> p.getUsuario().getUsername().equals(username));
-    }
 
-    public static void limpiarProgresos() {
-        progresos.clear();
-    }
-
-    public static int getTotalProgresos() {
-        return progresos.size();
-    }
 }

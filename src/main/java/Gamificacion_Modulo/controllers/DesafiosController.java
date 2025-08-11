@@ -1,6 +1,6 @@
 package Gamificacion_Modulo.controllers;
 
-import Gamificacion_Modulo.clases.Main;
+import Gamificacion_Modulo.utils.GestorGamificacion;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -46,7 +46,7 @@ public class DesafiosController {
         System.out.println(">>> Navegando a Perfil de Usuario desde Desafíos");
         try {
             // Cargar PerfilUsuario.fxml desde la carpeta fxml
-            Main.cambiarEscena("/Gamificacion_Modulo/fxml/PerfilUsuario.fxml");
+            GestorGamificacion.cambiarEscena("/Gamificacion_Modulo/fxml/PerfilUsuario.fxml");
         } catch (Exception e) {
             System.err.println("Error al navegar a PerfilUsuario: " + e.getMessage());
             e.printStackTrace();
@@ -59,7 +59,7 @@ public class DesafiosController {
         System.out.println(">>> Navegando a Ranking desde Desafíos");
         try {
             // Cargar Ranking.fxml
-            Main.cambiarEscena("/Gamificacion_Modulo/fxml/Ranking.fxml");
+            GestorGamificacion.cambiarEscena("/Gamificacion_Modulo/fxml/Ranking.fxml");
         } catch (Exception e) {
             System.err.println("Error al navegar a Ranking: " + e.getMessage());
             e.printStackTrace();

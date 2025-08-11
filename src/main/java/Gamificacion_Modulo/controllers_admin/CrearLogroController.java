@@ -1,15 +1,11 @@
 package Gamificacion_Modulo.controllers_admin;
 
 import Gamificacion_Modulo.clases.Logro;
-import Gamificacion_Modulo.clases.Main;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
-import javafx.scene.control.Spinner;
-import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
@@ -23,14 +19,8 @@ public class CrearLogroController {
     @FXML
     private TextArea txtDescripcion;
 
-    @FXML
-    private Spinner<Integer> spinnerPuntosRequeridos;
 
-    @FXML
-    private Slider sliderPuntos;
-
-    @FXML
-    private Label lblPuntos;
+    // Eliminados campos de umbral y recompensa
 
     @FXML
     private VBox vboxVistaPrevia;
@@ -43,36 +33,14 @@ public class CrearLogroController {
 
     @FXML
     public void initialize() {
-        configurarSpinners();
-        configurarSlider();
-        configurarListeners();
+    configurarListeners();
         actualizarVistaPrevia();
-    }
-
-    private void configurarSpinners() {
-        // Configurar valores del spinner de puntos requeridos
-        spinnerPuntosRequeridos.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(100, 10000, 500, 100));
-
-        // Hacer que el spinner sea editable
-        spinnerPuntosRequeridos.setEditable(true);
-    }
-
-    private void configurarSlider() {
-        sliderPuntos.setValue(150);
-        lblPuntos.setText("150");
-
-        sliderPuntos.valueProperty().addListener((obs, oldVal, newVal) -> {
-            lblPuntos.setText(String.valueOf(newVal.intValue()));
-            actualizarVistaPrevia();
-        });
     }
 
     private void configurarListeners() {
         // Listeners para actualización en tiempo real
         txtNombre.textProperty().addListener((obs, oldVal, newVal) -> actualizarVistaPrevia());
         txtDescripcion.textProperty().addListener((obs, oldVal, newVal) -> actualizarVistaPrevia());
-
-        spinnerPuntosRequeridos.valueProperty().addListener((obs, oldVal, newVal) -> actualizarVistaPrevia());
     }
 
     private void actualizarVistaPrevia() {
@@ -80,8 +48,6 @@ public class CrearLogroController {
 
         String nombre = txtNombre.getText().trim();
         String descripcion = txtDescripcion.getText().trim();
-        int puntosRecompensa = (int) sliderPuntos.getValue();
-
         if (nombre.isEmpty() && descripcion.isEmpty()) {
             Label lblInfo = new Label("Completa los campos para ver la vista previa");
             lblInfo.setStyle("-fx-text-fill: #6c757d;");
@@ -98,20 +64,7 @@ public class CrearLogroController {
         lblDesc.setWrapText(true);
         lblDesc.setStyle("-fx-font-size: 12px; -fx-text-fill: #495057;");
 
-        // Criterio
-        String criterio = obtenerCriterioTexto();
-        Label lblCriterio = new Label("🎯 Criterio: " + criterio);
-        lblCriterio.setStyle("-fx-font-size: 12px; -fx-text-fill: #6c757d;");
-
-        // Puntos
-        Label lblPuntosInfo = new Label("💎 Recompensa: +" + puntosRecompensa + " puntos");
-        lblPuntosInfo.setStyle("-fx-font-size: 12px; -fx-text-fill: #28a745; -fx-font-weight: bold;");
-
-        vboxVistaPrevia.getChildren().addAll(lblTitulo, lblDesc, lblCriterio, lblPuntosInfo);
-    }
-
-    private String obtenerCriterioTexto() {
-        return "Obtener " + spinnerPuntosRequeridos.getValue() + " puntos";
+    vboxVistaPrevia.getChildren().addAll(lblTitulo, lblDesc);
     }
 
     @FXML
@@ -145,27 +98,22 @@ public class CrearLogroController {
             }
 
             // Crear el logro con el puntaje umbral requerido
-            int puntajeUmbral = spinnerPuntosRequeridos.getValue();
-            int puntos = (int) sliderPuntos.getValue();
-
-            Logro nuevoLogro = new Logro(nombre, descripcion, puntajeUmbral);
+            Logro nuevoLogro = new Logro(nombre, descripcion);
             Logro.agregarLogro(nuevoLogro);
 
             // Mensaje de éxito
             String mensaje = String.format(
                     "¡Logro creado exitosamente!\n\n" +
                             "Nombre: %s\n" +
-                            "Descripción: %s\n" +
-                            "Criterio: %s\n" +
-                            "Recompensa: +%d puntos",
-                    nombre, descripcion, obtenerCriterioTexto(), puntos
+                "Descripción: %s\n",
+            nombre, descripcion
             );
 
             mostrarAlerta("Éxito", mensaje);
 
             System.out.println(">>> Logro personalizado creado!");
             System.out.println("* " + nombre + " - " + descripcion);
-            System.out.println("  Criterio: Obtener " + puntajeUmbral + " puntos | Recompensa: +" + puntos + " pts");
+            System.out.println("  (Logro sin umbral ni recompensa de puntos)");
 
             cerrarVentana();
 

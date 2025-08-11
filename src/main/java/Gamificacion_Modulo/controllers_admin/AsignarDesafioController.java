@@ -5,12 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import Gamificacion_Modulo.clases.Desafio;
-import Gamificacion_Modulo.clases.DesafioMensual;
-import Gamificacion_Modulo.clases.DesafioSemanal;
-import Gamificacion_Modulo.clases.Main;
-import Gamificacion_Modulo.clases.ProgresoEstudiante;
+import Gamificacion_Modulo.clases.*;
 import Modulo_Usuario.Clases.Usuario;
+import Gamificacion_Modulo.utils.GestorGamificacion;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
@@ -42,7 +39,7 @@ public class AsignarDesafioController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        usuarios = Main.getUsuariosEstudiantes();
+        usuarios = GestorGamificacion.getUsuariosEstudiantes();
         desafiosDisponibles = Desafio.getDesafiosDisponibles();
         radioButtonsDesafios = new ArrayList<>();
         toggleGroupDesafios = new ToggleGroup();
@@ -91,7 +88,7 @@ public class AsignarDesafioController implements Initializable {
                 nombreDesafio = "Desafío Semanal - " + ds.getMetaSemanal() + " lecciones";
             } else if (desafio instanceof DesafioMensual) {
                 DesafioMensual dm = (DesafioMensual) desafio;
-                Integer objetivo = (dm.getObjetivoMensual() != null) ? dm.getObjetivoMensual() : 1;
+                Integer objetivo = (dm.getMetaMensual() != null) ? dm.getMetaMensual() : 1;
                 nombreDesafio = "Desafío Mensual - " + objetivo + " actividades";
             }
 
@@ -185,7 +182,7 @@ public class AsignarDesafioController implements Initializable {
                             nombreDesafio = "Desafío Semanal - " + ds.getMetaSemanal() + " lecciones";
                         } else if (desafio instanceof DesafioMensual) {
                             DesafioMensual dm = (DesafioMensual) desafio;
-                            Integer objetivo = (dm.getObjetivoMensual() != null) ? dm.getObjetivoMensual() : 1;
+                            Integer objetivo = (dm.getMetaMensual() != null) ? dm.getMetaMensual() : 1;
                             nombreDesafio = "Desafío Mensual - " + objetivo + " actividades";
                         }
 
@@ -274,7 +271,7 @@ public class AsignarDesafioController implements Initializable {
     }
 
     private ProgresoEstudiante encontrarProgresoPorUsuario(Usuario usuario) {
-        return ProgresoEstudiante.getProgresos().stream()
+        return Ranking.getProgresos().stream()
                 .filter(p -> p.getUsuario().getUsername().equals(usuario.getUsername()))
                 .findFirst()
                 .orElse(null);
@@ -298,7 +295,7 @@ public class AsignarDesafioController implements Initializable {
 
     // Método para refrescar los datos cuando se abra la ventana
     public void refrescarDatos() {
-        usuarios = Main.getUsuariosEstudiantes();
+        usuarios = GestorGamificacion.getUsuariosEstudiantes();
         desafiosDisponibles = Desafio.getDesafiosDisponibles();
 
         cargarUsuarios();
@@ -311,4 +308,4 @@ public class AsignarDesafioController implements Initializable {
         Stage stage = (Stage) btnCancelar.getScene().getWindow();
         stage.close();
     }
-} 
+}

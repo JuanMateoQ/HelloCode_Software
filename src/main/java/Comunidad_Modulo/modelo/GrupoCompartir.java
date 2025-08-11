@@ -1,7 +1,7 @@
 package Comunidad_Modulo.modelo;
 
+import Modulo_Usuario.Clases.NivelAprendizaje;
 import Modulo_Usuario.Clases.UsuarioComunidad;
-import Modulo_Usuario.Clases.NivelJava;
 import Comunidad_Modulo.enums.TipoTema;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,15 +10,15 @@ import java.util.UUID;
 public class GrupoCompartir {
     private String idGrupo;
     private String titulo;
-    private NivelJava nivelJava;
+    private NivelAprendizaje nivelAprendizaje;
     private TipoTema tipoTema;
     private List<UsuarioComunidad> miembros;
     private List<Solucion> soluciones;
 
-    public GrupoCompartir(String titulo, NivelJava nivelJava, TipoTema tipoTema) {
+    public GrupoCompartir(String titulo, NivelAprendizaje nivelAprendizaje, TipoTema tipoTema) {
         this.idGrupo = UUID.randomUUID().toString();
         this.titulo = titulo;
-        this.nivelJava = nivelJava;
+        this.nivelAprendizaje = nivelAprendizaje;
         this.tipoTema = tipoTema;
         this.miembros = new ArrayList<>();
         this.soluciones = new ArrayList<>();
@@ -37,12 +37,12 @@ public class GrupoCompartir {
         this.titulo = titulo;
     }
 
-    public NivelJava getNivelJava() {
-        return nivelJava;
+    public NivelAprendizaje getNivelJava() {
+        return nivelAprendizaje;
     }
 
-    public void setNivelJava(NivelJava nivelJava) {
-        this.nivelJava = nivelJava;
+    public void setNivelJava(NivelAprendizaje nivelAprendizaje) {
+        this.nivelAprendizaje = nivelAprendizaje;
     }
 
     public TipoTema getTipoTema() {
@@ -83,13 +83,13 @@ public class GrupoCompartir {
     }
 
     public boolean esApropiado(UsuarioComunidad usuario) {
-        return usuario.getNivelJava() == nivelJava;
+        return usuario.getNivelJava() == nivelAprendizaje;
     }
 
 
     @Override
     public String toString() {
         return String.format("Grupo: %s [%s - %s] (%d miembros, %d soluciones)",
-                titulo, nivelJava, tipoTema, miembros.size(), soluciones.size());
+                titulo, nivelAprendizaje, tipoTema, miembros.size(), soluciones.size());
     }
 }

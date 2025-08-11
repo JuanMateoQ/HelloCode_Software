@@ -2,10 +2,7 @@ package Gamificacion_Modulo.controllers_admin;
 
 import java.util.List;
 
-import Gamificacion_Modulo.clases.Desafio;
-import Gamificacion_Modulo.clases.DesafioMensual;
-import Gamificacion_Modulo.clases.DesafioSemanal;
-import Gamificacion_Modulo.clases.ProgresoEstudiante;
+import Gamificacion_Modulo.clases.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -46,7 +43,7 @@ public class DetalleDesafioController {
     }
 
     private void cargarDatosDesafios() {
-        List<ProgresoEstudiante> progresos = ProgresoEstudiante.getProgresos();
+        List<ProgresoEstudiante> progresos = Ranking.getProgresos();
 
         if (!progresos.isEmpty()) {
             progresoActual = progresos.size() > 1 ? progresos.get(1) : progresos.get(0);
@@ -79,8 +76,8 @@ public class DetalleDesafioController {
                 } else if (desafio instanceof DesafioMensual && mensualCount < 3) {
                     DesafioMensual dm = (DesafioMensual) desafio;
                     // Use meta from parent class as fallback if objetivoMensual is null
-                    Integer objetivo = (dm.getObjetivoMensual() != null) ? dm.getObjetivoMensual() : 1;
-                    Integer completadas = (dm.getActividadesCompletadas() != null) ? dm.getActividadesCompletadas() : 0;
+                    Integer objetivo = (dm.getMetaMensual() != null) ? dm.getMetaMensual() : 1;
+                    Integer completadas = (dm.getLeccionesCompletadas() != null) ? dm.getLeccionesCompletadas() : 0;
                     String progreso = completadas + "/" + objetivo;
                     String nombreDesafio = "Completa " + objetivo + " actividad" + (objetivo > 1 ? "es" : "");
                     switch (mensualCount) {

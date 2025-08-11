@@ -214,7 +214,7 @@ public class EjercicioCompletarController implements Initializable {
                 actualizarVidasUI();
 
                 Usuario usuarioActual = SesionManager.getInstancia().getUsuarioAutenticado();
-                if (usuarioActual != null && usuarioActual.getVidas() > 0) {
+                if (usuarioActual != null && usuarioActual.getVidasSincronizadas() > 0) {
                     mostrarFeedbackIncorrecto(ejercicioIndividual);
                 } else {
                     mostrarGameOver();
@@ -241,7 +241,7 @@ public class EjercicioCompletarController implements Initializable {
             if (usuarioActual != null) {
                 // Recargar datos del archivo para asegurar sincronización
                 usuarioActual.recargarDatosDesdeArchivo();
-                TexVida.setText(String.valueOf(usuarioActual.getVidas()));
+                TexVida.setText(String.valueOf(usuarioActual.getVidasSincronizadas()));
             } else {
                 TexVida.setText("3"); // Valor por defecto
             }

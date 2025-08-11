@@ -29,7 +29,7 @@ public class CrudController {
     // Nuevos controles para tipos de usuario
     @FXML private ComboBox<String> tipoUsuarioCombo;
     @FXML private VBox camposComunidad;
-    @FXML private ComboBox<NivelJava> nivelJavaCombo;
+    @FXML private ComboBox<NivelAprendizaje> nivelJavaCombo;
     @FXML private TextField reputacionField;
 
     private final String ARCHIVO_USUARIOS = "src/main/java/Modulo_Usuario/Usuarios/usuarios.txt";
@@ -63,7 +63,7 @@ public class CrudController {
         tipoUsuarioCombo.getSelectionModel().selectFirst();
 
         // Configurar niveles de Java
-        ObservableList<NivelJava> nivelesJava = FXCollections.observableArrayList(NivelJava.values());
+        ObservableList<NivelAprendizaje> nivelesJava = FXCollections.observableArrayList(NivelAprendizaje.values());
         nivelJavaCombo.setItems(nivelesJava);
         nivelJavaCombo.getSelectionModel().selectFirst();
     }
@@ -277,14 +277,14 @@ public class CrudController {
                 return new Usuario(username, password, nombre, email, 0, rolBasico);
 
             case "Usuario Comunidad":
-                NivelJava nivelJava = nivelJavaCombo.getValue();
+                NivelAprendizaje nivelAprendizaje = nivelJavaCombo.getValue();
                 Integer reputacion = 0;
                 try {
                     reputacion = Integer.parseInt(reputacionField.getText().trim());
                 } catch (NumberFormatException e) {
                     reputacion = 0;
                 }
-                return new UsuarioComunidad(username, password, nombre, email, username, nivelJava, reputacion);
+                return new UsuarioComunidad(username, password, nombre, email, username, nivelAprendizaje, reputacion);
 
             default:
                 mostrarMensaje("Tipo de usuario no válido", "error");

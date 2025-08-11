@@ -1,16 +1,13 @@
 package Gamificacion_Modulo.controllers_admin;
 
+import Gamificacion_Modulo.clases.*;
+import Gamificacion_Modulo.utils.GestorGamificacion;
+
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import Gamificacion_Modulo.clases.Desafio;
-import Gamificacion_Modulo.clases.DesafioMensual;
-import Gamificacion_Modulo.clases.DesafioSemanal;
-import Gamificacion_Modulo.clases.Logro;
-import Gamificacion_Modulo.clases.Main;
-import Gamificacion_Modulo.clases.ProgresoEstudiante;
 import Modulo_Usuario.Clases.Usuario;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -45,7 +42,7 @@ public class SimularActividadController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        usuarios = Main.getUsuariosEstudiantes();
+        usuarios = GestorGamificacion.getUsuariosEstudiantes();
         radioButtonsDesafios = new ArrayList<>();
         toggleGroupDesafios = new ToggleGroup();
 
@@ -142,7 +139,7 @@ public class SimularActividadController implements Initializable {
                             progreso_str = " - Progreso: " + ds.getLeccionesCompletadas() + "/" + ds.getMetaSemanal();
                         } else if (desafio instanceof DesafioMensual) {
                             DesafioMensual dm = (DesafioMensual) desafio;
-                            progreso_str = " - Progreso: " + dm.getActividadesCompletadas() + "/" + dm.getObjetivoMensual();
+                            progreso_str = " - Progreso: " + dm.getLeccionesCompletadas() + "/" + dm.getMetaMensual();
                         }
 
                         RadioButton rb = new RadioButton();
@@ -246,8 +243,8 @@ public class SimularActividadController implements Initializable {
                         .append(" (").append(String.format("%.1f", ds.getProgreso())).append("%)\n");
             } else if (desafioSeleccionado instanceof DesafioMensual) {
                 DesafioMensual dm = (DesafioMensual) desafioSeleccionado;
-                resultados.append("• Progreso mensual: ").append(dm.getActividadesCompletadas())
-                        .append("/").append(dm.getObjetivoMensual())
+                resultados.append("• Progreso mensual: ").append(dm.getLeccionesCompletadas())
+                        .append("/").append(dm.getMetaMensual())
                         .append(" (").append(String.format("%.1f", dm.getProgreso())).append("%)\n");
             }
 
@@ -293,7 +290,7 @@ public class SimularActividadController implements Initializable {
     }
 
     private ProgresoEstudiante encontrarProgresoPorUsuario(Usuario usuario) {
-        return ProgresoEstudiante.getProgresos().stream()
+        return Ranking.getProgresos().stream()
                 .filter(p -> p.getUsuario().getUsername().equals(usuario.getUsername()))
                 .findFirst()
                 .orElse(null);
@@ -319,4 +316,4 @@ public class SimularActividadController implements Initializable {
         Stage stage = (Stage) btnCancelar.getScene().getWindow();
         stage.close();
     }
-} 
+}

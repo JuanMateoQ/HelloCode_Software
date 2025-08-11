@@ -1,7 +1,7 @@
 package Comunidad_Modulo.Controladores_GUI;
 
 import Comunidad_Modulo.controladores.ContextoSistema;
-import Comunidad_Modulo.modelo.Comunidad;
+import Comunidad_Modulo.modelo.*;
 import Conexion.MetodosFrecuentes;
 import Modulo_Usuario.Clases.UsuarioComunidad;
 import javafx.fxml.FXML;
@@ -13,31 +13,58 @@ import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
-import Comunidad_Modulo.modelo.ForoGeneral;
-import Comunidad_Modulo.modelo.GrupoDiscusion;
-import Comunidad_Modulo.modelo.GrupoCompartir;
-import Comunidad_Modulo.modelo.Solucion;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class Moderador_Controller implements Initializable {
 
-    @FXML private Button btnEliminarUsuario;
-    @FXML private Button btnListarUsuarios;
+    // ========== CONTROLES DE LA NUEVA INTERFAZ ==========
+    
+    // Tab 1: Vista General
+    @FXML private TextArea txtAreaEstadoSistema;
+    @FXML private TextArea txtAreaEstadisticas;
+    @FXML private TextArea txtAreaSanciones;
+    @FXML private TextArea txtAreaInformacion;
+    @FXML private Button btnActualizarInfo;
+    @FXML private Button btnMostrarEstadisticas;
+    
+    // Tab 2: Gestión de Usuarios
     @FXML private TextField txtNombreUsuarioEliminar;
     @FXML private TextField txtNombreComunidad;
-    @FXML private TextArea txtAreaInformacion;
-    @FXML private Button btnEliminarComunidad;
+    @FXML private Button btnEliminarUsuario;
     @FXML private TextField txtComunidadEliminar;
-    @FXML private Button btnVolver;
+    @FXML private Button btnEliminarComunidad;
+    @FXML private TextField txtUsuarioSancion;
+    @FXML private TextField txtRazonSancion;
+    @FXML private TextField txtDuracionSancion;
+    @FXML private Button btnAplicarSancion;
+    @FXML private Button btnLevantarSancion;
+    @FXML private Button btnListarUsuarios;
+    @FXML private TextArea txtAreaUsuariosDetalle;
+    
+    // Tab 3: Contenido de Comunidades
     @FXML private ComboBox<String> comboComunidades;
+    @FXML private Button btnCargarContenido;
+    @FXML private TextArea txtAreaGruposDiscusion;
+    @FXML private TextArea txtAreaGruposCompartir;
+    @FXML private TextArea txtAreaChatsPrivados;
+    
+    // Tab 4: Historial y Moderación
     @FXML private ComboBox<String> comboTipoGrupo;
     @FXML private ComboBox<String> comboGrupos;
     @FXML private Button btnVerHistorial;
     @FXML private TextArea txtAreaHistorial;
+    @FXML private Button btnRevisarContenido;
+    @FXML private Button btnEscanearForos;
+    
+    // Botón General
+    @FXML private Button btnVolver;
 
+    // ========== VARIABLES DE INSTANCIA ==========
     private ContextoSistema contexto;
+    private ModeradorManual moderadorManual;
+    private ModeradorAutomatico moderadorAutomatico;
 
     
     @Override
@@ -51,14 +78,45 @@ public class Moderador_Controller implements Initializable {
 
     private void inicializarSistema() {
         this.contexto = ContextoSistema.getInstance();
+        
+        // Usar la Factory para crear los moderadores
+        ModeradorFactory factory = ModeradorFactory.getInstance();
+        this.moderadorManual = factory.crearModeradorManual("Moderador GUI", "mod-gui");
+        this.moderadorAutomatico = factory.obtenerModeradorAutomaticoSistema();
+        
+        System.out.println("✅ Sistema de moderación inicializado con nueva arquitectura completa");
     }
 
     private void configuracionInterfazModerador() {
+        // Configurar áreas de texto como solo lectura
+        txtAreaEstadoSistema.setEditable(false);
+        txtAreaEstadisticas.setEditable(false);
+        txtAreaSanciones.setEditable(false);
         txtAreaInformacion.setEditable(false);
+        txtAreaUsuariosDetalle.setEditable(false);
+        txtAreaGruposDiscusion.setEditable(false);
+        txtAreaGruposCompartir.setEditable(false);
+        txtAreaChatsPrivados.setEditable(false);
+        txtAreaHistorial.setEditable(false);
+        
+        // Configurar wrap text
+        txtAreaEstadoSistema.setWrapText(true);
+        txtAreaEstadisticas.setWrapText(true);
+        txtAreaSanciones.setWrapText(true);
         txtAreaInformacion.setWrapText(true);
-        txtNombreUsuarioEliminar.setPromptText("Username");
-        txtNombreComunidad.setPromptText("Nombre Comunidad");
+        txtAreaUsuariosDetalle.setWrapText(true);
+        txtAreaGruposDiscusion.setWrapText(true);
+        txtAreaGruposCompartir.setWrapText(true);
+        txtAreaChatsPrivados.setWrapText(true);
+        txtAreaHistorial.setWrapText(true);
+        
+        // Configurar prompts
+        txtNombreUsuarioEliminar.setPromptText("Username del usuario");
+        txtNombreComunidad.setPromptText("Nombre de la Comunidad");
         txtComunidadEliminar.setPromptText("Nombre de la Comunidad a Eliminar");
+        txtUsuarioSancion.setPromptText("Username para sancionar");
+        txtRazonSancion.setPromptText("Razón de la sanción");
+        txtDuracionSancion.setPromptText("Duración en minutos");
     }
 
     /* Eliminación de un Usuario de una Comunidad */
@@ -102,10 +160,8 @@ public class Moderador_Controller implements Initializable {
 
         UsuarioComunidad usuario = usuarioOpt.get();
 
-        // Eliminar el usuario de la comunidad específica
-        comunidad.getUsuariosConectados().removeIf(u -> 
-            u.getUsername().equalsIgnoreCase(nombreUsuario));
-        comunidad.getUsuariosMiembros().remove(usuario);
+        // ===== USAR EL MODERADOR MANUAL PARA LA EXPULSIÓN =====
+        moderadorManual.expulsarUsuarioDeComunidad(usuario, comunidad);
         
         // Actualizar la comunidad en el contexto
         contexto.actualizarComunidad(comunidad);
@@ -155,15 +211,13 @@ public class Moderador_Controller implements Initializable {
         if (resultado.isPresent() && resultado.get() == ButtonType.OK) {
             Comunidad comunidad = comunidadOpt.get();
 
-            // Desconectar a todos los usuarios de la comunidad
-            for (UsuarioComunidad usuario : comunidad.getUsuariosConectados()) {
-                contexto.desconectarUsuarioDeComunidad(usuario, comunidad);
-            }
+            // ===== USAR EL MODERADOR MANUAL PARA ELIMINAR LA COMUNIDAD =====
+            moderadorManual.eliminarComunidad(comunidad);
 
             // Eliminar la comunidad del contexto
             contexto.eliminarComunidad(comunidad);
 
-            mostrarMensajeExito("Comunidad '" + nombreComunidad + "' eliminada exitosamente");
+            mostrarMensajeExito("Comunidad '" + nombreComunidad + "' eliminada exitosamente por moderador manual");
 
             // Limpiar el campo y actualizar la información
             txtComunidadEliminar.clear();
@@ -188,14 +242,23 @@ public class Moderador_Controller implements Initializable {
                     boolean estaConectado = comunidad.getUsuariosConectados().stream()
                             .anyMatch(u -> u.getUsername().equals(usuario.getUsername()));
                     
+                    // Verificar si tiene sanciones
+                    boolean estaSancionado = moderadorManual.usuarioEstaSancionado(usuario);
+                    String estadoSancion = estaSancionado ? " 🚫 SANCIONADO" : "";
+                    
                     lista.append("   • ").append(usuario.getUsername())
-                         .append(" [").append(estaConectado ? "✅ Conectado" : "❌ Desconectado").append("]\n");
+                         .append(" [").append(estaConectado ? "✅ Conectado" : "❌ Desconectado").append("]")
+                         .append(estadoSancion).append("\n");
                 }
             }
             lista.append("\n");
         }
 
+        // Mostrar en ambas áreas para compatibilidad
         txtAreaInformacion.setText(lista.toString());
+        if (txtAreaUsuariosDetalle != null) {
+            txtAreaUsuariosDetalle.setText(lista.toString());
+        }
     }
 
     @FXML
@@ -212,7 +275,371 @@ public class Moderador_Controller implements Initializable {
     }
 
     private void actualizarInformacion() {
+        // Actualizar toda la información de la interfaz
+        actualizarEstadoSistema();
+        actualizarEstadisticas();
+        actualizarSanciones();
         listarUsuarios();
+        cargarComunidades();
+    }
+    
+    // ========== NUEVOS MÉTODOS PARA LA INTERFAZ AVANZADA ==========
+    
+    /**
+     * Actualiza el estado general del sistema de moderación
+     */
+    private void actualizarEstadoSistema() {
+        StringBuilder estado = new StringBuilder();
+        estado.append("🛡️ SISTEMA DE MODERACIÓN ACTIVO\n\n");
+        estado.append("👨‍💼 Moderador Manual: ").append(moderadorManual.getNombre()).append("\n");
+        estado.append("🤖 Moderador Automático: ").append(moderadorAutomatico.getNombre()).append("\n");
+        estado.append("🌐 Comunidades Gestionadas: ").append(contexto.getComunidades().size()).append("\n");
+        estado.append("👥 Total de Usuarios: ").append(contexto.getUsuarios().size()).append("\n");
+        estado.append("⚖️ Moderadores Activos: ").append(contexto.getModeradores().size()).append("\n\n");
+        
+        estado.append("🔧 Estado del Filtro Automático: ");
+        estado.append(moderadorAutomatico.isFiltroActivado() ? "✅ ACTIVO" : "❌ INACTIVO").append("\n");
+        estado.append("📊 Nivel de Moderación: ");
+        int nivel = moderadorAutomatico.getNivelStricto();
+        estado.append(nivel == 1 ? "🟢 Básico" : nivel == 2 ? "🟡 Medio" : "🔴 Estricto").append("\n");
+        
+        txtAreaEstadoSistema.setText(estado.toString());
+    }
+    
+    /**
+     * Actualiza las estadísticas generales
+     */
+    private void actualizarEstadisticas() {
+        StringBuilder stats = new StringBuilder();
+        stats.append("📈 ESTADÍSTICAS GENERALES\n\n");
+        
+        int totalUsuarios = 0;
+        int usuariosConectados = 0;
+        int totalGruposDiscusion = 0;
+        int totalGruposCompartir = 0;
+        int totalChatsPrivados = 0;
+        
+        for (Comunidad comunidad : contexto.getComunidades()) {
+            totalUsuarios += comunidad.getUsuariosMiembros().size();
+            usuariosConectados += comunidad.getUsuariosConectados().size();
+            
+            if (comunidad.getForoGeneral() != null) {
+                totalGruposDiscusion += comunidad.getForoGeneral().getGruposDiscusion().size();
+                totalGruposCompartir += comunidad.getForoGeneral().getGruposCompartir().size();
+            }
+            
+            totalChatsPrivados += comunidad.getChatsPrivados().size();
+        }
+        
+        stats.append("👥 Usuarios Totales: ").append(totalUsuarios).append("\n");
+        stats.append("🟢 Usuarios Conectados: ").append(usuariosConectados).append("\n");
+        stats.append("💬 Grupos de Discusión: ").append(totalGruposDiscusion).append("\n");
+        stats.append("📚 Grupos de Compartir: ").append(totalGruposCompartir).append("\n");
+        stats.append("💌 Chats Privados: ").append(totalChatsPrivados).append("\n\n");
+        
+        stats.append("📊 Actividad:\n");
+        double tasaConexion = totalUsuarios > 0 ? (double) usuariosConectados / totalUsuarios * 100 : 0;
+        stats.append("📶 Tasa de Conexión: ").append(String.format("%.1f%%", tasaConexion)).append("\n");
+        
+        txtAreaEstadisticas.setText(stats.toString());
+    }
+    
+    /**
+     * Actualiza la información de sanciones activas
+     */
+    private void actualizarSanciones() {
+        StringBuilder sanciones = new StringBuilder();
+        sanciones.append("🚫 SANCIONES ACTIVAS\n\n");
+        
+        List<SancionUsuario> sancionesActivas = moderadorManual.getSancionesActivas();
+        
+        if (sancionesActivas.isEmpty()) {
+            sanciones.append("✅ No hay sanciones activas en el sistema\n");
+            sanciones.append("🎉 Todos los usuarios están en buen estado");
+        } else {
+            sanciones.append("⚠️ Total de sanciones activas: ").append(sancionesActivas.size()).append("\n\n");
+            
+            for (SancionUsuario sancion : sancionesActivas) {
+                sanciones.append("👤 Usuario: ").append(sancion.getUsuario().getUsername()).append("\n");
+                sanciones.append("📝 Razón: ").append(sancion.getRazon()).append("\n");
+                sanciones.append("⏰ Tiempo restante: ").append(sancion.getMinutosRestantes()).append(" min\n");
+                sanciones.append("👨‍💼 Moderador: ").append(sancion.getModeradorResponsable()).append("\n");
+                sanciones.append("─".repeat(30)).append("\n");
+            }
+        }
+        
+        txtAreaSanciones.setText(sanciones.toString());
+    }
+    
+    @FXML
+    public void actualizarInformacionCompleta() {
+        actualizarInformacion();
+        mostrarMensajeExito("✅ Información actualizada correctamente");
+    }
+    
+    @FXML
+    public void mostrarEstadisticasDetalladas() {
+        // Mostrar estadísticas completas del moderador manual y automático
+        moderadorManual.mostrarEstadisticasAccionesManual();
+        moderadorAutomatico.mostrarEstadisticasAutomaticas();
+        
+        StringBuilder detalle = new StringBuilder();
+        detalle.append("📊 ESTADÍSTICAS DETALLADAS DEL SISTEMA\n\n");
+        detalle.append("=".repeat(50)).append("\n");
+        detalle.append("Ver consola para estadísticas completas del sistema de moderación\n");
+        detalle.append("=".repeat(50)).append("\n");
+        
+        txtAreaEstadisticas.setText(detalle.toString());
+        mostrarMensajeExito("📊 Estadísticas detalladas mostradas en consola");
+    }
+    
+    @FXML
+    public void aplicarSancionManual() {
+        String username = txtUsuarioSancion.getText().trim();
+        String razon = txtRazonSancion.getText().trim();
+        String duracionStr = txtDuracionSancion.getText().trim();
+        
+        if (username.isEmpty() || razon.isEmpty() || duracionStr.isEmpty()) {
+            mostrarMensajeError("Por favor, complete todos los campos para aplicar la sanción");
+            return;
+        }
+        
+        try {
+            int duracionMinutos = Integer.parseInt(duracionStr);
+            
+            // Buscar el usuario
+            UsuarioComunidad usuario = buscarUsuario(username);
+            if (usuario == null) {
+                mostrarMensajeError("Usuario '" + username + "' no encontrado en el sistema");
+                return;
+            }
+            
+            // Aplicar sanción manual
+            moderadorManual.aplicarSancionManual(usuario, razon, duracionMinutos);
+            
+            mostrarMensajeExito("⚖️ Sanción aplicada exitosamente a " + username + " por " + duracionMinutos + " minutos");
+            
+            // Limpiar campos
+            txtUsuarioSancion.clear();
+            txtRazonSancion.clear();
+            txtDuracionSancion.clear();
+            
+            // Actualizar información
+            actualizarSanciones();
+            
+        } catch (NumberFormatException e) {
+            mostrarMensajeError("La duración debe ser un número válido en minutos");
+        }
+    }
+    
+    @FXML
+    public void levantarSancionUsuario() {
+        String username = txtUsuarioSancion.getText().trim();
+        
+        if (username.isEmpty()) {
+            mostrarMensajeError("Por favor, ingrese el username del usuario");
+            return;
+        }
+        
+        // Buscar el usuario
+        UsuarioComunidad usuario = buscarUsuario(username);
+        if (usuario == null) {
+            mostrarMensajeError("Usuario '" + username + "' no encontrado en el sistema");
+            return;
+        }
+        
+        // Verificar si tiene sanción activa
+        if (!moderadorManual.usuarioEstaSancionado(usuario)) {
+            mostrarMensajeError("El usuario '" + username + "' no tiene sanciones activas");
+            return;
+        }
+        
+        // Levantar sanción
+        boolean levantada = moderadorManual.levantarSancion(usuario);
+        
+        if (levantada) {
+            mostrarMensajeExito("🔓 Sanción levantada exitosamente para " + username);
+            txtUsuarioSancion.clear();
+            actualizarSanciones();
+        } else {
+            mostrarMensajeError("Error al levantar la sanción del usuario");
+        }
+    }
+    
+    @FXML
+    public void cargarContenidoComunidad() {
+        String nombreComunidad = comboComunidades.getValue();
+        
+        if (nombreComunidad == null || nombreComunidad.isEmpty()) {
+            mostrarMensajeError("Por favor, seleccione una comunidad");
+            return;
+        }
+        
+        Optional<Comunidad> comunidadOpt = contexto.getComunidades().stream()
+                .filter(c -> c.getNombre().equals(nombreComunidad))
+                .findFirst();
+                
+        if (!comunidadOpt.isPresent()) {
+            mostrarMensajeError("Comunidad no encontrada");
+            return;
+        }
+        
+        Comunidad comunidad = comunidadOpt.get();
+        cargarGruposDiscusion(comunidad);
+        cargarGruposCompartir(comunidad);
+        cargarChatsPrivados(comunidad);
+        
+        mostrarMensajeExito("📋 Contenido de '" + nombreComunidad + "' cargado exitosamente");
+    }
+    
+    private void cargarGruposDiscusion(Comunidad comunidad) {
+        StringBuilder grupos = new StringBuilder();
+        grupos.append("💬 GRUPOS DE DISCUSIÓN\n");
+        grupos.append("Comunidad: ").append(comunidad.getNombre()).append("\n\n");
+        
+        if (comunidad.getForoGeneral() == null || comunidad.getForoGeneral().getGruposDiscusion().isEmpty()) {
+            grupos.append("📭 No hay grupos de discusión creados\n");
+            grupos.append("💡 Los usuarios pueden crear nuevos grupos desde 'Gestión de Foro'");
+        } else {
+            grupos.append("📊 Total de grupos: ").append(comunidad.getForoGeneral().getGruposDiscusion().size()).append("\n\n");
+            
+            for (GrupoDiscusion grupo : comunidad.getForoGeneral().getGruposDiscusion()) {
+                grupos.append("🏷️ Título: ").append(grupo.getTitulo()).append("\n");
+                grupos.append("📚 Nivel: ").append(grupo.getNivelJava()).append("\n");
+                grupos.append("🎯 Tema: ").append(grupo.getTipoTema()).append("\n");
+                grupos.append("👥 Miembros: ").append(grupo.getMiembros().size()).append("\n");
+                
+                // Mostrar miembros
+                if (!grupo.getMiembros().isEmpty()) {
+                    grupos.append("📋 Lista de miembros:\n");
+                    for (UsuarioComunidad miembro : grupo.getMiembros()) {
+                        boolean estaConectado = comunidad.getUsuariosConectados().stream()
+                                .anyMatch(u -> u.getUsername().equals(miembro.getUsername()));
+                        grupos.append("  • ").append(miembro.getUsername())
+                               .append(estaConectado ? " 🟢" : " 🔴").append("\n");
+                    }
+                }
+                grupos.append("─".repeat(40)).append("\n");
+            }
+        }
+        
+        txtAreaGruposDiscusion.setText(grupos.toString());
+    }
+    
+    private void cargarGruposCompartir(Comunidad comunidad) {
+        StringBuilder grupos = new StringBuilder();
+        grupos.append("📚 GRUPOS DE COMPARTIR\n");
+        grupos.append("Comunidad: ").append(comunidad.getNombre()).append("\n\n");
+        
+        if (comunidad.getForoGeneral() == null || comunidad.getForoGeneral().getGruposCompartir().isEmpty()) {
+            grupos.append("📭 No hay grupos de compartir creados\n");
+            grupos.append("💡 Los usuarios pueden crear nuevos grupos desde 'Gestión de Foro'");
+        } else {
+            grupos.append("📊 Total de grupos: ").append(comunidad.getForoGeneral().getGruposCompartir().size()).append("\n\n");
+            
+            for (GrupoCompartir grupo : comunidad.getForoGeneral().getGruposCompartir()) {
+                grupos.append("🏷️ Título: ").append(grupo.getTitulo()).append("\n");
+                grupos.append("📚 Nivel: ").append(grupo.getNivelJava()).append("\n");
+                grupos.append("🎯 Tema: ").append(grupo.getTipoTema()).append("\n");
+                grupos.append("👥 Miembros: ").append(grupo.getMiembros().size()).append("\n");
+                grupos.append(" Soluciones: ").append(grupo.getSoluciones().size()).append("\n");
+                
+                // Mostrar soluciones compartidas
+                if (!grupo.getSoluciones().isEmpty()) {
+                    grupos.append("📋 Soluciones compartidas:\n");
+                    for (Solucion solucion : grupo.getSoluciones()) {
+                        grupos.append("  🔹 ").append(solucion.getTitulo())
+                               .append(" por ").append(solucion.getAutor().getUsername()).append("\n");
+                    }
+                }
+                grupos.append("─".repeat(40)).append("\n");
+            }
+        }
+        
+        txtAreaGruposCompartir.setText(grupos.toString());
+    }
+    
+    private void cargarChatsPrivados(Comunidad comunidad) {
+        StringBuilder chats = new StringBuilder();
+        chats.append("💌 CHATS PRIVADOS\n");
+        chats.append("Comunidad: ").append(comunidad.getNombre()).append("\n\n");
+        
+        if (comunidad.getChatsPrivados().isEmpty()) {
+            chats.append("📭 No hay chats privados activos\n");
+            chats.append("💡 Los usuarios pueden iniciar chats desde 'Chat Privado'");
+        } else {
+            chats.append("📊 Total de chats: ").append(comunidad.getChatsPrivados().size()).append("\n\n");
+            
+            for (ChatPrivado chat : comunidad.getChatsPrivados()) {
+                chats.append("🆔 ID Chat: ").append(chat.getIdChat()).append("\n");
+                chats.append("👥 Participantes: ").append(chat.getParticipantes().size()).append("\n");
+                
+                // Mostrar participantes
+                chats.append("📋 Lista de participantes:\n");
+                for (UsuarioComunidad participante : chat.getParticipantes()) {
+                    boolean estaConectado = comunidad.getUsuariosConectados().stream()
+                            .anyMatch(u -> u.getUsername().equals(participante.getUsername()));
+                    chats.append("  • ").append(participante.getUsername())
+                         .append(estaConectado ? " 🟢 Conectado" : " 🔴 Desconectado").append("\n");
+                }
+                
+                chats.append("💬 Mensajes: ").append(chat.getMensajes().size()).append("\n");
+                chats.append("─".repeat(40)).append("\n");
+            }
+        }
+        
+        txtAreaChatsPrivados.setText(chats.toString());
+    }
+    
+    @FXML
+    public void revisarContenidoReportado() {
+        // Simular revisión de contenido reportado
+        String contenidoEjemplo = "Contenido reportado por comportamiento inapropiado...";
+        UsuarioComunidad reportante = contexto.getUsuarios().isEmpty() ? 
+            null : contexto.getUsuarios().get(0);
+        
+        if (reportante != null) {
+            moderadorManual.revisarContenidoReportado(
+                contenidoEjemplo, 
+                reportante, 
+                "Lenguaje inapropiado"
+            );
+            mostrarMensajeExito("🔍 Revisión de contenido reportado completada. Ver consola para detalles.");
+        } else {
+            mostrarMensajeError("No hay usuarios en el sistema para generar reportes");
+        }
+    }
+    
+    @FXML
+    public void escanearForosAutomatico() {
+        int forosEscaneados = 0;
+        
+        for (Comunidad comunidad : contexto.getComunidades()) {
+            if (comunidad.getForoGeneral() != null) {
+                moderadorAutomatico.escanearForoAutomatico(comunidad.getForoGeneral());
+                forosEscaneados++;
+            }
+        }
+        
+        if (forosEscaneados > 0) {
+            mostrarMensajeExito("🤖 Escaneo automático completado en " + forosEscaneados + " foros. Ver consola para detalles.");
+        } else {
+            mostrarMensajeError("No hay foros disponibles para escanear");
+        }
+    }
+    
+    /**
+     * Busca un usuario en todas las comunidades
+     */
+    private UsuarioComunidad buscarUsuario(String username) {
+        for (Comunidad comunidad : contexto.getComunidades()) {
+            for (UsuarioComunidad usuario : comunidad.getUsuariosMiembros()) {
+                if (usuario.getUsername().equalsIgnoreCase(username)) {
+                    return usuario;
+                }
+            }
+        }
+        return null;
     }
 
     private void mostrarMensajeError(String mensaje) {

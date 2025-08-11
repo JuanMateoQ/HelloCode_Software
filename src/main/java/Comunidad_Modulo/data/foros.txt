@@ -1,5 +1,5 @@
 # Archivo de grupos de foro
-# Formato: nombreComunidad;tipoGrupo;titulo;nivelJava;tipoTema;creador
+# Formato: nombreComunidad;tipoGrupo;titulo;nivelAprendizaje;tipoTema;creador
 Java Principiantes;DISCUSION;Prueba1;Intermedio;Estructuras de Datos;Sistema
 Java Principiantes;DISCUSION;PRUEBA2;Principiante;Sintaxis;Sistema
 Java Principiantes;DISCUSION;Prueba_3;Principiante;Manejo de Excepciones;churito
