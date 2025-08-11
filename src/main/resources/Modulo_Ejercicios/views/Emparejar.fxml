@@ -51,11 +51,6 @@
 							</font>
 						</Text>
 						<Button id="btnPista" fx:id="btnPista" mnemonicParsing="false" opacity="0.0" prefHeight="30.0" prefWidth="30.0" textAlignment="CENTER" GridPane.columnIndex="3" />
-						<ImageView id="imgPista" fx:id="imgPista" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3">
-							<image>
-								<Image url="@../imagenes/icon_pistas.png" />
-							</image>
-						</ImageView>
 					</children>
 				</GridPane>
 			</top>
