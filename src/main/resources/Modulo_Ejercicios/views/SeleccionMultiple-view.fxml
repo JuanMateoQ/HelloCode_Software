@@ -34,7 +34,7 @@
                         <RowConstraints maxHeight="30" minHeight="10.0" prefHeight="30" vgrow="SOMETIMES" />
                     </rowConstraints>
                     <children>
-                        <Text id="txtback" fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: #DCD6F7; -fx-font-family: 'Segoe UI'; -fx-font-weight: bold;" text="JAVA" textAlignment="CENTER" GridPane.columnIndex="2">
+                        <Text id="txtback" fx:id="txtLenguaje" fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: #DCD6F7; -fx-font-family: 'Segoe UI'; -fx-font-weight: bold;" text="Lenguaje" textAlignment="CENTER" GridPane.columnIndex="2">
                             <font>
                                 <Font name="Segoe UI" size="18.0" />
                             </font>

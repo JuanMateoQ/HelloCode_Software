@@ -15,6 +15,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import java.util.function.Consumer;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class LeccionUIController {
@@ -23,6 +25,8 @@ public class LeccionUIController {
     private static Leccion leccionActual;
     private static int indiceEjercicioActual = 0;
     private static String rutaFXMLVentanaFinal; // nueva variable
+    // Registro de ventanas de ejercicios abiertas para poder cerrarlas al final
+    private static final List<Stage> ventanasEjercicio = new ArrayList<>();
     /**
      * Método principal para mostrar una lección con ejercicios mixtos
      * Detecta automáticamente los tipos de ejercicios y carga la vista apropiada
@@ -154,6 +158,10 @@ public class LeccionUIController {
             } catch (NoSuchMethodException nsme) {
             }
 
+            // Registrar la ventana y limpiar cuando se cierre
+            ventanasEjercicio.add(stage);
+            stage.setOnHidden(e -> ventanasEjercicio.remove(stage));
+
             stage.show();
         } catch (Exception e) {
             e.printStackTrace();
@@ -164,6 +172,9 @@ public class LeccionUIController {
 
     private static void mostrarLeccionCompletada() {
         try {
+            // Cerrar cualquier ventana de ejercicio que quede abierta
+            cerrarVentanasEjercicioAbiertas();
+
             FXMLLoader loader = new FXMLLoader(LeccionUIController.class.getResource("/Nuevo_Modulo_Leccion/views/ResumenLeccionCompletada.fxml"));
             Parent root = loader.load();
 
@@ -175,7 +186,8 @@ public class LeccionUIController {
             resumenStage.showAndWait();
 
             if (rutaFXMLVentanaFinal != null && !rutaFXMLVentanaFinal.isEmpty()) {
-                MetodosFrecuentes.mostrarVentana(rutaFXMLVentanaFinal, "Menú de Lecciones");
+                String ruta = rutaFXMLVentanaFinal;
+                MetodosFrecuentes.mostrarVentana(ruta, "Menú de Lecciones");
             }
 
         } catch (Exception e) {
@@ -184,6 +196,34 @@ public class LeccionUIController {
         }
     }
 
+    /**
+     * Reemplaza la escena del ejercicio por la vista "se acabaron vidas".
+     * La navegación a la ruta final se realiza desde el botón OK de esa vista.
+     */
+    public static void mostrarSeAcabaronVidasYVolver(Stage currentStage) {
+        try {
+            FXMLLoader loader = new FXMLLoader(LeccionUIController.class.getResource("/Nuevo_Modulo_Leccion/views/seAcabaronVidasLeccion.fxml"));
+            Parent root = loader.load();
+            if (currentStage != null) {
+                currentStage.setScene(new Scene(root));
+                currentStage.setTitle("Sin vidas");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            MetodosFrecuentes.mostrarAlerta("Error", "No se pudo abrir la pantalla de fin de vidas: " + e.getMessage());
+        }
+    }
 
+    private static void cerrarVentanasEjercicioAbiertas() {
+        // Cierra todas las ventanas de ejercicios aún abiertas para evitar que queden detrás del resumen
+        for (Stage s : new ArrayList<>(ventanasEjercicio)) {
+            try {
+                if (s != null && s.isShowing()) {
+                    s.close();
+                }
+            } catch (Exception ignored) { }
+        }
+        ventanasEjercicio.clear();
+    }
 
 }

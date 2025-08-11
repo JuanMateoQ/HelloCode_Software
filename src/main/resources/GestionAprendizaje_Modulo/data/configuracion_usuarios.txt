@@ -5,3 +5,5 @@ esteban;Java;Avanzado;false
 Fernando;C;Básico;false
 pruebita;Python;Avanzado;false
 An-yel;Java;Básico;false
+usuario1;Java;Básico;false
+Pr;Python;Intermedio;false

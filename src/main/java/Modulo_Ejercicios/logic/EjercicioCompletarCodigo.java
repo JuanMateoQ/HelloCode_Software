@@ -70,6 +70,10 @@ public class EjercicioCompletarCodigo extends EjercicioBase {
         return partesFaltantes.size();
     }
 
+    public String getLenguajeEjercicio() {
+        return lenguaje.name();
+    }
+
     @Override
     public ResultadoDeEvaluacion evaluarRespuestas(ArrayList<Respuesta> respuestasUsuario) {
         //Verificar que el usuario haya proporcionado al menos una respuesta

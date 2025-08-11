@@ -51,6 +51,15 @@ public class EjercicioEmparejar extends EjercicioBase {
         return respuestasCorrectas;
     }
 
+    /**
+     * Obtiene el String del Lenguaje del Ejercicio
+     */
+
+    public String getLenguajeEjercicio() {
+        return lenguaje.name();
+    }
+
+
     @Override
     public ResultadoDeEvaluacion evaluarRespuestas(ArrayList<Respuesta> respuestasUsuario) {
         if (respuestasUsuario == null || respuestasUsuario.isEmpty()) {

@@ -19,5 +19,3 @@ public class MainGUIUsuario extends Application {
         launch();
     }
 }
-
-

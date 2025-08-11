@@ -34,6 +34,7 @@ public class EmparejarController implements Initializable {
     @FXML private ProgressBar progressBar;
 
     // Elementos principales
+    @FXML private Text txtLenguaje;
     @FXML private Label lblPregunta;
     @FXML private Label lblInstruccion;
     @FXML private VBox columnIzquierda;
@@ -136,6 +137,7 @@ public class EmparejarController implements Initializable {
         if (txtLiveCount != null) {
             actualizarVidasUI();
         }
+        
     }
 
     /**
@@ -145,6 +147,10 @@ public class EmparejarController implements Initializable {
         this.ejercicioActual = ejercicio;
         cargarEjercicio(ejercicio);
         actualizarProgressBar();
+
+        if(txtLenguaje != null) {
+            txtLenguaje.setText(ejercicio.getLenguajeEjercicio());
+        }
     }
 
     // Inyectado por LeccionUIController: Lección escuchará el resultado para manejar vidas
@@ -444,14 +450,14 @@ public class EmparejarController implements Initializable {
         // Ocultar todos los paneles primero
         ocultarTodosPanelesFeedback();
 
-        // Solo dos casos posibles: CORRECTO (completó todos los emparejamientos) o GAME_OVER (sin vidas)
+    // Solo dos casos posibles: CORRECTO (completó todos los emparejamientos) o INCORRECTO (sin vidas u error)
         switch (tipo) {
             case CORRECTO:
                 mostrarPanelCorrecto(mensaje);
                 break;
             case INCORRECTO:
-                // Solo mostrar Game Over cuando se agotan las vidas
-                mostrarPanelGameOver();
+        // Mostrar SIEMPRE feedback de incorrecto (también cuando se agotan las vidas)
+        mostrarPanelIncorrecto(mensaje);
                 break;
             default:
                 mostrarPanelCorrecto(mensaje);
@@ -464,6 +470,34 @@ public class EmparejarController implements Initializable {
         // Mostrar el panel de feedback
         if (feedbackPanel != null) {
             feedbackPanel.setVisible(true);
+        }
+
+        // Si es game over, tras una breve pausa abrir modal y volver a la vista final
+        if (tipo == TipoRespuesta.INCORRECTO && getVidasActuales() <= 0) {
+            // Asegurar que el botón no se muestre en Game Over
+            if (btnSiguienteCompleto != null) {
+                btnSiguienteCompleto.setDisable(true);
+                btnSiguienteCompleto.setVisible(false);
+                btnSiguienteCompleto.setManaged(false);
+            }
+
+            javafx.animation.PauseTransition pause = new javafx.animation.PauseTransition(javafx.util.Duration.seconds(3));
+            pause.setOnFinished(e -> {
+                javafx.stage.Stage stage = null;
+                if (feedbackPanel != null && feedbackPanel.getScene() != null) {
+                    stage = (javafx.stage.Stage) feedbackPanel.getScene().getWindow();
+                } else if (progressBar != null && progressBar.getScene() != null) {
+                    stage = (javafx.stage.Stage) progressBar.getScene().getWindow();
+                } else if (btnSiguiente != null && btnSiguiente.getScene() != null) {
+                    stage = (javafx.stage.Stage) btnSiguiente.getScene().getWindow();
+                } else if (btnSiguienteCompleto != null && btnSiguienteCompleto.getScene() != null) {
+                    stage = (javafx.stage.Stage) btnSiguienteCompleto.getScene().getWindow();
+                }
+                if (stage != null) {
+                    Nuevo_Modulo_Leccion.controllers.LeccionUIController.mostrarSeAcabaronVidasYVolver(stage);
+                }
+            });
+            pause.play();
         }
     }
 
@@ -486,20 +520,7 @@ public class EmparejarController implements Initializable {
         }
     }
 
-    private void mostrarPanelParcial(String mensaje, String puntuacion) {
-        if (panelParcial != null) {
-            panelParcial.setVisible(true);
-            if (textParcial != null) {
-                textParcial.setText("¡Buen intento!");
-            }
-            if (textParcialDetalle != null) {
-                textParcialDetalle.setText(mensaje != null ? mensaje : "Algunos emparejamientos son correctos, pero otros necesitan ajuste.");
-            }
-            if (textPuntuacion != null && puntuacion != null) {
-                textPuntuacion.setText("Puntuación: " + puntuacion);
-            }
-        }
-    }
+    // Eliminado: no se usa flujo parcial en emparejar actualmente
 
     private void mostrarPanelIncorrecto(String mensaje) {
         if (panelIncorrecto != null) {
@@ -513,20 +534,19 @@ public class EmparejarController implements Initializable {
         }
     }
 
-    private void mostrarPanelGameOver() {
-        if (panelGameOver != null) {
-            panelGameOver.setVisible(true);
-        }
-    }
+    // Eliminado: se usa panelIncorrecto también para game over y se navega tras pausa
 
     private void configurarBotonSiguiente() {
         if (btnSiguienteCompleto != null) {
-            btnSiguienteCompleto.setDisable(false);
-            btnSiguienteCompleto.setVisible(true);
-
             if (getVidasActuales() <= 0) {
-                btnSiguienteCompleto.setText("SALIR");
+                // Game Over: no mostrar botón, se manejará con pausa y modal
+                btnSiguienteCompleto.setDisable(true);
+                btnSiguienteCompleto.setVisible(false);
+                btnSiguienteCompleto.setManaged(false);
             } else {
+                btnSiguienteCompleto.setDisable(false);
+                btnSiguienteCompleto.setVisible(true);
+                btnSiguienteCompleto.setManaged(true);
                 btnSiguienteCompleto.setText("SIGUIENTE");
             }
         }

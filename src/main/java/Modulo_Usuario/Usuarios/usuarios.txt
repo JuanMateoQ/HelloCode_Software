@@ -15,4 +15,4 @@ zack;123456;Isaac;isaacmh@gmail.com;0;3;USUARIO
 isaac;123456;isaac;isaacm1@gmail.com;0;3;USUARIO
 Fernando;fernando;Fernando;fernando.huilca@epn.edu.ec;0;3;USUARIO
 pruebita;pruebita;pruebita;hola@gmail.com;0;3;USUARIO
-An-yel;Mashi222324;An;angel@gmail.com;0;3;USUARIO
+An-yel;Mashi222324;An;angel@gmail.com;0;2;USUARIO

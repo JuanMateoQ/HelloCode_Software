@@ -41,6 +41,9 @@ public class EjercicioSeleccionController implements Initializable {
     private Text txtLiveCount;
 
     @FXML
+    private Text txtLenguaje;
+
+    @FXML
     private ProgressBar progressBar;
 
     @FXML
@@ -229,8 +232,14 @@ public class EjercicioSeleccionController implements Initializable {
      * Método para configurar un solo ejercicio individual
      */
     public void setEjercicio(EjercicioSeleccion ejercicio) {
+
         this.ejercicioActual = ejercicio;
         cargarInstruccion(ejercicio);
+
+        if(txtLenguaje != null) {
+            txtLenguaje.setText(ejercicio.getLenguajeEjercicio());
+        }
+
         actualizarProgressBar();
     }
 
@@ -389,19 +398,12 @@ public class EjercicioSeleccionController implements Initializable {
                 mostrarPanelCorrecto(mensaje, explicacion);
                 break;
             case INCORRECTO:
-                if (getVidasActuales()<= 0) {
-                    mostrarPanelGameOver();
-                } else {
-                    mostrarPanelIncorrecto(mensaje, explicacion);
-                }
+                // Siempre mostrar feedback de incorrecto
+                mostrarPanelIncorrecto(mensaje, explicacion);
                 break;
             case PARCIALMENTE_CORRECTO:
-                if (getVidasActuales() <= 0) {
-                    // Si al quedar parcialmente correcto se agotaron las vidas, mostrar Game Over
-                    mostrarPanelGameOver();
-                } else {
-                    mostrarPanelParcial(mensaje, explicacion);
-                }
+                // Siempre mostrar feedback parcial
+                mostrarPanelParcial(mensaje, explicacion);
                 break;
         }
 
@@ -421,6 +423,19 @@ public class EjercicioSeleccionController implements Initializable {
 
         // Mostrar el panel de feedback
         feedbackPanel.setVisible(true);
+
+        // Si no hay vidas, esperar 3s y navegar a "se acabaron vidas"
+        if (getVidasActuales() <= 0) {
+            PauseTransition pause = new PauseTransition(Duration.seconds(3));
+            pause.setOnFinished(e -> {
+                Button ref = (btnSiguiente != null) ? btnSiguiente : btnComprobar;
+                if (ref != null && ref.getScene() != null) {
+                    javafx.stage.Stage stage = (javafx.stage.Stage) ref.getScene().getWindow();
+                    Nuevo_Modulo_Leccion.controllers.LeccionUIController.mostrarSeAcabaronVidasYVolver(stage);
+                }
+            });
+            pause.play();
+        }
     }
 
     private void ocultarTodosPanelesFeedback() {
@@ -472,22 +487,7 @@ public class EjercicioSeleccionController implements Initializable {
         }
     }
 
-    private void mostrarPanelGameOver() {
-        if (panelGameOver != null) {
-            panelGameOver.setVisible(true);
-            if (textGameOver != null) {
-                textGameOver.setText("¡Se agotaron las vidas!");
-            }
-            if (textGameOverDetalle != null) {
-                textGameOverDetalle.setText("No te preocupes, puedes intentarlo nuevamente.");
-            }
-        }
-        // Mostrar panel unos segundos y volver a la ventana anterior (como en EjercicioCompletarController)
-        actualizarVidasUI();
-        PauseTransition pause = new PauseTransition(Duration.seconds(3));
-        pause.setOnFinished(e -> terminarEjecucion());
-        pause.play();
-    }
+    // Eliminado: se usa panelIncorrecto también para game over y se navega tras pausa
 
     private void configurarBotonSiguiente() {
         if (btnSiguiente != null) {
@@ -546,7 +546,7 @@ public class EjercicioSeleccionController implements Initializable {
         if (btnSiguiente != null) {
             btnSiguiente.setOnAction(event -> handleContinuar());
         }
-
+ 
         actualizarVidasUI();
 
     }

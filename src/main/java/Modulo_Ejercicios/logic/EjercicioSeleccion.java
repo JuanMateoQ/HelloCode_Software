@@ -32,6 +32,10 @@ public class EjercicioSeleccion extends EjercicioBase {
         return respuestasCorrectas;
     }
 
+    public String getLenguajeEjercicio() {
+        return lenguaje.name();
+    }
+
     @Override
     public ResultadoDeEvaluacion evaluarRespuestas(ArrayList<Respuesta> respuestasUsuario) {
         // Validación básica
@@ -63,7 +67,7 @@ public class EjercicioSeleccion extends EjercicioBase {
                 restantes.remove(idx);
             }
         }
-
+    
 
         // Porcentaje basado en el máximo entre correctas y seleccionadas
         int seleccionadas = respuestasUsuarioStrings.size();

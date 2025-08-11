@@ -111,6 +111,9 @@ public class EjercicioCompletarController implements Initializable {
             Ejercicio.setText(ejercicio.obtenerCodigoIncompleto());
         }
 
+        if(txtLenguaje != null) {
+            txtLenguaje.setText(ejercicio.getLenguajeEjercicio());
+        }
         if (textEntrada != null) {
             textEntrada.clear();
         }
@@ -206,11 +209,20 @@ public class EjercicioCompletarController implements Initializable {
                 }
 
                 actualizarVidasUI();
+                // Mostrar SIEMPRE el feedback de incorrecto (aunque se hayan acabado las vidas)
+                mostrarFeedbackIncorrecto(ejercicioIndividual);
 
-                if (getVidasActuales() > 0) {
-                    mostrarFeedbackIncorrecto(ejercicioIndividual);
-                } else {
-                    mostrarGameOver();
+                // Si no hay vidas, ocultar botones y tras 3s ir a "se acabaron vidas"
+                if (getVidasActuales() <= 0) {
+                    if (btnSiguiente != null) { btnSiguiente.setDisable(true); btnSiguiente.setOpacity(0.0); }
+                    if (btnComprobar != null) { btnComprobar.setDisable(true); btnComprobar.setVisible(false); }
+
+                    PauseTransition pauseAvisos = new PauseTransition(Duration.seconds(3));
+                    pauseAvisos.setOnFinished(event -> {
+                        Stage stage = (Stage) btnComprobar.getScene().getWindow();
+                        Nuevo_Modulo_Leccion.controllers.LeccionUIController.mostrarSeAcabaronVidasYVolver(stage);
+                    });
+                    pauseAvisos.play();
                     return;
                 }
             }
@@ -303,17 +315,7 @@ public class EjercicioCompletarController implements Initializable {
         }
     }
 
-    private void mostrarGameOver() {
-        Avisos.setText("¡Se han agotado tus vidas!");
-        Avisos.setVisible(true);
-
-        PauseTransition pauseAvisos = new PauseTransition(Duration.seconds(3));
-        pauseAvisos.setOnFinished(event -> {
-            Avisos.setVisible(false);
-            terminarEjecucion();
-        });
-        pauseAvisos.play();
-    }
+    // Eliminado: ahora se muestra feedback incorrecto y se navega tras pausa cuando no hay vidas
 
     private void mostrarMensajeError(String mensaje) {
         Avisos.setText(mensaje);
