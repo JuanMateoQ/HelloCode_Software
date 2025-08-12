@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+
+<AnchorPane prefHeight="640.0" prefWidth="360.0"
+            style="-fx-background-color: linear-gradient(to bottom, #667eea 0%, #764ba2 100%);
+                   -fx-font-family: 'Segoe UI';"
+            xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="Comunidad_Modulo.Controladores_GUI.Moderador_Controller">
+
+    <!-- Header -->
+    <VBox>
+        <HBox alignment="CENTER" spacing="10" style="-fx-padding: 10 0 0 0;">
+            <ImageView fitHeight="30" fitWidth="30" preserveRatio="true">
+                <Image url="@../images/modicon.png"/>
+            </ImageView>
+            <VBox alignment="CENTER">
+                <Text text="Centro de Moderación"
+                      style="-fx-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;"/>
+                <Text fx:id="lblInfoModerador" text="Sistema | Comunidades"
+                      style="-fx-fill: #e8eaf6; -fx-font-size: 10px;"/>
+            </VBox>
+        </HBox>
+
+        <!-- TabPane Principal -->
+        <TabPane fx:id="tabPanePrincipal" layoutY="50" prefHeight="530" prefWidth="360"
+                 style="-fx-tab-min-height: 25; -fx-tab-max-height: 25;"
+                 tabClosingPolicy="UNAVAILABLE">
+
+            <!-- Tab 1: Vista General -->
+            <Tab text="📊 Vista General">
+                <ScrollPane fitToWidth="true" fitToHeight="true" style="-fx-background-color: transparent;">
+                    <VBox spacing="10" style="-fx-padding: 8;">
+                        
+                        <!-- Información del Estado -->
+                        <VBox spacing="5">
+                            <Text text="Estado del Sistema"
+                                  style="-fx-fill: #2c3e50; -fx-font-size: 12px; -fx-font-weight: bold;"/>
+                            <TextArea fx:id="txtAreaEstadoSistema"
+                                      prefHeight="60" wrapText="true" editable="false"
+                                      style="-fx-background-color: #ffffff; -fx-background-radius: 6; -fx-border-radius: 6; -fx-border-color: #bdc3c7; -fx-font-size: 9px;"/>
+                        </VBox>
+
+                        <!-- Estadísticas -->
+                        <VBox spacing="5">
+                            <Text text="Estadísticas Generales"
+                                  style="-fx-fill: #2c3e50; -fx-font-size: 12px; -fx-font-weight: bold;"/>
+                            <TextArea fx:id="txtAreaEstadisticas"
+                                      prefHeight="60" wrapText="true" editable="false"
+                                      style="-fx-background-color: #ffffff; -fx-background-radius: 6; -fx-border-radius: 6; -fx-border-color: #bdc3c7; -fx-font-size: 9px;"/>
+                        </VBox>
+
+                        <!-- Acciones Rápidas -->
+                        <VBox spacing="5">
+                            <Text text="Acciones Rápidas"
+                                  style="-fx-fill: #2c3e50; -fx-font-size: 12px; -fx-font-weight: bold;"/>
+                            <HBox spacing="5">
+                                <Button fx:id="btnActualizarInfo" text="🔄 Actualizar"
+                                        onAction="#actualizarInformacionCompleta" prefWidth="170"
+                                        style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-background-radius: 5; -fx-padding: 6 10; -fx-font-size: 10px;"/>
+                                <Button fx:id="btnMostrarEstadisticas" text="📊 Estadísticas"
+                                        onAction="#mostrarEstadisticasDetalladas" prefWidth="170"
+                                        style="-fx-background-color: #9b59b6; -fx-text-fill: white; -fx-background-radius: 5; -fx-padding: 6 10; -fx-font-size: 10px;"/>
+                            </HBox>
+                        </VBox>
+
+                        <!-- Información General -->
+                        <VBox spacing="5">
+                            <Text text="Información General"
+                                  style="-fx-fill: #2c3e50; -fx-font-size: 12px; -fx-font-weight: bold;"/>
+                            <TextArea fx:id="txtAreaInformacion"
+                                      prefHeight="80" wrapText="true" editable="false"
+                                      style="-fx-background-color: #ffffff; -fx-background-radius: 6; -fx-border-radius: 6; -fx-border-color: #bdc3c7; -fx-font-size: 9px;"/>
+                        </VBox>
+                    </VBox>
+                </ScrollPane>
+            </Tab>
+
+            <!-- Tab 2: Gestión de Usuarios -->
+            <Tab text="👥 Gestión Usuarios">
+                <ScrollPane fitToWidth="true" fitToHeight="true" style="-fx-background-color: transparent;">
+                    <VBox spacing="10" style="-fx-padding: 8;">
+                        
+                        <!-- Expulsión de Usuarios -->
+                        <VBox spacing="5">
+                            <Text text="Expulsar Usuario de Comunidad"
+                                  style="-fx-fill: #2c3e50; -fx-font-size: 12px; -fx-font-weight: bold;"/>
+                            <VBox spacing="5">
+                                <TextField fx:id="txtNombreUsuarioEliminar"
+                                           promptText="Nombre de usuario"
+                                           prefWidth="320" prefHeight="25"/>
+                                <TextField fx:id="txtNombreComunidad"
+                                           promptText="Nombre de comunidad"
+                                           prefWidth="320" prefHeight="25"/>
+                                <Button fx:id="btnEliminarUsuario" text="🚫 Expulsar"
+                                        onAction="#eliminarUsuario" prefWidth="320"
+                                        style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-background-radius: 5; -fx-padding: 6 10; -fx-font-size: 10px;"/>
+                            </VBox>
+                        </VBox>
+
+                        <!-- Eliminación de Comunidades -->
+                        <VBox spacing="5">
+                            <Text text="Eliminar Comunidad"
+                                  style="-fx-fill: #2c3e50; -fx-font-size: 12px; -fx-font-weight: bold;"/>
+                            <VBox spacing="5">
+                                <TextField fx:id="txtComunidadEliminar"
+                                           promptText="Nombre de la comunidad"
+                                           prefWidth="320" prefHeight="25"/>
+                                <Button fx:id="btnEliminarComunidad" text="🗑️ Eliminar Comunidad"
+                                        onAction="#eliminarComunidad" prefWidth="320"
+                                        style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-background-radius: 5; -fx-padding: 6 10; -fx-font-size: 10px;"/>
+                            </VBox>
+                        </VBox>
+
+                        <!-- Sanciones -->
+                        <VBox spacing="5">
+                            <Text text="Gestión de Sanciones"
+                                  style="-fx-fill: #2c3e50; -fx-font-size: 12px; -fx-font-weight: bold;"/>
+                            <VBox spacing="4">
+                                <TextField fx:id="txtUsuarioSancion"
+                                           promptText="Usuario a sancionar"
+                                           prefWidth="320" prefHeight="25"/>
+                                <TextField fx:id="txtRazonSancion"
+                                           promptText="Razón de la sanción"
+                                           prefWidth="320" prefHeight="25"/>
+                                <TextField fx:id="txtDuracionSancion"
+                                           promptText="Duración (minutos)"
+                                           prefWidth="320" prefHeight="25"/>
+                            </VBox>
+                            <HBox spacing="6">
+                                <Button fx:id="btnAplicarSancion" text="⚠️ Aplicar"
+                                        onAction="#aplicarSancionManual" prefWidth="157"
+                                        style="-fx-background-color: #f39c12; -fx-text-fill: white; -fx-background-radius: 5; -fx-padding: 5 8; -fx-font-size: 10px;"/>
+                                <Button fx:id="btnLevantarSancion" text="✅ Levantar"
+                                        onAction="#levantarSancionUsuario" prefWidth="157"
+                                        style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-background-radius: 5; -fx-padding: 5 8; -fx-font-size: 10px;"/>
+                            </HBox>
+                            <TextArea fx:id="txtAreaSanciones"
+                                      prefHeight="50" wrapText="true" editable="false"
+                                      style="-fx-background-color: #ffffff; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #bdc3c7; -fx-font-size: 9px;"/>
+                        </VBox>
+
+                        <!-- Lista de Usuarios -->
+                        <VBox spacing="5">
+                            <HBox spacing="8" alignment="CENTER_LEFT">
+                                <Text text="Lista de Usuarios"
+                                      style="-fx-fill: #2c3e50; -fx-font-size: 12px; -fx-font-weight: bold;"/>
+                                <Button fx:id="btnListarUsuarios" text="📋 Actualizar"
+                                        onAction="#listarUsuarios"
+                                        style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-background-radius: 5; -fx-padding: 3 6; -fx-font-size: 9px;"/>
+                            </HBox>
+                            <TextArea fx:id="txtAreaUsuariosDetalle"
+                                      prefHeight="100" wrapText="true" editable="false"
+                                      style="-fx-background-color: #ffffff; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #bdc3c7; -fx-font-size: 9px;"/>
+                        </VBox>
+                    </VBox>
+                </ScrollPane>
+            </Tab>
+
+            <!-- Tab 3: Contenido de Comunidades -->
+            <Tab text="💬 Contenido Comunidades">
+                <ScrollPane fitToWidth="true" fitToHeight="true" style="-fx-background-color: transparent;">
+                    <VBox spacing="10" style="-fx-padding: 8;">
+                        
+                        <!-- Selector de Comunidad -->
+                        <HBox spacing="8" alignment="CENTER_LEFT">
+                            <Text text="Comunidad:" style="-fx-fill: #2c3e50; -fx-font-size: 11px; -fx-font-weight: bold;"/>
+                            <ComboBox fx:id="comboComunidades" promptText="Seleccionar comunidad" prefWidth="150"/>
+                            <Button fx:id="btnCargarContenido" text="🔄"
+                                    onAction="#cargarContenidoComunidad"
+                                    style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-background-radius: 5; -fx-padding: 3 6; -fx-font-size: 9px;"/>
+                        </HBox>
+
+                        <!-- Contenido de Grupos -->
+                        <VBox spacing="8">
+                            <!-- Grupos de Discusión -->
+                            <VBox spacing="5">
+                                <Text text="Grupos de Discusión"
+                                      style="-fx-fill: #2c3e50; -fx-font-size: 12px; -fx-font-weight: bold;"/>
+                                <TextArea fx:id="txtAreaGruposDiscusion"
+                                          prefHeight="80" wrapText="true" editable="false"
+                                          style="-fx-background-color: #ffffff; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #bdc3c7; -fx-font-size: 9px;"/>
+                            </VBox>
+
+                            <!-- Grupos de Compartir -->
+                            <VBox spacing="5">
+                                <Text text="Grupos de Compartir"
+                                      style="-fx-fill: #2c3e50; -fx-font-size: 12px; -fx-font-weight: bold;"/>
+                                <TextArea fx:id="txtAreaGruposCompartir"
+                                          prefHeight="80" wrapText="true" editable="false"
+                                          style="-fx-background-color: #ffffff; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #bdc3c7; -fx-font-size: 9px;"/>
+                            </VBox>
+                        </VBox>
+
+                        <!-- Chats Privados -->
+                        <VBox spacing="5">
+                            <Text text="Chats Privados (Supervisión)"
+                                  style="-fx-fill: #2c3e50; -fx-font-size: 12px; -fx-font-weight: bold;"/>
+                            <TextArea fx:id="txtAreaChatsPrivados"
+                                      prefHeight="70" wrapText="true" editable="false"
+                                      style="-fx-background-color: #ffffff; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #bdc3c7; -fx-font-size: 9px;"/>
+                        </VBox>
+
+                        <!-- Acciones de Moderación -->
+                        <HBox spacing="8">
+                            <Button fx:id="btnRevisarContenido" text="🔍 Revisar"
+                                    onAction="#revisarContenidoReportado" prefWidth="156"
+                                    style="-fx-background-color: #f39c12; -fx-text-fill: white; -fx-background-radius: 5; -fx-padding: 5 8; -fx-font-size: 10px;"/>
+                            <Button fx:id="btnEscanearForos" text="🛡️ Escanear"
+                                    onAction="#escanearForosAutomatico" prefWidth="156"
+                                    style="-fx-background-color: #9b59b6; -fx-text-fill: white; -fx-background-radius: 5; -fx-padding: 5 8; -fx-font-size: 10px;"/>
+                        </HBox>
+                    </VBox>
+                </ScrollPane>
+            </Tab>
+
+            <!-- Tab 4: Historial -->
+            <Tab text="📈 Historial">
+                <ScrollPane fitToWidth="true" fitToHeight="true" style="-fx-background-color: transparent;">
+                    <VBox spacing="15" style="-fx-padding: 15;">
+                        
+                        <!-- Selectores de Historial -->
+                        <VBox spacing="8">
+                            <Text text="Configuración de Historial"
+                                  style="-fx-fill: #2c3e50; -fx-font-size: 12px; -fx-font-weight: bold;"/>
+                            <VBox spacing="6">
+                                <ComboBox fx:id="comboTipoGrupo" promptText="Tipo de Grupo" prefWidth="320" prefHeight="25"/>
+                                <ComboBox fx:id="comboGrupos" promptText="Seleccionar Grupo" prefWidth="320" prefHeight="25"/>
+                                <Button fx:id="btnVerHistorial" text="🔍 Ver Historial"
+                                        onAction="#verHistorial" prefWidth="320"
+                                        style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-background-radius: 5; -fx-padding: 6 10; -fx-font-size: 10px;"/>
+                            </VBox>
+                        </VBox>
+
+                        <!-- Área de Historial -->
+                        <VBox spacing="8">
+                            <Text text="Historial de Actividades"
+                                  style="-fx-fill: #2c3e50; -fx-font-size: 12px; -fx-font-weight: bold;"/>
+                            <TextArea fx:id="txtAreaHistorial"
+                                      prefHeight="280" wrapText="true" editable="false"
+                                      style="-fx-background-color: #ffffff; -fx-background-radius: 6; -fx-border-radius: 6; -fx-border-color: #bdc3c7; -fx-font-size: 9px;"/>
+                        </VBox>
+                    </VBox>
+                </ScrollPane>
+            </Tab>
+        </TabPane>
+    </VBox>
+
+    <!-- Botón de Cerrar (fijo en la parte inferior) -->
+    <Button fx:id="btnVolver" text="❌ Cerrar"
+            layoutX="130" layoutY="590"
+            onAction="#volver"
+            style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-background-radius: 10; -fx-padding: 6 12; -fx-font-size: 11px;"/>
+
+</AnchorPane>

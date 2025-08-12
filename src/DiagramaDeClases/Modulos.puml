@@ -1,0 +1,107 @@
+@startuml
+title HelloCodde — Diagrama de Componentes (sin conexiones entre módulos)
+skinparam componentStyle rectangle
+skinparam packageStyle rectangle
+
+actor "Usuario final" as EndUser
+
+' ==========================
+' Capa de Presentación (JavaFX/FXML)
+' ==========================
+package "Cliente Desktop (JavaFX/FXML)" {
+  [UI JavaFX] as UI <<UI>>
+  [Vistas FXML] as FXML <<FXML>>
+  [Controladores] as CTRL <<Controller>>
+
+  EndUser --> UI
+  UI --> FXML : carga vistas
+  UI --> CTRL : eventos/acciones
+}
+
+' ==========================
+' Núcleo de la Aplicación (módulos independientes)
+' ==========================
+package "Core de la Aplicación" {
+
+  [Módulo Usuario] as MUsuario
+  interface "Usuario_IN\n<<por completar>>" as IUsuarioIN
+  interface "Usuario_OUT\n<<por completar>>" as IUsuarioOUT
+  IUsuarioIN --> MUsuario
+  MUsuario --> IUsuarioOUT
+  CTRL --> IUsuarioIN
+
+  [Módulo Ejercicios] as MEjercicios
+  interface "Ejercicios_IN\n<<por completar>>" as IEjIN
+  interface "Ejercicios_OUT\n<<por completar>>" as IEjOUT
+  IEjIN --> MEjercicios
+  MEjercicios --> IEjOUT
+  CTRL --> IEjIN
+
+  [Módulo Lecciones] as MLecciones
+  interface "Lecciones_IN\n<<por completar>>" as ILecIN
+  interface "Lecciones_OUT\n<<por completar>>" as ILecOUT
+  ILecIN --> MLecciones
+  MLecciones --> ILecOUT
+  CTRL --> ILecIN
+
+  [Módulo Ruta de Aprendizaje] as MRuta
+  interface "Ruta_IN\n<<por completar>>" as IRutaIN
+  interface "Ruta_OUT\n<<por completar>>" as IRutaOUT
+  IRutaIN --> MRuta
+  MRuta --> IRutaOUT
+  CTRL --> IRutaIN
+
+  [Módulo Comunidad] as MComunidad
+  interface "Comunidad_IN\n<<por completar>>" as IComIN
+  interface "Comunidad_OUT\n<<por completar>>" as IComOUT
+  IComIN --> MComunidad
+  MComunidad --> IComOUT
+  CTRL --> IComIN
+
+  [Módulo Gamificación] as MGami
+  interface "Gamificación_IN\n<<por completar>>" as IGamIN
+  interface "Gamificación_OUT\n<<por completar>>" as IGamOUT
+  IGamIN --> MGami
+  MGami --> IGamOUT
+  CTRL --> IGamIN
+}
+
+' ==========================
+' Persistencia en TXT (compartida, sin vincular módulos entre sí)
+' ==========================
+package "Persistencia (Archivos .txt)" {
+  [Repositorio TXT] as Repo <<Datasource>>
+
+  file "usuarios.txt" as FUsuarios
+  file "ejercicios.txt" as FEj
+  file "lecciones.txt" as FLec
+  file "rutas.txt" as FRutas
+  file "comunidad.txt" as FCom
+  file "puntos_logros.txt" as FGam
+
+  Repo --> FUsuarios
+  Repo --> FEj
+  Repo --> FLec
+  Repo --> FRutas
+  Repo --> FCom
+  Repo --> FGam
+}
+
+' Cada módulo accede al repositorio TXT (no hay conexiones entre módulos)
+MUsuario --> Repo
+MEjercicios --> Repo
+MLecciones --> Repo
+MRuta --> Repo
+MComunidad --> Repo
+MGami --> Repo
+
+note right of UI
+  Interfaz gráfica con JavaFX
+  + vistas definidas en FXML
+end note
+
+note right of Repo
+  Persistencia simple basada en
+  archivos .txt (lectura/escritura)
+end note
+@enduml

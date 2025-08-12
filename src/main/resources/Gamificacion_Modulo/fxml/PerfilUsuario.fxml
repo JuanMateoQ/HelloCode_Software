@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+<?import java.net.URL?>
+
+
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="Gamificacion_Modulo.controllers.PerfilUsuarioController"
+      styleClass="gamificacion"
+      prefWidth="360.0"
+      prefHeight="720.0"
+      minWidth="360.0"
+      minHeight="720.0"
+      maxWidth="360.0"
+      maxHeight="720.0"
+      style="-fx-background-color: #424874;">
+
+    <stylesheets>
+        <URL value="@../styles/styles.css"/>
+    </stylesheets>
+
+    <!-- Contenido principal -->
+    <ScrollPane fitToWidth="true" style="-fx-background: transparent; -fx-background-color: transparent;" AnchorPane.bottomAnchor="80" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
+        <VBox alignment="TOP_CENTER" spacing="20" style="-fx-padding: 25;">
+        <!-- Header con foto de perfil -->
+        <StackPane style="-fx-background-color: transparent; -fx-padding: 30; -fx-alignment: center;">
+            <ImageView fitWidth="120" fitHeight="120" styleClass="profile-picture">
+                <Image url="@../images/User.png"/>
+            </ImageView>
+        </StackPane>
+
+        <VBox styleClass="profile-content" spacing="15">
+            <!-- Selector de estudiante -->
+            <VBox alignment="CENTER" spacing="10">
+                <Label text="Seleccionar Estudiante:" styleClass="section-subtitle" style="-fx-text-fill: white; -fx-font-weight: bold;"/>
+                <ComboBox fx:id="estudianteSelector" prefWidth="200" onAction="#cambiarEstudiante"/>
+            </VBox>
+            
+            <!-- Información del perfil -->
+            <Label fx:id="userName" text="Cargando..." styleClass="profile-name" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 18px;"/>
+            <Label fx:id="userEmail" text="@cargando..." styleClass="profile-username" style="-fx-text-fill: #DCD6F7; -fx-font-size: 14px;"/>
+
+            <Label text="RESUMEN" styleClass="section-title" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 16px;"/>
+
+            <!-- Resumen de EXP -->
+            <HBox styleClass="exp-summary" alignment="CENTER" spacing="20">
+                <HBox styleClass="exp-total" alignment="CENTER" spacing="10">
+                    <ImageView fitWidth="40" fitHeight="40" styleClass="exp-icon">
+                        <Image url="@../images/icono_experiencia.png"/>
+                    </ImageView>
+                    <Label text="EXP&#10;Totales" textAlignment="CENTER" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 12px;"/>
+                </HBox>
+                <Label fx:id="expPoints" text="0" styleClass="exp-value" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 24px;"/>
+            </HBox>
+
+            <!-- Sección de Desafíos -->
+            <VBox styleClass="challenges" spacing="10">
+                <HBox alignment="CENTER_LEFT" spacing="50">
+                    <Label text="Desafíos" styleClass="section-subtitle" style="-fx-text-fill: white; -fx-font-weight: bold;"/>
+                    <Hyperlink fx:id="verProgresoDesafios" onAction="#verProgresoDesafios" text="Ver progreso" styleClass="progress-link"/>
+                </HBox>
+
+                <HBox styleClass="challenge-stats" spacing="30">
+                    <VBox styleClass="challenge-item" alignment="CENTER">
+                        <Label fx:id="desafiosSemanales" text="0" styleClass="challenge-value" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 20px;"/>
+                        <Label text="Semanales" styleClass="challenge-label" style="-fx-text-fill: #DCD6F7; -fx-font-size: 12px;"/>
+                    </VBox>
+                    <VBox styleClass="challenge-item" alignment="CENTER">
+                        <Label fx:id="desafiosMensuales" text="0" styleClass="challenge-value" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 20px;"/>
+                        <Label text="Mensuales" styleClass="challenge-label" style="-fx-text-fill: #DCD6F7; -fx-font-size: 12px;"/>
+                    </VBox>
+                </HBox>
+            </VBox>
+
+            <!-- Sección de Logros -->
+            <VBox styleClass="achievements" spacing="10">
+                <HBox alignment="CENTER_LEFT" spacing="50">
+                    <Label text="Logros" styleClass="section-subtitle" style="-fx-text-fill: white; -fx-font-weight: bold;"/>
+                    <Hyperlink fx:id="verProgresoLogros" onAction="#verProgresoLogros" text="Ver progreso" styleClass="progress-link"/>
+                </HBox>
+
+                <HBox fx:id="achievementList" styleClass="achievement-list" spacing="20">
+                    <!-- Los logros se cargarán dinámicamente -->
+                </HBox>
+            </VBox>
+        </VBox>
+        </VBox>
+    </ScrollPane>
+
+    <!-- Bottom Navigation Bar con 4 módulos -->
+    <HBox alignment="CENTER" prefHeight="80" spacing="15" style="-fx-background-color: #A6B1E1; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0.3, 0, -2);" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+        <padding>
+            <Insets bottom="12" left="15" right="15" top="12" />
+        </padding>
+        
+        <Button fx:id="btnHome" onAction="#irAHome" prefHeight="55" prefWidth="70" style="-fx-background-color: white; -fx-text-fill: #424874; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 18; -fx-border-radius: 18; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 5, 0.3, 0, 2); -fx-cursor: hand; -fx-padding: 8;" text="🏠&#10;Inicio" HBox.hgrow="ALWAYS" />
+                
+        <Button fx:id="btnPerfil2" onAction="#irAPerfil" prefHeight="55" prefWidth="70" style="-fx-background-color: white; -fx-text-fill: #424874; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 18; -fx-border-radius: 18; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 5, 0.3, 0, 2); -fx-cursor: hand; -fx-padding: 8;" text="👤&#10;Perfil" HBox.hgrow="ALWAYS" />
+                
+        <Button fx:id="btnRanking" onAction="#irARanking" prefHeight="55" prefWidth="70" style="-fx-background-color: white; -fx-text-fill: #424874; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 18; -fx-border-radius: 18; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 5, 0.3, 0, 2); -fx-cursor: hand; -fx-padding: 8;" text="🏆&#10;Ranking" HBox.hgrow="ALWAYS" />
+                
+        <Button fx:id="btnComunidad" onAction="#irAComunidad" prefHeight="55" prefWidth="70" style="-fx-background-color: white; -fx-text-fill: #424874; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 18; -fx-border-radius: 18; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 5, 0.3, 0, 2); -fx-cursor: hand; -fx-padding: 8;" text="👥&#10;Comunidad" HBox.hgrow="ALWAYS" />
+      <Button fx:id="btnHomeUsuario" layoutX="112.0" layoutY="22.0" onAction="#irAHomeUsuario" prefHeight="55" prefWidth="70" style="-fx-background-color: white; -fx-text-fill: #424874; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 18; -fx-border-radius: 18; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 5, 0.3, 0, 2); -fx-cursor: hand; -fx-padding: 8;" text="👤&#10;Usuario" />
+    </HBox>
+
+</AnchorPane>

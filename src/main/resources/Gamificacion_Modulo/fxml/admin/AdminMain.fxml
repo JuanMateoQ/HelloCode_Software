@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="Gamificacion_Modulo.controllers_admin.AdminMainController"
+            prefWidth="360.0" prefHeight="640.0"
+            style="-fx-background-color: #424874;">
+    
+    <!-- Navbar superior -->
+    <HBox style="-fx-background-color: #A6B1E1; -fx-effect: dropshadow(gaussian, #23243a, 4, 0.2, 0, 2);" 
+          AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0" prefHeight="60">
+        <padding>
+            <Insets top="12" right="20" bottom="12" left="20"/>
+        </padding>
+        <HBox alignment="CENTER_LEFT" spacing="12" HBox.hgrow="ALWAYS">
+            <Button fx:id="btnVolver" text="←" onAction="#onVolverClicked"
+                    style="-fx-background-color: transparent; -fx-font-size: 20px; -fx-text-fill: #424874; -fx-background-radius: 20;"
+                    prefWidth="40" prefHeight="40"/>
+            <VBox spacing="2">
+                <Label text="Gestión Gamificación" style="-fx-text-fill: #424874; -fx-font-size: 16px; -fx-font-weight: bold;"/>
+                <Label text="Crear Desafíos y Logros" style="-fx-text-fill: #6B7A99; -fx-font-size: 11px;"/>
+            </VBox>
+        </HBox>
+    </HBox>
+
+    <!-- Contenido principal con ScrollPane -->
+    <ScrollPane fitToWidth="true" 
+                AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" 
+                AnchorPane.topAnchor="60" AnchorPane.bottomAnchor="0"
+                style="-fx-background: transparent; -fx-background-color: transparent;">
+        
+        <VBox spacing="20" alignment="TOP_CENTER">
+            <padding>
+                <Insets top="20" right="16" bottom="20" left="16"/>
+            </padding>
+
+            <!-- Título de sección -->
+            <VBox alignment="CENTER" spacing="8">
+                <Label text="⚙️ Administración de Gamificación" 
+                       style="-fx-text-fill: #DCD6F7; -fx-font-size: 24px; -fx-font-weight: bold;"/>
+            </VBox>
+
+            <!-- Sección Desafíos -->
+            <VBox spacing="15" maxWidth="320" 
+                  style="-fx-background-color: #DCD6F7; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0.3, 0, 2);">
+                <padding>
+                    <Insets top="20" right="20" bottom="20" left="20"/>
+                </padding>
+                
+                <Label text="🎯 Gestión de Desafíos" 
+                       style="-fx-text-fill: #424874; -fx-font-size: 18px; -fx-font-weight: bold;"/>
+                <Label text="Crear nuevos desafíos para usuarios" 
+                       style="-fx-text-fill: #6B7A99; -fx-font-size: 14px;"/>
+               
+                <VBox spacing="10">
+                    <Button fx:id="btnCrearDesafioSemanal" text="Crear Desafío Semanal" onAction="#onCrearDesafioSemanalClicked" 
+                            style="-fx-background-color: #A6B1E1; -fx-text-fill: #424874; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 12;"
+                            prefWidth="280"/>
+                    <Button fx:id="btnCrearDesafioMensual" text="Crear Desafío Mensual" onAction="#onCrearDesafioMensualClicked" 
+                            style="-fx-background-color: #A6B1E1; -fx-text-fill: #424874; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 12;"
+                            prefWidth="280"/>
+                </VBox>
+            </VBox>
+            
+            <!-- Sección Logros -->
+            <VBox spacing="15" maxWidth="320" 
+                  style="-fx-background-color: #DCD6F7; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0.3, 0, 2);">
+                <padding>
+                    <Insets top="20" right="20" bottom="20" left="20"/>
+                </padding>
+                
+                <Label text="🏆 Gestión de Logros" 
+                       style="-fx-text-fill: #424874; -fx-font-size: 18px; -fx-font-weight: bold;"/>
+                <Label text="Crear logros personalizados con criterios específicos" 
+                       style="-fx-text-fill: #6B7A99; -fx-font-size: 14px;"/>
+               
+                <Button fx:id="btnCrearLogro" text="Crear Logro Personalizado" onAction="#onCrearLogroClicked" 
+                        style="-fx-background-color: #A6B1E1; -fx-text-fill: #424874; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 12;"
+                        prefWidth="280"/>
+            </VBox>
+            
+             
+            <!-- Sección Simulación -->
+            <VBox spacing="15" maxWidth="320" 
+                  style="-fx-background-color: #DCD6F7; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0.3, 0, 2);">
+                <padding>
+                    <Insets top="20" right="20" bottom="20" left="20"/>
+                </padding>
+                
+                <Label text="🎮 Simulación" 
+                       style="-fx-text-fill: #424874; -fx-font-size: 18px; -fx-font-weight: bold;"/>
+                <Label text="Simular la completación de actividades en desafíos" 
+                       style="-fx-text-fill: #6B7A99; -fx-font-size: 14px;"/>
+                
+                <Button fx:id="btnSimularActividad" text="Simular Actividad" onAction="#onSimularActividadClicked" 
+                        style="-fx-background-color: #A6B1E1; -fx-text-fill: #424874; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 12;"
+                        prefWidth="280"/>
+            </VBox>
+
+            <!-- Separador -->
+            <Separator style="-fx-background-color: #A6B1E1;" maxWidth="280"/>
+
+            <!-- Footer con estadísticas -->
+            <VBox spacing="10" maxWidth="320" 
+                  style="-fx-background-color: rgba(166, 177, 225, 0.3); -fx-background-radius: 8;">
+                <padding>
+                    <Insets top="15" right="20" bottom="15" left="20"/>
+                </padding>
+                
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label fx:id="lblEstadisticas" text="Cargando estadísticas..." 
+                           style="-fx-text-fill: #DCD6F7; -fx-font-size: 12px;"/>
+                    <Button fx:id="btnActualizarStats" text="🔄" onAction="#onActualizarStatsClicked" 
+                            style="-fx-background-color: transparent; -fx-text-fill: #DCD6F7; -fx-font-size: 14px;"
+                            prefWidth="30"/>
+                </HBox>
+            </VBox>
+        </VBox>
+    </ScrollPane>
+</AnchorPane> 

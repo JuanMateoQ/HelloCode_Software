@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="Comunidad_Modulo.Controladores_GUI.GestionChat_Controller"
+            prefWidth="360.0" prefHeight="640.0"
+            style="-fx-background-color: #424874;">
+
+   <VBox alignment="TOP_CENTER" spacing="28"
+         AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"
+         AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+
+      <padding>
+         <Insets top="40" bottom="30" left="18" right="18"/>
+      </padding>
+
+      <!-- Título -->
+      <VBox alignment="CENTER" spacing="8">
+         <Label text="💬 Gestión de Chats Privados"
+                style="-fx-text-fill: #DCD6F7; -fx-font-size: 22px; -fx-font-weight: bold;"/>
+      </VBox>
+
+      <!-- Panel: Gestión de Chats -->
+      <VBox spacing="16" alignment="CENTER"
+            style="-fx-background-color: #DCD6F7; -fx-background-radius: 18;
+                     -fx-effect: dropshadow(gaussian, #424874, 8, 0.2, 0, 0);"
+            maxWidth="320">
+         <padding><Insets top="24" right="20" bottom="24" left="20"/></padding>
+
+         <Label text="Gestión de Chats"
+                style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #424874;"
+                alignment="CENTER"/>
+
+         <!-- Botones de acción reorganizados en grid 2x2 más elegante -->
+         <VBox spacing="14" alignment="CENTER">
+            <HBox spacing="14" alignment="CENTER">
+               <Button onAction="#crearChatPrivado" 
+                       text="Crear Chat Privado"
+                       style="-fx-background-color: #424874; -fx-text-fill: white; -fx-font-weight: bold; 
+                              -fx-background-radius: 12; -fx-font-size: 12px;
+                              -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 3, 0.3, 0, 2);"
+                       prefWidth="135" prefHeight="36"/>
+               <Button onAction="#enviarMensaje" 
+                       text="Enviar Mensaje"
+                       style="-fx-background-color: #6B7A99; -fx-text-fill: white; -fx-font-weight: bold; 
+                              -fx-background-radius: 12; -fx-font-size: 12px;
+                              -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 3, 0.3, 0, 2);"
+                       prefWidth="135" prefHeight="36"/>
+            </HBox>
+
+            <HBox spacing="14" alignment="CENTER">
+               <Button onAction="#verHistorialChat" 
+                       text="Ver Historial"
+                       style="-fx-background-color: #9B59B6; -fx-text-fill: white; -fx-font-weight: bold; 
+                              -fx-background-radius: 12; -fx-font-size: 12px;
+                              -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 3, 0.3, 0, 2);"
+                       prefWidth="135" prefHeight="36"/>
+               <Button onAction="#listarChats" 
+                       text="Listar Chats"
+                       style="-fx-background-color: #A6B1E1; -fx-text-fill: white; -fx-font-weight: bold; 
+                              -fx-background-radius: 12; -fx-font-size: 12px;
+                              -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 3, 0.3, 0, 2);"
+                       prefWidth="135" prefHeight="36"/>
+            </HBox>
+         </VBox>
+      </VBox>
+
+      <!-- Panel: Información del Sistema -->
+      <VBox spacing="10" alignment="CENTER"
+            style="-fx-background-color: #DCD6F7; -fx-background-radius: 18;
+                     -fx-effect: dropshadow(gaussian, #424874, 8, 0.2, 0, 0);"
+            maxWidth="320">
+         <padding><Insets top="16" right="20" bottom="16" left="20"/></padding>
+
+         <Label text="Información del Sistema"
+                style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #424874;"/>
+
+         <TextArea fx:id="txtInformacion"
+                   editable="false"
+                   wrapText="true"
+                   prefHeight="120" prefWidth="280"
+                   style="-fx-control-inner-background: #f4f4f4; -fx-text-fill: black; 
+                          -fx-border-radius: 8; -fx-background-radius: 8;"
+                   text="=== INFORMACIÓN DE CHATS PRIVADOS ===
+
+🔄 No hay comunidad activa
+Primero debe crear o seleccionar una comunidad"/>
+      </VBox>
+
+      <!-- Panel: Notificaciones de Moderación -->
+      <VBox spacing="10" alignment="CENTER"
+            style="-fx-background-color: #DCD6F7; -fx-background-radius: 18;
+                     -fx-effect: dropshadow(gaussian, #424874, 8, 0.2, 0, 0);"
+            maxWidth="320">
+         <padding><Insets top="16" right="20" bottom="16" left="20"/></padding>
+
+         <HBox alignment="CENTER" spacing="10">
+            <Label text="Notificaciones de Moderación"
+                   style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #8b4513;"/>
+            <Button fx:id="btnLimpiarNotificaciones" 
+                    onAction="#limpiarNotificacionesModerador" 
+                    text="Limpiar"
+                    style="-fx-background-color: #ff6b6b; -fx-text-fill: white; -fx-font-weight: bold; 
+                           -fx-background-radius: 8; -fx-font-size: 10px;"
+                    prefWidth="60" prefHeight="24"/>
+         </HBox>
+
+         <TextArea fx:id="txtNotificacionesModerador"
+                   editable="false"
+                   wrapText="true"
+                   prefHeight="100" prefWidth="280"
+                   style="-fx-control-inner-background: #fff8dc; -fx-border-color: #ffa500; 
+                          -fx-font-family: monospace; -fx-font-size: 11px; 
+                          -fx-border-radius: 8; -fx-background-radius: 8;"
+                   text="=== NOTIFICACIONES DE MODERACIÓN ===
+
+Aquí aparecerán los mensajes de sanciones, bloqueos y eventos de moderación..."/>
+      </VBox>
+
+      <!-- Botón Volver -->
+      <Button fx:id="btnVolver"
+              text="Volver"
+              onAction="#volver"
+              style="-fx-background-color: #A6B1E1; -fx-text-fill: white; -fx-font-weight: bold; 
+                     -fx-background-radius: 15; -fx-font-size: 14px;
+                     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 4, 0.3, 0, 2);"
+              prefWidth="120" prefHeight="36"/>
+   </VBox>
+</AnchorPane>

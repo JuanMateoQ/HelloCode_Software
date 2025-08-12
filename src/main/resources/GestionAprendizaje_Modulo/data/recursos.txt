@@ -1,0 +1,28 @@
+Guía Oficial de Tipos de Datos Primitivos|JAVA|TIPOS_Y_OPERADORES|PDF|docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html|12
+Video: Operadores en Java para Principiantes|JAVA|TIPOS_Y_OPERADORES|Video|https://www.youtube.com/watch?v=4OqOz8TYH1M|540
+Artículo Detallado sobre Operadores|JAVA|TIPOS_Y_OPERADORES|Articulo|baeldung.com/java-operators
+Tutorial de Entrada y Salida por Consola|JAVA|ENTRADA_Y_SALIDA|Articulo|geeksforgeeks.org/ways-to-read-input-from-console-in-java
+Clase Scanner en Java (Oficial)|JAVA|ENTRADA_Y_SALIDA|PDF|docs.oracle.com/javase/8/docs/api/java/util/Scanner.html|25
+Video: Bucles 'for' y 'while' en Java|JAVA|CONTROL_DE_FLUJO|Video|https://www.youtube.com/watch?v=legmXG1ntS4|720
+Sentencia Switch en Java|JAVA|CONTROL_DE_FLUJO|Articulo|w3schools.com/java/java_switch.asp
+Video: ¿Qué es una Clase y un Objeto?|JAVA|CLASES_Y_ESTRUCTURAS|Video|https://www.youtube.com/watch?v=j2szYZaUrWU&t=141s|610
+Artículo sobre Constructores en Java|JAVA|CLASES_Y_ESTRUCTURAS|Articulo|baeldung.com/java-constructors
+Guía de Funciones y Métodos en Java|JAVA|FUNCIONES_Y_METODOS|PDF|javatpoint.com/methods-in-java|18
+Video sobre Herencia en Java (POO)|JAVA|POO|Video|https://www.youtube.com/watch?v=2hYhpRZFuns|980
+Artículo: Polimorfismo Explicado|JAVA|POO|Articulo|geeksforgeeks.org/polymorphism-in-java
+
+Guía de Tipos de Datos en Python|PYTHON|TIPOS_Y_OPERADORES|Articulo|realpython.com/python-data-types
+Video: Operadores Aritméticos en Python|PYTHON|TIPOS_Y_OPERADORES|Video|https://www.youtube.com/watch?v=PMOWXusLr9g|410
+Bucles y Condicionales en Python|PYTHON|CONTROL_DE_FLUJO|Video|https://www.youtube.com/watch?v=w53HiWSZnzU|850
+Manual de Control de Flujo|PYTHON|CONTROL_DE_FLUJO|PDF|docs.python.org/3/tutorial/controlflow.html|35
+
+Clases y Objetos en PHP|PHP|CLASES_Y_ESTRUCTURAS|Articulo|php.net/manual/es/language.oop5.php
+Video Tutorial de Clases en PHP|PHP|CLASES_Y_ESTRUCTURAS|Video|https://www.youtube.com/watch?v=1_Nk7JPlHMs|1120
+Guía de Tipos y Operadores en PHP|PHP|TIPOS_Y_OPERADORES|Articulo|php.net/manual/es/language.operators.php
+Funciones en PHP|PHP|FUNCIONES_Y_METODOS|PDF|php.net/manual/es/ref.funchand.php|50
+Video: Creando Funciones en PHP|PHP|FUNCIONES_Y_METODOS|Video|https://www.youtube.com/watch?v=KXRFBajJxbk|680
+
+Tipos de Datos en C|C|TIPOS_Y_OPERADORES|Articulo|geeksforgeeks.org/data-types-in-c
+Video: Punteros y Operadores de Dirección en C|C|TIPOS_Y_OPERADORES|Video|https://www.youtube.com/watch?v=_pcfFMFs9-g|950
+Funciones en C (Tutorial Completo)|C|FUNCIONES_Y_METODOS|Articulo|programiz.com/c-programming/c-user-defined-functions
+Guía de la Librería Estándar de C|C|FUNCIONES_Y_METODOS|PDF|tutorialspoint.com/cprogramming/c_standard_library.pdf|45

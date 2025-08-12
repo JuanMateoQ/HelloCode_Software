@@ -1,0 +1,104 @@
+¿Qué tipo de bucle evalúa la condición antes de ejecutar el bloque?|do-while,for,if,switch|for|BASICO|JAVA|CONTROL_DE_FLUJO|CONTROL_DE_FLUJO
+¿Qué valor imprime este bucle? for(int i=0;i<3;i++){System.out.print(i);}|012,123,345,000,321|012|BASICO|JAVA|CONTROL_DE_FLUJO|CONTROL_DE_FLUJO
+¿Qué palabra se usa para continuar con la siguiente iteración de un bucle?|break,skip,continue|continue|BASICO|JAVA|CONTROL_DE_FLUJO|CONTROL_DE_FLUJO
+¿Qué palabra se usa para salir completamente de un bucle en Java?|exit,end,stop,break,return|break|BASICO|JAVA|CONTROL_DE_FLUJO|CONTROL_DE_FLUJO
+¿Cuántas veces se ejecuta este bucle? for(int i=1;i<=4;i++){...}|2,3,4,5,6|4|BASICO|JAVA|CONTROL_DE_FLUJO|CONTROL_DE_FLUJO
+¿Cuál de estos bucles se ejecuta al menos una vez, aunque la condición sea falsa?|for,while,do-while,if,foreach|do-while|BASICO|JAVA|CONTROL_DE_FLUJO|CONTROL_DE_FLUJO
+¿Cuál de estos es un tipo de dato entero en Java?|String,boolean,double,int,Integer|int,Integer|BASICO|JAVA|TIPOS_Y_OPERADORES|TIPOS_Y_OPERADORES
+¿Qué tipo se usa para verdadero o falso?|String,boolean,double,int|boolean|BASICO|JAVA|TIPOS_Y_OPERADORES|TIPOS_Y_OPERADORES
+¿Cuáles de estos son tipos de datos primitivos en Java?|int,String,double,boolean,Integer,char|int,double,boolean,char|BASICO|JAVA|TIPOS_Y_OPERADORES|TIPOS_Y_OPERADORES
+¿Cuál es la palabra clave para declarar una constante en Java?|var,const,final,static|final|INTERMEDIO|JAVA|TIPOS_Y_OPERADORES|TIPOS_Y_OPERADORES
+¿Qué método se usa para imprimir en consola sin salto de línea?|println,print,printf,out|print|BASICO|JAVA|ENTRADA_Y_SALIDA|ENTRADA_Y_SALIDA
+¿Cuál de estos es un tipo de dato entero en Python?|int,float,str,bool|int|BASICO|PYTHON|TIPOS_Y_OPERADORES|TIPOS_Y_OPERADORES
+¿Qué función se usa para mostrar texto en Python?|echo,print,cout,write|print|BASICO|PYTHON|ENTRADA_Y_SALIDA|ENTRADA_Y_SALIDA
+¿Cómo se declara una función en Python?|function,def,func,declare|def|BASICO|PYTHON|FUNCIONES_Y_METODOS|FUNCIONES_Y_METODOS
+¿Cuál de estas estructuras permite repetir código mientras una condición sea verdadera?|for,while,repeat,loop|while|INTERMEDIO|PYTHON|CONTROL_DE_FLUJO|CONTROL_DE_FLUJO
+¿Qué módulo se usa para manejar expresiones regulares en Python?|regex,re,rex,expression|re|INTERMEDIO|PYTHON|OTRO|OTRO
+¿Cuál de estos es un tipo de dato entero en C?|int,float,double,char|int|BASICO|C|TIPOS_Y_OPERADORES|TIPOS_Y_OPERADORES
+¿Qué operador se usa para acceder a la dirección de una variable en C?|*,&,%,#|&|INTERMEDIO|C|TIPOS_Y_OPERADORES|TIPOS_Y_OPERADORES
+¿Cuál es la palabra clave para declarar una función que no retorna valor en C?|void,int,float,none|void|BASICO|C|FUNCIONES_Y_METODOS|FUNCIONES_Y_METODOS
+¿Cómo se indica un comentario de una sola línea en C?|//,/*,**,##|//|BASICO|C|OTRO|OTRO
+¿Qué función se usa para imprimir texto en consola en C?|printf,print,cout,echo|printf|BASICO|C|ENTRADA_Y_SALIDA|ENTRADA_Y_SALIDA
+¿Cuál es el operador para concatenar cadenas en PHP?|.,+,&,%,#|.|BASICO|PHP|TIPOS_Y_OPERADORES|TIPOS_Y_OPERADORES
+¿Qué símbolo indica el inicio de una variable en PHP?|$,%,&,#|$|BASICO|PHP|TIPOS_Y_OPERADORES|TIPOS_Y_OPERADORES
+¿Cómo se declara un array en PHP?|array(),[],{},()|array(),[]|BASICO|PHP|TIPOS_Y_OPERADORES|TIPOS_Y_OPERADORES
+¿Qué función se usa para imprimir texto en PHP?|echo,print,printf,cout|echo|BASICO|PHP|ENTRADA_Y_SALIDA|ENTRADA_Y_SALIDA
+¿Cuál de estas es una estructura de control condicional en PHP?|if,when,cond,select|if|BASICO|PHP|CONTROL_DE_FLUJO|CONTROL_DE_FLUJO
+¿Cuál palabra reservada se usa para herencia en Java?|extends,implements,inherit,super|extends|INTERMEDIO|JAVA|CLASES_Y_ESTRUCTURAS|CLASES_Y_ESTRUCTURAS
+¿Cómo se crea un diccionario en Python?|{},[],(),dict()|{},dict()|INTERMEDIO|PYTHON|TIPOS_Y_OPERADORES|TIPOS_Y_OPERADORES
+¿Qué palabra clave en C se usa para reservar memoria dinámicamente?|malloc,alloc,new,create|malloc|INTERMEDIO|C|FUNCIONES_Y_METODOS|FUNCIONES_Y_METODOS
+¿Cuál es la función para iniciar una sesión en PHP?|session_start(),start_session(),init_session(),begin_session()|session_start()|INTERMEDIO|PHP|FUNCIONES_Y_METODOS|FUNCIONES_Y_METODOS
+¿Cómo se declara una clase en Java?|class,object,struct,define|class|BASICO|JAVA|CLASES_Y_ESTRUCTURAS|CLASES_Y_ESTRUCTURAS
+¿Qué palabra clave en Java indica que un método puede lanzar excepciones?|throws,throw,exception,error|throws|AVANZADO|JAVA|FUNCIONES_Y_METODOS|FUNCIONES_Y_METODOS
+¿Cómo se manejan excepciones en Python?|try/catch,try/except,catch/except,handle|try/except|AVANZADO|PYTHON|CONTROL_DE_FLUJO|CONTROL_DE_FLUJO
+¿Cuál es el prototipo de la función principal en C para programas estándar?|int main(),void main(),main(),start()|int main()|BASICO|C|FUNCIONES_Y_METODOS|FUNCIONES_Y_METODOS
+¿Cómo se hace una conexión a base de datos en PHP?|mysqli_connect(),db_connect(),connect_db(),open_db()|mysqli_connect()|INTERMEDIO|PHP|FUNCIONES_Y_METODOS|FUNCIONES_Y_METODOS
+¿Cómo se manejan excepciones en Python?|try/catch,try/except,catch/except,handle|try/except|AVANZADO|PYTHON|CONTROL_DE_FLUJO|CONTROL_DE_FLUJO
+¿Cuál es el prototipo de la función principal en C para programas estándar?|int main(),void main(),main(),start()|int main()|BASICO|C|FUNCIONES_Y_METODOS|FUNCIONES_Y_METODOS
+¿Cómo se hace una conexión a base de datos en PHP?|mysqli_connect(),db_connect(),connect_db(),open_db()|mysqli_connect()|INTERMEDIO|PHP|FUNCIONES_Y_METODOS|FUNCIONES_Y_METODOS
+¿Qué palabra clave define una interfaz en Java?|interface,implements,abstract,protocol|interface|INTERMEDIO|JAVA|CLASES_Y_ESTRUCTURAS|CLASES_Y_ESTRUCTURAS
+¿Qué palabra clave se usa para excepciones en Python?|except,catch,error,handle|except|BASICO|PYTHON|CONTROL_DE_FLUJO|CONTROL_DE_FLUJO
+¿Cómo se definen funciones en Python?|def,function,func,lambda|def|PRINCIPIANTE|PYTHON|FUNCIONES_Y_METODOS|FUNCIONES_Y_METODOS
+¿Cómo se reserva memoria dinámicamente en C?|malloc,alloc,new,reserve|malloc|AVANZADO|C|FUNCIONES_Y_METODOS|FUNCIONES_Y_METODOS
+¿Cuál es el operador de concatenación en PHP?|.,+,&,::|.|INTERMEDIO|PHP|TIPOS_Y_OPERADORES|TIPOS_Y_OPERADORES
+¿Qué estructura se usa para manejar excepciones en Java?|try/except,try/catch,try/handle,catch/throw|try/catch|AVANZADO|JAVA|CONTROL_DE_FLUJO|CONTROL_DE_FLUJO
+¿Qué tipo de dato representa verdadero o falso?|bool,int,str,char|bool|BASICO|PYTHON|TIPOS_Y_OPERADORES|TIPOS_Y_OPERADORES
+¿Con qué palabra se hereda una clase en Java?|extends,implements,inherits,super|extends|BASICO|JAVA|CLASES_Y_ESTRUCTURAS|CLASES_Y_ESTRUCTURAS
+¿Cómo se declara una constante en Java?|final,const,static,let|final|AVANZADO|JAVA|TIPOS_Y_OPERADORES|TIPOS_Y_OPERADORES
+¿Qué instrucción se usa para imprimir en C?|printf,print,cout,echo|printf|PRINCIPIANTE|C|ENTRADA_Y_SALIDA|ENTRADA_Y_SALIDA
+¿Cómo se inicia un bloque PHP?|<?php,<php,<?,<!php|<?php|PRINCIPIANTE|PHP|OTRO|OTRO
+¿Cómo se define una clase en PHP?|class,define,object,type|class|BASICO|PHP|CLASES_Y_ESTRUCTURAS|CLASES_Y_ESTRUCTURAS
+¿Cómo se crea una instancia de una clase en Java?|new Clase(),Clase.new(),create Clase(),Clase()|new Clase()|BASICO|JAVA|CLASES_Y_ESTRUCTURAS|CLASES_Y_ESTRUCTURAS
+¿Cuál es la palabra clave para definir funciones en PHP?|function,def,func,fn|function|BASICO|PHP|FUNCIONES_Y_METODOS|FUNCIONES_Y_METODOS
+¿Cuál es el operador lógico AND en C?|&&,&,and,andalso|&&|BASICO|C|TIPOS_Y_OPERADORES|TIPOS_Y_OPERADORES
+¿Qué directiva se usa para incluir librerías en C?|#include,#import,require,use|#include|PRINCIPIANTE|C|OTRO|OTRO
+¿Cómo se define una variable en PHP?|$variable,var,define,let|$variable|PRINCIPIANTE|PHP|TIPOS_Y_OPERADORES|TIPOS_Y_OPERADORES
+¿Cuál es la forma correcta de importar en Python?|import,include,require,use|import|PRINCIPIANTE|PYTHON|CLASES_Y_ESTRUCTURAS|CLASES_Y_ESTRUCTURAS
+¿Qué palabra clave define una interfaz en Java?|interface,implements,abstract,protocol|interface|INTERMEDIO|JAVA|CLASES_Y_ESTRUCTURAS|CLASES_Y_ESTRUCTURAS
+¿Cómo se define una clase en Python?|class,struct,object,define|class|BASICO|PYTHON|CLASES_Y_ESTRUCTURAS|CLASES_Y_ESTRUCTURAS
+¿Cómo se declara una constante en C?|#define,const,static,final|#define|INTERMEDIO|C|TIPOS_Y_OPERADORES|TIPOS_Y_OPERADORES
+¿Cómo se maneja una excepción en Java?|try/except,try/catch,try/handle,catch/throw|try/catch|AVANZADO|JAVA|CONTROL_DE_FLUJO|CONTROL_DE_FLUJO
+¿Cómo se imprimen datos en PHP?|echo,print,printf,println|echo|BASICO|PHP|ENTRADA_Y_SALIDA|ENTRADA_Y_SALIDA
+¿Qué palabra clave se usa para excepciones en Python?|except,catch,error,handle|except|BASICO|PYTHON|CONTROL_DE_FLUJO|CONTROL_DE_FLUJO
+¿Cuál es el modificador más restrictivo en Java?|private,protected,default,public|private|INTERMEDIO|JAVA|CLASES_Y_ESTRUCTURAS|CLASES_Y_ESTRUCTURAS
+¿Cómo se imprimen listas en C?|printf,print,cout,echo|printf|PRINCIPIANTE|C|ENTRADA_Y_SALIDA|ENTRADA_Y_SALIDA
+¿Con qué se recorre una lista en Python?|for,loop,foreach,repeat|for|PRINCIPIANTE|PYTHON|CONTROL_DE_FLUJO|CONTROL_DE_FLUJO
+¿Con qué palabra se declaran funciones en Python?|def,function,func,lambda|def|PRINCIPIANTE|PYTHON|FUNCIONES_Y_METODOS|FUNCIONES_Y_METODOS
+¿Con qué símbolo se concatenan cadenas en PHP?|.,+,&,::|.|INTERMEDIO|PHP|TIPOS_Y_OPERADORES|TIPOS_Y_OPERADORES
+¿Cómo se define una constante en Java?|final,const,static,let|final|AVANZADO|JAVA|TIPOS_Y_OPERADORES|TIPOS_Y_OPERADORES
+¿Cómo se inicia código en PHP?|<?php,<php,<?,<!php|<?php|PRINCIPIANTE|PHP|OTRO|OTRO
+¿Cuál es el operador de asignación en C?|=,==,:=,->|=|PRINCIPIANTE|C|TIPOS_Y_OPERADORES|TIPOS_Y_OPERADORES
+¿Cómo se reserva memoria en C?|malloc,alloc,new,reserve|malloc|AVANZADO|C|FUNCIONES_Y_METODOS|FUNCIONES_Y_METODOS
+¿Qué palabra clave define funciones en PHP?|function,def,func,fn|function|BASICO|PHP|FUNCIONES_Y_METODOS|FUNCIONES_Y_METODOS
+¿Con qué palabra se define una clase en Java?|class,define,type,new|class|BASICO|JAVA|CLASES_Y_ESTRUCTURAS|CLASES_Y_ESTRUCTURAS
+¿Con qué palabra se hereda en Java?|extends,implements,inherits,super|extends|BASICO|JAVA|CLASES_Y_ESTRUCTURAS|CLASES_Y_ESTRUCTURAS
+¿Qué estructura se usa para capturar errores en Java?|try/catch,try/except,capture/handle,except/try|try/catch|AVANZADO|JAVA|CONTROL_DE_FLUJO|CONTROL_DE_FLUJO
+¿Con qué palabra se imprime en PHP?|echo,print,printf,println|echo|BASICO|PHP|ENTRADA_Y_SALIDA|ENTRADA_Y_SALIDA
+¿Con qué palabra se definen funciones en Python?|def,function,func,lambda|def|PRINCIPIANTE|PYTHON|FUNCIONES_Y_METODOS|FUNCIONES_Y_METODOS
+¿Con qué palabra se definen variables en PHP?|$variable,var,define,let|$variable|PRINCIPIANTE|PHP|TIPOS_Y_OPERADORES|TIPOS_Y_OPERADORES
+¿Qué palabra clave se usa para definir interfaces en Java?|interface,implements,class,module|interface|INTERMEDIO|JAVA|CLASES_Y_ESTRUCTURAS|CLASES_Y_ESTRUCTURAS
+¿Qué palabra define funciones en PHP?|function,def,fn,lambda|function|BASICO|PHP|FUNCIONES_Y_METODOS|FUNCIONES_Y_METODOS
+¿Con qué palabra se define una clase en PHP?|class,type,object,struct|class|BASICO|PHP|CLASES_Y_ESTRUCTURAS|CLASES_Y_ESTRUCTURAS
+¿Con qué se imprime texto en C?|printf,echo,println,cout|printf|PRINCIPIANTE|C|ENTRADA_Y_SALIDA|ENTRADA_Y_SALIDA
+¿Cómo se conecta una base de datos en PHP?|mysqli_connect(),db_open(),connect(),sql_connect()|mysqli_connect()|INTERMEDIO|PHP|FUNCIONES_Y_METODOS|FUNCIONES_Y_METODOS
+¿Cuál es el operador lógico AND en C?|&&,&,and,andalso|&&|BASICO|C|TIPOS_Y_OPERADORES|TIPOS_Y_OPERADORES
+¿Con qué se imprime texto en Python?|print,echo,write,printf|print|PRINCIPIANTE|PYTHON|ENTRADA_Y_SALIDA|ENTRADA_Y_SALIDA
+¿Cómo se declara una constante en C?|#define,const,final,static|#define|INTERMEDIO|C|TIPOS_Y_OPERADORES|TIPOS_Y_OPERADORES
+¿Qué tipo de dato representa True/False en Python?|bool,int,str,bit|bool|BASICO|PYTHON|TIPOS_Y_OPERADORES|TIPOS_Y_OPERADORES
+¿Con qué palabra se definen estructuras en Java?|class,struct,interface,object|class|BASICO|JAVA|CLASES_Y_ESTRUCTURAS|CLASES_Y_ESTRUCTURAS
+¿Con qué palabra se define una clase en Python?|class,struct,define,type|class|BASICO|PYTHON|CLASES_Y_ESTRUCTURAS|CLASES_Y_ESTRUCTURAS
+¿Con qué se incluyen archivos en C?|#include,#require,#import,load|#include|PRINCIPIANTE|C|OTRO|OTRO
+¿Con qué palabra se define una función en PHP?|function,define,fn,method|function|BASICO|PHP|FUNCIONES_Y_METODOS|FUNCIONES_Y_METODOS
+¿Con qué palabra se crean clases en Java?|class,type,object,define|class|BASICO|JAVA|CLASES_Y_ESTRUCTURAS|CLASES_Y_ESTRUCTURAS
+¿Con qué se recorren listas en Python?|for,loop,each,repeat|for|PRINCIPIANTE|PYTHON|CONTROL_DE_FLUJO|CONTROL_DE_FLUJO
+¿Con qué se imprime una variable en PHP?|echo,print,printf,show|echo|BASICO|PHP|ENTRADA_Y_SALIDA|ENTRADA_Y_SALIDA
+¿Con qué se concatenan cadenas en PHP?|.,+,&,|.|INTERMEDIO|PHP|TIPOS_Y_OPERADORES|TIPOS_Y_OPERADORES
+¿Cómo se define una constante en Java?|final,static,const,let|final|AVANZADO|JAVA|TIPOS_Y_OPERADORES|TIPOS_Y_OPERADORES
+¿Qué estructura captura excepciones en Python?|try/except,try/catch,capture/handle,except/try|try/except|AVANZADO|PYTHON|CONTROL_DE_FLUJO|CONTROL_DE_FLUJO
+¿Con qué palabra se imprimen datos en C?|printf,print,cout,echo|printf|PRINCIPIANTE|C|ENTRADA_Y_SALIDA|ENTRADA_Y_SALIDA
+¿Cómo se imprime una variable en Python?|print,echo,write,out|print|PRINCIPIANTE|PYTHON|ENTRADA_Y_SALIDA|ENTRADA_Y_SALIDA
+¿Con qué palabra se define una función en PHP?|function,def,fn,new|function|BASICO|PHP|FUNCIONES_Y_METODOS|FUNCIONES_Y_METODOS
+¿Con qué se reserva memoria en C?|malloc,new,alloc,reserve|malloc|AVANZADO|C|FUNCIONES_Y_METODOS|FUNCIONES_Y_METODOS
+¿Con qué se concatena texto en PHP?|.,+,::,->|.|INTERMEDIO|PHP|TIPOS_Y_OPERADORES|TIPOS_Y_OPERADORES
+¿Con qué palabra se define una clase en PHP?|class,object,define,type|class|BASICO|PHP|CLASES_Y_ESTRUCTURAS|CLASES_Y_ESTRUCTURAS
+HOLA COMO ESTA|bien|mal|BASICO|JAVA|OTRO
