@@ -1,27 +1,82 @@
 @startuml
 package Modulo_Leccion{
 
-class Leccion{
-    - listEjercicio<EjercicioBase> : EjercicioBase
+    class Leccion{
+        - listEjercicio<EjercicioBase> : EjercicioBase
+        - xpQueOtorga : int
+        - completada : boolean
+        - tema : TemaLeccion
+        - calculoXP : CalculoXPStrategy
+        + agregarEjercicio(Ejercicio nuevoEjercicio) : void
+        + agregarEjerciciosLista(List<EjercicioBase>)
+        + getNumeroEjercicios() : int
+        + getListaEjercicios() : List<EjercicioBase>
+        + setCompletada() : void
+        + getXPcalculada(metodo : CalculoXPStrategy)
+    }
+
+    abstract class LeccionRepository{
+    - filtroEjercicio : FiltroEjercicio
+    + getLecciones(Lenguaje, NivelDificultad, TemaLeccion, nunEjercicios)
+    }
+
+
+    enum TemaLeccion {
+        CONTROL_DE_FLUJO
+        TIPOS_Y_OPERADORES
+        FUNCIONES_Y_METODOS
+        CLASES_Y_ESTRUCTURAS
+        ENTRADA_Y_SALIDA
+        OTRO
+    }
+
+    interface CalculoXPStrategy <<Interface>>{
+    + {abstract} calcularXP()
+    }
+
+    class CalculoBasico{
+            - TIEMPO_MAXIMO
+            - TIEMPO_OPTIMO
+            - XP_MAXIMA
+            - XP_MINIMA
+    + calcularXP()
+    }
+    class CalculoLeccionSinErrores{
+            - TIEMPO_MAXIMO
+            - TIEMPO_OPTIMO
+            - XP_MAXIMA
+            - XP_MINIMA
+    + calcularXP()
+    }
+    class CalculoLeccionSinVidas{
+            - TIEMPO_MAXIMO
+            - TIEMPO_OPTIMO
+            - XP_MAXIMA
+            - XP_MINIMA
+
+    + calcularXP()
+    }
+
+
+
+
+      'Refactor
+      CalculoBasico ..U|> CalculoXPStrategy
+
+    'Relaciones :
+    LeccionRepository o--U> Leccion
+    'Leccion --> TemaLeccion
+    'Patron ChainOfResponsibility
+    'Patron Strategy
+    Leccion o--R> CalculoXPStrategy
+    CalculoLeccionSinErrores ..u|> CalculoXPStrategy
+    CalculoLeccionSinVidas ..u|> CalculoXPStrategy
+
+
+
+
 
 }
 
-
-}
-
-
-Package Modulo_Ejercicios{
-
-abstract class EjercicioBase <<abstract>>{
-
-
-}
-
-
-'Relaciones entre clases:
-Leccion o----L> EjercicioBase
-
-
-}
 
 @enduml

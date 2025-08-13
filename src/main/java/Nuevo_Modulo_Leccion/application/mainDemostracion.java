@@ -1,4 +1,4 @@
-package Nuevo_Modulo_Leccion.application;
+/*package Nuevo_Modulo_Leccion.application;
 
 import Nuevo_Modulo_Leccion.controllers.LeccionUIController;
 import Nuevo_Modulo_Leccion.logic.Leccion;
@@ -13,7 +13,7 @@ public class mainDemostracion {
         // Simulación de como otro módulo puede acoplarse con el módulo de lecciones
 
         // 1. Pides a lista de lecciones existentes:
-        List<Leccion> listLecciones = LeccionRepository.getLecciones();
+        List<Leccion> listLecciones = LeccionRepository.getListaLecciones();
         // Por el momento:
         // 1. Todas las lecciones serán de JAVA NivelDeDificultad BÁSICA.
         // 2. Todas las lecciones contienen 3 ejercicios dentro de ellas.
@@ -32,3 +32,5 @@ public class mainDemostracion {
     }
 
 }
+
+ */

@@ -9,11 +9,11 @@ import Modulo_Usuario.Clases.UsuarioComunidad;
 public class ModeradorManual extends ModeradorBase {
 
     public ModeradorManual(String nombre, String username) {
-        super(nombre, username);
+        super(nombre, username); // ya usa singleton internamente
     }
 
     public ModeradorManual(String nombre) {
-        super(nombre);
+        super(nombre, "mod");
     }
 
     // ========== OPERACIONES MANUALES ESPECÍFICAS ==========

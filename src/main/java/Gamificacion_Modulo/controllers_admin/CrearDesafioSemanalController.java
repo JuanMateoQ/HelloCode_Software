@@ -130,10 +130,10 @@ public class CrearDesafioSemanalController {
         Label lblMetaInfo = new Label("🎯 Meta: " + meta + " actividades semanales");
         Label lblLogros = new Label("🏆 Logros asociados: " + logrosSeleccionados.size());
         Label lblEstado = new Label("📊 Estado: Disponible para asignar");
-    int recompensa = sliderPuntos != null ? (int) sliderPuntos.getValue() : 0;
-    Label lblRecompensa = new Label("💎 Recompensa: +" + recompensa + " pts");
+        int recompensa = sliderPuntos != null ? (int) sliderPuntos.getValue() : 0;
+        Label lblRecompensa = new Label("💎 Recompensa: +" + recompensa + " pts");
 
-    vboxVistaPrevia.getChildren().addAll(lblNombre, lblDescripcion, lblMetaInfo, lblLogros, lblRecompensa, lblEstado);
+        vboxVistaPrevia.getChildren().addAll(lblNombre, lblDescripcion, lblMetaInfo, lblLogros, lblRecompensa, lblEstado);
 
         // Mostrar logros seleccionados
         for (Logro logro : logrosSeleccionados) {
@@ -188,20 +188,21 @@ public class CrearDesafioSemanalController {
                         .filter(p -> p.getUsuario().getUsername().equals(usuario.getUsername()))
                         .findFirst().orElse(null);
                 if (progreso != null) {
-                    progreso.agregarDesafio(desafio);
+                    progreso.actualizarDesafios(new DesafioSemanal(desafio));
+
                 }
             }
             System.out.println(">>> Desafío semanal asignado automáticamente a todos los usuarios logueados");
 
             // Mensaje de éxito
             String mensaje = String.format(
-                "¡Desafío semanal creado exitosamente!\n\n" +
-                        "Meta: %d actividades semanales\n" +
-            "Logros asociados: %d\n" +
-            "Recompensa: +%d pts\n",
-        meta,
-        logrosSeleccionados.size(),
-        recompensa
+                    "¡Desafío semanal creado exitosamente!\n\n" +
+                            "Meta: %d actividades semanales\n" +
+                            "Logros asociados: %d\n" +
+                            "Recompensa: +%d pts\n",
+                    meta,
+                    logrosSeleccionados.size(),
+                    recompensa
             );
 
             mostrarAlerta("Éxito", mensaje);

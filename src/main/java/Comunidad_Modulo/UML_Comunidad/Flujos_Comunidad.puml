@@ -1,0 +1,107 @@
+@startuml Flujos_Entrada_Salida_Comunidad
+
+!theme plain
+title Diagrama de Componentes - Módulo Comunidad
+
+skinparam rectangle {
+    BackgroundColor LightBlue
+    BorderColor DarkBlue
+}
+
+skinparam arrow {
+    Color DarkBlue
+    FontColor DarkBlue
+}
+
+' ENTRADAS AL MÓDULO
+rectangle "**ENTRADAS**" as Entradas {
+  [Usuario Autenticado] as UserIn
+  [Datos de Sesión] as SessionIn
+  [Configuración Sistema] as ConfigIn
+}
+
+' NÚCLEO DEL MÓDULO
+rectangle "**COMUNIDAD_MODULO**" as Core {
+  rectangle "Modelo Principal" as ModeloCore {
+    [Comunidad]
+    [ForoGeneral] 
+    [ChatPrivado]
+    [Moderador]
+  }
+  
+  rectangle "Gestión" as Gestion {
+    [ContextoSistema]
+    [ComunidadService]
+    [ModeracionService]
+  }
+  
+  rectangle "Persistencia" as Persist {
+    [PersistenciaService]
+    [Archivos .txt]
+  }
+}
+
+' SALIDAS DEL MÓDULO
+rectangle "**SALIDAS**" as Salidas {
+  [Estadísticas Usuario] as StatsOut
+  [Eventos Gamificación] as GameOut
+  [Historial Participación] as HistOut
+  [Notificaciones] as NotifOut
+}
+
+' INTERFACES DE USUARIO
+rectangle "**INTERFACES GUI**" as GUI {
+  [Gestión Comunidades]
+  [Gestión Foros]
+  [Gestión Chats]
+  [Panel Moderación]
+}
+
+' === FLUJOS DE ENTRADA ===
+UserIn --> Core : "1. Usuario se conecta\na comunidad"
+SessionIn --> Core : "2. Datos de sesión\nactiva"
+ConfigIn --> Core : "3. Configuración\ndel sistema"
+
+' === FLUJOS INTERNOS ===
+Gestion --> ModeloCore : "Gestiona entidades"
+ModeloCore --> Persist : "Guarda/Carga datos"
+
+' === FLUJOS DE SALIDA ===
+Core --> StatsOut : "4. Estadísticas de\nparticipación"
+Core --> GameOut : "5. Puntos por\nactividades"
+Core --> HistOut : "6. Historial de\ninteracciones"
+Core --> NotifOut : "7. Notificaciones\nde moderación"
+
+' === INTERACCIÓN CON GUI ===
+GUI <--> Core : "Interacción\nbidireccional"
+
+' === DETALLES DE FLUJOS ===
+note as N1
+**FLUJOS DE ENTRADA DETALLADOS:**
+• **Usuario**: ID, nombre, nivel Java, email
+• **Sesión**: Token autenticación, permisos
+• **Config**: Parámetros de moderación, límites
+end note
+
+note as N2
+**FLUJOS DE SALIDA DETALLADOS:**
+• **Estadísticas**: Mensajes enviados, grupos unidos
+• **Gamificación**: Puntos por crear foros, ayudar
+• **Historial**: Log de actividades del usuario
+• **Notificaciones**: Sanciones, warnings del sistema
+end note
+
+note as N3
+**DATOS PERSISTIDOS:**
+• comunidades.txt → Datos básicos de comunidades
+• chats.txt → Chats privados y mensajes
+• usuarios_comunidades.txt → Relación usuario-comunidad
+• foros.txt → Grupos de discusión y compartir
+• respuestas.txt → Respuestas en hilos de discusión
+end note
+
+N1 .. Entradas
+N2 .. Salidas
+N3 .. Persist
+
+@enduml

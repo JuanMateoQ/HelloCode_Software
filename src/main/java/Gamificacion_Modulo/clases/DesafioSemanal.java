@@ -9,33 +9,21 @@ public class DesafioSemanal extends Desafio {
         super(logros, puntos, metaSemanal);
         this.meta = metaSemanal;
         this.leccionesCompletadas = 0;
-        activar();
+        this.activar();
     }
-
-
-
-    @Override
-    public Boolean estaCompletado() {
-        return this.leccionesCompletadas >= this.meta;
+    public DesafioSemanal(Desafio desafio) {
+        super(desafio.logrosDisponibles, desafio.puntosRecompensa, desafio.meta);
+        this.meta = desafio.meta;
+        this.leccionesCompletadas = 0;
+        this.activar();
     }
-
-    public void actualizarAvance(Integer cantidad) {
-        this.leccionesCompletadas += cantidad;
-    }
-
-
-    public Double getProgreso() {
-        if (super.meta == 0) return 0.0;
-        double progreso = (leccionesCompletadas * 100.0) / this.meta;
-        return Math.min(progreso, 100.0); // Máximo 100%
-    }
-
     @Override
     public void activar() {
         this.estaActivo = true;
         this.fechaInicio = LocalDateTime.now();
         this.fechaFin = this.fechaInicio.plusWeeks(1);
     }
+
     // Getters
     public Integer getMetaSemanal() { return this.meta; }
     public Integer getLeccionesCompletadas() {

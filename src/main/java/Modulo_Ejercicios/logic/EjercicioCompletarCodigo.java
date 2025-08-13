@@ -1,8 +1,8 @@
 package Modulo_Ejercicios.logic;
 
-import java.util.ArrayList;
-
 import Nuevo_Modulo_Leccion.logic.TemaLeccion;
+
+import java.util.ArrayList;
 
 /**
  * Clase que representa un ejercicio de completar código
@@ -68,6 +68,10 @@ public class EjercicioCompletarCodigo extends EjercicioBase {
      */
     public int obtenerNumeroPartesFaltantes() {
         return partesFaltantes.size();
+    }
+
+    public String getLenguajeEjercicio() {
+        return lenguaje.name();
     }
 
     @Override

@@ -76,6 +76,7 @@ module Modulo_Ejercicio {
     opens GestionAprendizaje_Modulo.Controladores to javafx.fxml;
     opens GestionAprendizaje_Modulo.Aplicacion to javafx.graphics, javafx.fxml;
     opens GestionAprendizaje_Modulo.Modelo to javafx.fxml;
-
+    //Para todos ocupar este:
+    exports  MainGeneral;
 }
 

@@ -1,6 +1,6 @@
 # Archivo de chats privados
 # Formato: nombreComunidad;participantes(separados por ,);fechaCreacion
 
-Java Principiantes;erick,medardito;2025-07-25 06:04:50
-Java Principiantes;erick,churito;2025-07-25 06:27:20
-Java Principiantes;churito,medardito;2025-07-25 06:32:38
+
+Comunidad para PHP;JuanMateo,Luis;2025-08-11 22:26:01
+Comunidad para PHP;JuanMateo,Prueba;2025-08-11 22:26:27

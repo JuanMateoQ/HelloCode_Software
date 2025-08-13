@@ -1,7 +1,7 @@
 package Comunidad_Modulo.integracion;
 
-import Modulo_Usuario.Clases.NivelAprendizaje;
 import Modulo_Usuario.Clases.UsuarioComunidad;
+import Modulo_Usuario.Clases.NivelJava;
 
 /**
  * Implementación simulada del módulo de usuarios para desarrollo y testing.
@@ -15,7 +15,7 @@ public class ModuloUsuariosSimulado implements IModuloUsuarios {
         // Simulamos que hay un usuario logueado por defecto
         this.usuarioActual = new UsuarioComunidad("demo_user", "password123", "Usuario Demo", "demo@example.com");
         this.usuarioActual.setIdUsuario("demo_001");
-        this.usuarioActual.setNivelJava(NivelAprendizaje.INTERMEDIO);
+        this.usuarioActual.setNivelJava(NivelJava.INTERMEDIO);
         this.usuarioActual.setReputacion(150);
     }
     
@@ -25,13 +25,13 @@ public class ModuloUsuariosSimulado implements IModuloUsuarios {
         if ("user123".equals(idUsuario)) {
             UsuarioComunidad user = new UsuarioComunidad("juan_perez", "pass123", "Juan Pérez", "juan@example.com");
             user.setIdUsuario("user123");
-            user.setNivelJava(NivelAprendizaje.AVANZADO);
+            user.setNivelJava(NivelJava.AVANZADO);
             user.setReputacion(500);
             return user;
         } else if ("user456".equals(idUsuario)) {
             UsuarioComunidad user = new UsuarioComunidad("maria_garcia", "pass456", "María García", "maria@example.com");
             user.setIdUsuario("user456");
-            user.setNivelJava(NivelAprendizaje.PRINCIPIANTE);
+            user.setNivelJava(NivelJava.PRINCIPIANTE);
             user.setReputacion(50);
             return user;
         }
@@ -44,13 +44,13 @@ public class ModuloUsuariosSimulado implements IModuloUsuarios {
         if ("juan@example.com".equals(email)) {
             UsuarioComunidad user = new UsuarioComunidad("juan_perez", "pass123", "Juan Pérez", "juan@example.com");
             user.setIdUsuario("user123");
-            user.setNivelJava(NivelAprendizaje.AVANZADO);
+            user.setNivelJava(NivelJava.AVANZADO);
             user.setReputacion(500);
             return user;
         } else if ("maria@example.com".equals(email)) {
             UsuarioComunidad user = new UsuarioComunidad("maria_garcia", "pass456", "María García", "maria@example.com");
             user.setIdUsuario("user456");
-            user.setNivelJava(NivelAprendizaje.PRINCIPIANTE);
+            user.setNivelJava(NivelJava.PRINCIPIANTE);
             user.setReputacion(50);
             return user;
         }
@@ -64,14 +64,14 @@ public class ModuloUsuariosSimulado implements IModuloUsuarios {
     }
     
     @Override
-    public NivelAprendizaje obtenerNivelProgreso(String idUsuario) {
+    public NivelJava obtenerNivelProgreso(String idUsuario) {
         // En un sistema real, consultaría el progreso del módulo de aprendizaje
         if ("user123".equals(idUsuario)) {
-            return NivelAprendizaje.AVANZADO;
+            return NivelJava.AVANZADO;
         } else if ("user456".equals(idUsuario)) {
-            return NivelAprendizaje.PRINCIPIANTE;
+            return NivelJava.PRINCIPIANTE;
         }
-        return NivelAprendizaje.INTERMEDIO; // Nivel por defecto
+        return NivelJava.INTERMEDIO; // Nivel por defecto
     }
     
     @Override
@@ -92,7 +92,7 @@ public class ModuloUsuariosSimulado implements IModuloUsuarios {
      * Método para simular el cambio de usuario (solo para testing).
      * En un sistema real, esto lo haría el módulo de autenticación.
      */
-    public void simularCambioUsuario(String nombre, NivelAprendizaje nivel) {
+    public void simularCambioUsuario(String nombre, NivelJava nivel) {
         this.usuarioActual = new UsuarioComunidad("test_user", "test123", nombre, "test@example.com");
         this.usuarioActual.setNivelJava(nivel);
         System.out.println("🔄 Simulación: Usuario cambiado a " + nombre + " (Nivel: " + nivel + ")");

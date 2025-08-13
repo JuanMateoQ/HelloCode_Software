@@ -85,22 +85,6 @@
             </VBox>
             
              
-            <!-- Sección Simulación -->
-            <VBox spacing="15" maxWidth="320" 
-                  style="-fx-background-color: #DCD6F7; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0.3, 0, 2);">
-                <padding>
-                    <Insets top="20" right="20" bottom="20" left="20"/>
-                </padding>
-                
-                <Label text="🎮 Simulación" 
-                       style="-fx-text-fill: #424874; -fx-font-size: 18px; -fx-font-weight: bold;"/>
-                <Label text="Simular la completación de actividades en desafíos" 
-                       style="-fx-text-fill: #6B7A99; -fx-font-size: 14px;"/>
-                
-                <Button fx:id="btnSimularActividad" text="Simular Actividad" onAction="#onSimularActividadClicked" 
-                        style="-fx-background-color: #A6B1E1; -fx-text-fill: #424874; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 12;"
-                        prefWidth="280"/>
-            </VBox>
 
             <!-- Separador -->
             <Separator style="-fx-background-color: #A6B1E1;" maxWidth="280"/>

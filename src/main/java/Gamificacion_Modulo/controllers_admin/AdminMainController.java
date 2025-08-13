@@ -29,9 +29,6 @@ public class AdminMainController {
     private Button btnCrearLogro;
 
     @FXML
-    private Button btnSimularActividad;
-
-    @FXML
     private Button btnActualizarStats;
 
     @FXML
@@ -69,11 +66,6 @@ public class AdminMainController {
     }
 
 
-    @FXML
-    private void onSimularActividadClicked(ActionEvent event) {
-        System.out.println(">>> Abriendo simulador de actividad");
-        abrirVentana("/Gamificacion_Modulo/fxml/admin/SimularActividad.fxml", "Simular Actividad");
-    }
 
     @FXML
     private void onActualizarStatsClicked(ActionEvent event) {

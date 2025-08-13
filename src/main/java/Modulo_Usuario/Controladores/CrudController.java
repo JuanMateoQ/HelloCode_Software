@@ -1,5 +1,6 @@
 package Modulo_Usuario.Controladores;
 
+import Conexion.SesionManager;
 import Modulo_Usuario.Clases.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -29,7 +30,7 @@ public class CrudController {
     // Nuevos controles para tipos de usuario
     @FXML private ComboBox<String> tipoUsuarioCombo;
     @FXML private VBox camposComunidad;
-    @FXML private ComboBox<NivelAprendizaje> nivelJavaCombo;
+    @FXML private ComboBox<NivelJava> nivelJavaCombo;
     @FXML private TextField reputacionField;
 
     private final String ARCHIVO_USUARIOS = "src/main/java/Modulo_Usuario/Usuarios/usuarios.txt";
@@ -63,7 +64,7 @@ public class CrudController {
         tipoUsuarioCombo.getSelectionModel().selectFirst();
 
         // Configurar niveles de Java
-        ObservableList<NivelAprendizaje> nivelesJava = FXCollections.observableArrayList(NivelAprendizaje.values());
+        ObservableList<NivelJava> nivelesJava = FXCollections.observableArrayList(NivelJava.values());
         nivelJavaCombo.setItems(nivelesJava);
         nivelJavaCombo.getSelectionModel().selectFirst();
     }
@@ -232,6 +233,10 @@ public class CrudController {
                 bw.write(usuario.toString() + "\n");
             }
             mostrarMensaje("Usuarios guardados correctamente", "success");
+            
+            // Notificar al SesionManager después de guardar cambios
+            SesionManager.getInstancia().forzarRecarga();
+            
         } catch (IOException e) {
             e.printStackTrace();
             mostrarMensaje("Error al guardar usuarios: " + e.getMessage(), "error");
@@ -264,6 +269,10 @@ public class CrudController {
         if (nuevoUsuario != null) {
             usuarios.add(nuevoUsuario);
             guardarUsuarios();
+            
+            // Notificar al SesionManager que se creó un nuevo usuario
+            SesionManager.getInstancia().notificarNuevoUsuario();
+            
             actualizarListView();
             limpiarCampos();
             mostrarMensaje("Usuario agregado correctamente", "success");
@@ -277,14 +286,14 @@ public class CrudController {
                 return new Usuario(username, password, nombre, email, 0, rolBasico);
 
             case "Usuario Comunidad":
-                NivelAprendizaje nivelAprendizaje = nivelJavaCombo.getValue();
+                NivelJava nivelJava = nivelJavaCombo.getValue();
                 Integer reputacion = 0;
                 try {
                     reputacion = Integer.parseInt(reputacionField.getText().trim());
                 } catch (NumberFormatException e) {
                     reputacion = 0;
                 }
-                return new UsuarioComunidad(username, password, nombre, email, username, nivelAprendizaje, reputacion);
+                return new UsuarioComunidad(username, password, nombre, email, username, nivelJava, reputacion);
 
             default:
                 mostrarMensaje("Tipo de usuario no válido", "error");

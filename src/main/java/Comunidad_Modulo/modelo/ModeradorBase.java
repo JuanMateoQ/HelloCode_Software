@@ -19,17 +19,13 @@ public abstract class ModeradorBase implements IModerador {
     protected List<Comunidad> comunidadesGestionadas;
     protected ModeracionService moderacionService;
 
+    // Constructor que usa singleton
     public ModeradorBase(String nombre, String username) {
         this.idModerador = UUID.randomUUID().toString();
         this.nombre = nombre;
         this.username = username;
         this.comunidadesGestionadas = new ArrayList<>();
-        this.moderacionService = new ModeracionService();
-    }
-
-    // Constructor para compatibilidad
-    public ModeradorBase(String nombre) {
-        this(nombre, "mod");
+        this.moderacionService = ModeracionService.getInstance(); // singleton
     }
 
     // Implementación de métodos de la interfaz IModerador

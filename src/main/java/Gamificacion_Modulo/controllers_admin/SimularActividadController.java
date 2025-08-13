@@ -240,12 +240,12 @@ public class SimularActividadController implements Initializable {
                 DesafioSemanal ds = (DesafioSemanal) desafioSeleccionado;
                 resultados.append("• Progreso semanal: ").append(ds.getLeccionesCompletadas())
                         .append("/").append(ds.getMetaSemanal())
-                        .append(" (").append(String.format("%.1f", ds.getProgreso())).append("%)\n");
+                        .append(" (").append(String.format("%.1f", ds.getAvanceDesafio())).append("%)\n");
             } else if (desafioSeleccionado instanceof DesafioMensual) {
                 DesafioMensual dm = (DesafioMensual) desafioSeleccionado;
                 resultados.append("• Progreso mensual: ").append(dm.getLeccionesCompletadas())
                         .append("/").append(dm.getMetaMensual())
-                        .append(" (").append(String.format("%.1f", dm.getProgreso())).append("%)\n");
+                        .append(" (").append(String.format("%.1f", dm.getAvanceDesafio())).append("%)\n");
             }
 
             // Mostrar logros nuevos si los hay

@@ -51,24 +51,13 @@ public final class Ranking {
         return this.rankingGeneral;
     }
 
-    public Integer calcularPosicion(ProgresoEstudiante estudiante) {
-        return rankingGeneral.indexOf(estudiante) + 1;
-    }
-
     // Métodos estáticos para acceso directo al singleton
     public static Ranking getRanking() {
         return getInstance();
-    }
-
-    public static void actualizarRankingGlobal(int a) {
-        a++;
     }
 
     public static List<ProgresoEstudiante> obtenerRankingGlobal() {
         return getInstance().obtenerRankingGeneral();
     }
 
-    public static Integer calcularPosicionGlobal(ProgresoEstudiante estudiante) {
-        return getInstance().calcularPosicion(estudiante);
-    }
 }

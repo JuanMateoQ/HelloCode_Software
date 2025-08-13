@@ -1,13 +1,14 @@
 package Modulo_Ejercicios.Controladores;
 
 import Conexion.MetodosFrecuentes;
+import Conexion.SesionManager;
 import Modulo_Ejercicios.logic.EjercicioSeleccion;
 import Modulo_Ejercicios.logic.Respuesta;
 import Modulo_Ejercicios.logic.RespuestaString;
 import Modulo_Ejercicios.logic.ResultadoDeEvaluacion;
+import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.animation.PauseTransition;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
@@ -21,14 +22,9 @@ import javafx.util.Duration;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.function.Consumer;
 import java.util.List;
 import java.util.ResourceBundle;
-
-
-// Usar la clase Usuario principal del sistema con persistencia de datos
-import Modulo_Usuario.Clases.Usuario;
-import Conexion.SesionManager;
+import java.util.function.Consumer;
 
 
 public class EjercicioSeleccionController implements Initializable {
@@ -43,6 +39,9 @@ public class EjercicioSeleccionController implements Initializable {
 
     @FXML
     private Text txtLiveCount;
+
+    @FXML
+    private Text txtLenguaje;
 
     @FXML
     private ProgressBar progressBar;
@@ -233,8 +232,14 @@ public class EjercicioSeleccionController implements Initializable {
      * Método para configurar un solo ejercicio individual
      */
     public void setEjercicio(EjercicioSeleccion ejercicio) {
+
         this.ejercicioActual = ejercicio;
         cargarInstruccion(ejercicio);
+
+        if(txtLenguaje != null) {
+            txtLenguaje.setText(ejercicio.getLenguajeEjercicio());
+        }
+
         actualizarProgressBar();
     }
 
@@ -388,38 +393,22 @@ public class EjercicioSeleccionController implements Initializable {
         ocultarTodosPanelesFeedback();
 
         // Mostrar el panel correspondiente según el tipo de respuesta
-        Usuario usuarioActual = SesionManager.getInstancia().getUsuarioAutenticado();
-        
-        // Sincronizar datos antes de verificar vidas
-        if (usuarioActual != null) {
-            usuarioActual.sincronizarVidasDesdeArchivo();
-        }
-        
         switch (tipo) {
             case CORRECTO:
                 mostrarPanelCorrecto(mensaje, explicacion);
                 break;
             case INCORRECTO:
-                if (usuarioActual != null && usuarioActual.getVidasSincronizadas() <= 0) {
-                    System.out.println("🔴 Game Over - Vidas: " + usuarioActual.getVidasSincronizadas());
-                    mostrarPanelGameOver();
-                } else {
-                    mostrarPanelIncorrecto(mensaje, explicacion);
-                }
+                // Siempre mostrar feedback de incorrecto
+                mostrarPanelIncorrecto(mensaje, explicacion);
                 break;
             case PARCIALMENTE_CORRECTO:
-                if (usuarioActual != null && usuarioActual.getVidasSincronizadas() <= 0) {
-                    // Si al quedar parcialmente correcto se agotaron las vidas, mostrar Game Over
-                    System.out.println("🔴 Game Over (Parcial) - Vidas: " + usuarioActual.getVidasSincronizadas());
-                    mostrarPanelGameOver();
-                } else {
-                    mostrarPanelParcial(mensaje, explicacion);
-                }
+                // Siempre mostrar feedback parcial
+                mostrarPanelParcial(mensaje, explicacion);
                 break;
         }
 
         // Configurar y mostrar el botón siguiente solo si NO es Game Over
-        if (usuarioActual != null && usuarioActual.getVidasSincronizadas() <= 0) {
+        if (getVidasActuales() <= 0) {
             if (btnSiguiente != null) {
                 btnSiguiente.setVisible(false);
                 btnSiguiente.setManaged(false);
@@ -434,6 +423,19 @@ public class EjercicioSeleccionController implements Initializable {
 
         // Mostrar el panel de feedback
         feedbackPanel.setVisible(true);
+
+        // Si no hay vidas, esperar 3s y navegar a "se acabaron vidas"
+        if (getVidasActuales() <= 0) {
+            PauseTransition pause = new PauseTransition(Duration.seconds(3));
+            pause.setOnFinished(e -> {
+                Button ref = (btnSiguiente != null) ? btnSiguiente : btnComprobar;
+                if (ref != null && ref.getScene() != null) {
+                    Stage stage = (Stage) ref.getScene().getWindow();
+                    Nuevo_Modulo_Leccion.controllers.LeccionUIController.mostrarSeAcabaronVidasYVolver(stage);
+                }
+            });
+            pause.play();
+        }
     }
 
     private void ocultarTodosPanelesFeedback() {
@@ -485,45 +487,14 @@ public class EjercicioSeleccionController implements Initializable {
         }
     }
 
-    private void mostrarPanelGameOver() {
-        if (panelGameOver != null) {
-            panelGameOver.setVisible(true);
-            
-            Usuario usuarioActual = SesionManager.getInstancia().getUsuarioAutenticado();
-            if (usuarioActual != null) {
-                usuarioActual.sincronizarVidasDesdeArchivo();
-            }
-            
-            if (textGameOver != null) {
-                // Mensaje dinámico basado en las vidas reales del usuario
-                if (usuarioActual != null && usuarioActual.getVidasSincronizadas() <= 0) {
-                    textGameOver.setText("¡Se agotaron las vidas!");
-                } else {
-                    textGameOver.setText("¡Ejercicio fallido!");
-                }
-            }
-            if (textGameOverDetalle != null) {
-                String detalle = "No te preocupes, puedes intentarlo nuevamente.";
-                if (usuarioActual != null) {
-                    detalle += "\nVidas actuales: " + usuarioActual.getVidasSincronizadas();
-                }
-                textGameOverDetalle.setText(detalle);
-            }
-        }
-        // Mostrar panel unos segundos y volver a la ventana anterior (como en EjercicioCompletarController)
-        actualizarVidasUI();
-        PauseTransition pause = new PauseTransition(Duration.seconds(3));
-        pause.setOnFinished(e -> terminarEjecucion());
-        pause.play();
-    }
+    // Eliminado: se usa panelIncorrecto también para game over y se navega tras pausa
 
     private void configurarBotonSiguiente() {
         if (btnSiguiente != null) {
             btnSiguiente.setDisable(false);
             btnSiguiente.setOpacity(1.0);
 
-            Usuario usuarioActual = SesionManager.getInstancia().getUsuarioAutenticado();
-            if (usuarioActual != null && usuarioActual.getVidasSincronizadas() <= 0) {
+            if (getVidasActuales() <= 0) {
                 btnSiguiente.setText("REINICIAR");
             } else {
                 btnSiguiente.setText("SIGUIENTE");
@@ -575,7 +546,7 @@ public class EjercicioSeleccionController implements Initializable {
         if (btnSiguiente != null) {
             btnSiguiente.setOnAction(event -> handleContinuar());
         }
-
+ 
         actualizarVidasUI();
 
     }
@@ -629,18 +600,15 @@ public class EjercicioSeleccionController implements Initializable {
         }
     }
 
+    private int getVidasActuales() {
+        return SesionManager.getInstancia().getUsuarioAutenticado().getVidas();
+    }
+
     private void actualizarVidasUI() {
         if (txtLiveCount != null) {
-            Usuario usuarioActual = SesionManager.getInstancia().getUsuarioAutenticado();
-            if (usuarioActual != null) {
-                // Sincronizar vidas desde archivo para asegurar datos actualizados
-                usuarioActual.sincronizarVidasDesdeArchivo();
-                int vidasActuales = usuarioActual.getVidasSincronizadas();
-                txtLiveCount.setText(String.valueOf(vidasActuales));
-                System.out.println("🔄 UI actualizada - Vidas: " + vidasActuales);
-            } else {
-                txtLiveCount.setText("3"); // Valor por defecto
-            }
+            txtLiveCount.setText(String.valueOf(getVidasActuales()));
         }
     }
+
+
 }

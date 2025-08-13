@@ -1,9 +1,12 @@
 package Gamificacion_Modulo.clases;
 
+
+import Conexion.SesionManager;
+import Modulo_Usuario.Clases.Usuario;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public abstract class Desafio {
 
@@ -13,9 +16,7 @@ public abstract class Desafio {
     protected Boolean estaActivo;
     protected List<Logro> logrosDisponibles;
     protected int leccionesCompletadas;
-    protected int meta;
-
-    // Lista estática de desafíos disponibles
+    public int meta;
     private static final List<Desafio> desafiosDisponibles = new ArrayList<>();
 
     public Desafio( List<Logro> logros, int recompensa, int meta) {
@@ -43,7 +44,7 @@ public abstract class Desafio {
 
         if (!estudiante.getLogros().contains(this.logrosDisponibles)) {
             for(Logro logro : this.logrosDisponibles) {
-                estudiante.agregarLogro(logro);
+                estudiante.actualizarLogro(logro);
             }
             return true;
         }
@@ -51,8 +52,9 @@ public abstract class Desafio {
     }
 
     public void completarDesafio(ProgresoEstudiante estudiante) {
-        // Sumar puntos de recompensa
-        estudiante.sumarPuntos(puntosRecompensa);
+        Usuario usr = SesionManager.getInstancia().getUsuarioAutenticado();
+        usr.agregarXP(puntosRecompensa);
+        estudiante.aumentarDesafiosCompletados();
         // Desactivar el desafío
         desactivar();
         desbloquearLogro(estudiante);
@@ -75,20 +77,17 @@ public abstract class Desafio {
         desafiosDisponibles.add(desafio);
     }
 
-    public static void removerDesafio(Desafio desafio) {
-        desafiosDisponibles.remove(desafio);
+    public Double getAvanceDesafio() {
+        if (this.meta == 0) return 0.0;
+        double progreso = (leccionesCompletadas * 100.0) / this.meta;
+        return Math.min(progreso, 100.0); // Máximo 100%
     }
-
-    public static List<Desafio> getDesafiosActivos() {
-        return desafiosDisponibles.stream()
-                .filter(Desafio::getEstaActivo)
-                .collect(Collectors.toList());
-    }
-
     // Getters
     public Boolean getEstaActivo() { return estaActivo; }
 
-    public abstract Boolean estaCompletado();
+    public Boolean estaCompletado(){
+        return this.leccionesCompletadas >= this.meta;
+    };
 
 
 } 

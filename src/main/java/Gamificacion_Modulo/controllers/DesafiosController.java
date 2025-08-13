@@ -32,7 +32,6 @@ public class DesafiosController {
     private Button navButton3;
 
 
-    //TODO: CORREGIR LA LOGICA DE NAVEGACIÓN PARA QUE NO SE CREE UNA NUEVA INSTANCIA DEL CONTROLADOR CADA VEZ QUE SE NAVEGA A LA MISMA PANTALLA
     // Botón 1 - Desafíos (current) - se queda en esta pantalla
     @FXML
     private void navButton1() {

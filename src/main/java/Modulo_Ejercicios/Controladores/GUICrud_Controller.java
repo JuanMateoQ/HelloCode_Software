@@ -2,6 +2,7 @@ package Modulo_Ejercicios.Controladores;
 
 import Modulo_Ejercicios.DataBase.EjercicioRepository;
 import Modulo_Ejercicios.logic.*;
+import Nuevo_Modulo_Leccion.logic.TemaLeccion;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -28,6 +29,7 @@ public class GUICrud_Controller implements Initializable {
     @FXML private TextArea txtInstruccion;
     @FXML private ComboBox<Lenguaje> comboLenguaje;
     @FXML private ComboBox<NivelDificultad> comboNivel;
+    @FXML private ComboBox<TemaLeccion> comboTema;
     
     // Sección ejercicios de selección
     @FXML private VBox seccionSeleccion;
@@ -38,6 +40,12 @@ public class GUICrud_Controller implements Initializable {
     @FXML private VBox seccionCompletar;
     @FXML private TextArea txtCodigo;
     @FXML private TextField txtRespuestasEspacios;
+    
+    // Sección ejercicios de emparejar
+    @FXML private VBox seccionEmparejar;
+    @FXML private TextArea txtColumnaIzquierda;
+    @FXML private TextArea txtColumnaDerecha;
+    @FXML private TextField txtEmparejamientosCorrectos;
     
     // Lista y filtros
     @FXML private ListView<EjercicioBase> listaEjercicios;
@@ -60,7 +68,7 @@ public class GUICrud_Controller implements Initializable {
     private void configurarCombos() {
         // Tipo de ejercicio
         comboTipoEjercicio.setItems(FXCollections.observableArrayList(
-            "Selección Múltiple", "Completar Código"
+            "Selección Múltiple", "Completar Código", "Emparejar"
         ));
         
         // Lenguajes
@@ -70,9 +78,12 @@ public class GUICrud_Controller implements Initializable {
         // Niveles de dificultad
         comboNivel.setItems(FXCollections.observableArrayList(NivelDificultad.values()));
         
+        // Temas de lección
+        comboTema.setItems(FXCollections.observableArrayList(TemaLeccion.values()));
+        
         // Filtros
         filtroTipo.setItems(FXCollections.observableArrayList(
-            "Todos", "Selección Múltiple", "Completar Código"
+            "Todos", "Selección Múltiple", "Completar Código", "Emparejar"
         ));
         filtroTipo.setValue("Todos");
         
@@ -95,7 +106,17 @@ public class GUICrud_Controller implements Initializable {
                 if (empty || item == null) {
                     setText(null);
                 } else {
-                    String tipo = (item instanceof EjercicioSeleccion) ? "📝 Selección" : "💻 Completar";
+                    String tipo;
+                    if (item instanceof EjercicioSeleccion) {
+                        tipo = "📝 Selección";
+                    } else if (item instanceof EjercicioCompletarCodigo) {
+                        tipo = "💻 Completar";
+                    } else if (item instanceof EjercicioEmparejar) {
+                        tipo = "🔗 Emparejar";
+                    } else {
+                        tipo = "❓ Otro";
+                    }
+                    
                     String preview = item.getInstruccion().length() > 50 ? 
                         item.getInstruccion().substring(0, 50) + "..." : 
                         item.getInstruccion();
@@ -129,6 +150,10 @@ public class GUICrud_Controller implements Initializable {
         List<EjercicioCompletarCodigo> ejerciciosCompletar = EjercicioRepository.cargarEjerciciosCompletarCodigo();
         todosLosEjercicios.addAll(ejerciciosCompletar);
         
+        // Cargar ejercicios de emparejar
+        List<EjercicioEmparejar> ejerciciosEmparejar = EjercicioRepository.cargarEjerciciosEmparejar();
+        todosLosEjercicios.addAll(ejerciciosEmparejar);
+        
         // Actualizar lista filtrada
         filtrarEjercicios();
     }
@@ -142,6 +167,8 @@ public class GUICrud_Controller implements Initializable {
         seccionSeleccion.setManaged(false);
         seccionCompletar.setVisible(false);
         seccionCompletar.setManaged(false);
+        seccionEmparejar.setVisible(false);
+        seccionEmparejar.setManaged(false);
         
         // Mostrar la sección correspondiente
         if ("Selección Múltiple".equals(tipoSeleccionado)) {
@@ -150,6 +177,9 @@ public class GUICrud_Controller implements Initializable {
         } else if ("Completar Código".equals(tipoSeleccionado)) {
             seccionCompletar.setVisible(true);
             seccionCompletar.setManaged(true);
+        } else if ("Emparejar".equals(tipoSeleccionado)) {
+            seccionEmparejar.setVisible(true);
+            seccionEmparejar.setManaged(true);
         }
     }
     
@@ -167,6 +197,8 @@ public class GUICrud_Controller implements Initializable {
                 crearEjercicioSeleccion();
             } else if ("Completar Código".equals(tipo)) {
                 crearEjercicioCompletarCodigo();
+            } else if ("Emparejar".equals(tipo)) {
+                crearEjercicioEmparejar();
             }
             
             // Actualizar la lista
@@ -203,6 +235,11 @@ public class GUICrud_Controller implements Initializable {
             return false;
         }
         
+        if (comboTema.getValue() == null) {
+            mostrarMensaje("Error", "Selecciona el tema de la lección", Alert.AlertType.WARNING);
+            return false;
+        }
+        
         return true;
     }
     
@@ -235,6 +272,7 @@ public class GUICrud_Controller implements Initializable {
             .conRespuestasCorrectas(respuestas)
             .conNivel(comboNivel.getValue())
             .conLenguaje(comboLenguaje.getValue())
+            // TODO: Agregar .conTema(comboTema.getValue()) cuando se actualice la clase EjercicioSeleccion
             .construir();
         
         // Guardar en repositorio
@@ -272,10 +310,59 @@ public class GUICrud_Controller implements Initializable {
             .conRespuestasEsperadas(respuestas)
             .conNivel(comboNivel.getValue())
             .conLenguaje(comboLenguaje.getValue())
+            .conTema(comboTema.getValue())
             .construir();
         
         // Guardar en repositorio
         EjercicioRepository.guardarEjercicioCompletarCodigo(ejercicio);
+    }
+    
+    private void crearEjercicioEmparejar() {
+        if (txtColumnaIzquierda.getText().trim().isEmpty()) {
+            mostrarMensaje("Error", "Ingresa las opciones de la columna izquierda", Alert.AlertType.WARNING);
+            return;
+        }
+        
+        if (txtColumnaDerecha.getText().trim().isEmpty()) {
+            mostrarMensaje("Error", "Ingresa las opciones de la columna derecha", Alert.AlertType.WARNING);
+            return;
+        }
+        
+        if (txtEmparejamientosCorrectos.getText().trim().isEmpty()) {
+            mostrarMensaje("Error", "Ingresa los emparejamientos correctos", Alert.AlertType.WARNING);
+            return;
+        }
+        
+        // Parsear opciones de columnas
+        ArrayList<String> opcionesIzquierda = new ArrayList<>(Arrays.asList(
+            txtColumnaIzquierda.getText().split(",")
+        ));
+        opcionesIzquierda.replaceAll(String::trim);
+        
+        ArrayList<String> opcionesDerecha = new ArrayList<>(Arrays.asList(
+            txtColumnaDerecha.getText().split(",")
+        ));
+        opcionesDerecha.replaceAll(String::trim);
+        
+        // Parsear emparejamientos correctos
+        ArrayList<String> emparejamientos = new ArrayList<>(Arrays.asList(
+            txtEmparejamientosCorrectos.getText().split(",")
+        ));
+        emparejamientos.replaceAll(String::trim);
+        
+        // Crear ejercicio usando el Builder
+        EjercicioEmparejar ejercicio = new EjercicioEmparejar.Builder()
+            .conInstruccion(txtInstruccion.getText().trim())
+            .conOpcionesIzquierda(opcionesIzquierda)
+            .conOpcionesDerecha(opcionesDerecha)
+            .conRespuestasCorrectas(emparejamientos)
+            .conNivel(comboNivel.getValue())
+            .conLenguaje(comboLenguaje.getValue())
+            .conTema(comboTema.getValue())
+            .construir();
+        
+        // Guardar en repositorio
+        EjercicioRepository.guardarEjercicioEmparejar(ejercicio);
     }
     
     @FXML
@@ -284,6 +371,7 @@ public class GUICrud_Controller implements Initializable {
         txtInstruccion.clear();
         comboLenguaje.setValue(null);
         comboNivel.setValue(null);
+        comboTema.setValue(null);
         
         // Campos específicos de selección
         txtOpciones.clear();
@@ -293,11 +381,18 @@ public class GUICrud_Controller implements Initializable {
         txtCodigo.clear();
         txtRespuestasEspacios.clear();
         
+        // Campos específicos de emparejar
+        txtColumnaIzquierda.clear();
+        txtColumnaDerecha.clear();
+        txtEmparejamientosCorrectos.clear();
+        
         // Ocultar secciones específicas
         seccionSeleccion.setVisible(false);
         seccionSeleccion.setManaged(false);
         seccionCompletar.setVisible(false);
         seccionCompletar.setManaged(false);
+        seccionEmparejar.setVisible(false);
+        seccionEmparejar.setManaged(false);
     }
     
     @FXML

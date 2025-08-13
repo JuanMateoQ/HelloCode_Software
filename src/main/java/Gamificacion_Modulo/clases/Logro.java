@@ -6,8 +6,6 @@ import java.util.List;
 public class Logro {
     private final String nombre;
     private final String descripcion;
-    // Se eliminan campos de umbral y puntos; solo nombre y descripción
-
     // Lista estática de logros disponibles
     private static final List<Logro> logrosDisponibles = new ArrayList<>();
     private static boolean inicializado = false;

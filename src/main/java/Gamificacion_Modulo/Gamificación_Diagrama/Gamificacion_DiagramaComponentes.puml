@@ -1,0 +1,31 @@
+@startuml
+skinparam componentStyle rectangle
+
+' ==== Componentes ====
+component "Modulo_Usuario" as MU {
+    [Usuario]
+}
+
+component "Gamificacion_Modulo" as GM {
+    [Logro]
+    [Desafio]
+    [DesafioSemanal]
+    [DesafioMensual]
+    [ProgresoEstudiante]
+    [Ranking]
+}
+
+component "Conexiones" as CN {
+    [LeccionesCompletadas]
+}
+
+' ==== Dependencias y flujo de datos ====
+MU --> GM : Entrada → Datos de Usuario
+CN --> GM : Entrada → Lecciones completadas
+GM --> GM : Salida → Posición y ranking
+
+' ==== Herencia interna en Gamificación ====
+[Desafio] <|-- [DesafioSemanal]
+[Desafio] <|-- [DesafioMensual]
+
+@enduml

@@ -2,3 +2,7 @@
 # Formato: nombreComunidad;tituloGrupo;idHilo;idRespuesta;contenido;autor;fechaCreacion
 Java Principiantes;PRUEBA2;e8c0dd31-08ef-43b2-a378-0188c99b1976;RESP_1753639425148_550;RESP;erick;2025-07-27 13:03:45;false;
 Java Principiantes;PRUEBA2;e8c0dd31-08ef-43b2-a378-0188c99b1976;fb876587-84a5-4390-82ca-a6ba34cdc7fa;RESP;erick;2025-07-27 13:03:45;false;erick:1
+Comunidad para PHP;Discusion PHP;HILO_1754967907693_158;RESP_1754968671845_688;PHP es easy;JuanMateo;2025-08-11 22:17:51;false;
+Comunidad para PHP;Discusion PHP;HILO_1754968084109_2;RESP_1754968756911_322;No lo merece;JuanMateo;2025-08-11 22:19:16;false;
+Comunidad para PHP;PHP no merece su propia comunidad, borrenla;HILO_1754968850813_448;RESP_1754968881697_73;Aceptando apoyo de usuarios;JuanMateo;2025-08-11 22:21:21;false;
+Python is life;Python GOD;HILO_1754969263667_103;RESP_1754969285308_70;Esperando respuestas amigos;JuanMateo;2025-08-11 22:28:05;false;

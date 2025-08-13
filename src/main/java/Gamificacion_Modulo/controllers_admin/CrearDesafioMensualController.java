@@ -188,7 +188,7 @@ public class CrearDesafioMensualController {
                         .filter(p -> p.getUsuario().getUsername().equals(usuario.getUsername()))
                         .findFirst().orElse(null);
                 if (progreso != null) {
-                    progreso.agregarDesafio(desafio);
+                    progreso.actualizarDesafios(new DesafioMensual(desafio));
                 }
             }
             System.out.println(">>> Desafío asignado automáticamente a todos los usuarios logueados");

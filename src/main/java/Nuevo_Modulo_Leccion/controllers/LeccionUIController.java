@@ -1,39 +1,67 @@
 package Nuevo_Modulo_Leccion.controllers;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
+
 import Conexion.MetodosFrecuentes;
+import Conexion.SesionManager;
+import GestionAprendizaje_Modulo.Logica.AprendizajeManager;
 import Modulo_Ejercicios.Controladores.EjercicioCompletarController;
 import Modulo_Ejercicios.Controladores.EjercicioSeleccionController;
 import Modulo_Ejercicios.logic.EjercicioBase;
 import Modulo_Ejercicios.logic.EjercicioCompletarCodigo;
+import Modulo_Ejercicios.logic.EjercicioEmparejar;
 import Modulo_Ejercicios.logic.EjercicioSeleccion;
 import Modulo_Ejercicios.logic.ResultadoDeEvaluacion;
-import Modulo_Ejercicios.logic.EjercicioEmparejar;
+import Nuevo_Modulo_Leccion.logic.CalculoXPBasico;
+import Nuevo_Modulo_Leccion.logic.CalculoXPQuedasteSinVidas;
+import Nuevo_Modulo_Leccion.logic.CalculoXPSinErrores;
 import Nuevo_Modulo_Leccion.logic.Leccion;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
+//Para restaurar las vidas del usuario actual:
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.util.Duration;
 
 
-// Usar la clase Usuario principal del sistema con persistencia de datos
-import Modulo_Usuario.Clases.Usuario;
-import Conexion.SesionManager;
 
 public class LeccionUIController {
-
+    //porcentajeParaCompletarUnaLeccion
+    private static int porcentajeParaCompletarUnaLeccion = 50;
     // Variables estáticas para manejar la secuencia de ejercicios
     private static Leccion leccionActual;
     private static int indiceEjercicioActual = 0;
     private static String rutaFXMLVentanaFinal; // nueva variable
+    // Registro de ventanas de ejercicios abiertas para poder cerrarlas al final
+    private static final List<Stage> ventanasEjercicio = new ArrayList<>();
+    //Para calcular el tiempo en que se demora hacer una lección:
+    private static long tiempoInicio;
+    private static long tiempoFin;
+    private static long tiempoTranscurridoLeccion;
+    //calcular el porcentaje de acierto en la lección
+    private static double  porcentajeAciertosLeccion;
+
+
+    // Para calcular el porcentaje de aciertos dentro de una lección:
     /**
      * Método principal para mostrar una lección con ejercicios mixtos
      * Detecta automáticamente los tipos de ejercicios y carga la vista apropiada
      */
     public static void mostrarUnaLeccion(Leccion leccionAMostrar, Stage ventanaActual, String rutaFXML) {
-
         try {
-            // Cerrar la ventana actual
+            //Inicial a tomar el tiempo :
+            tiempoInicio = 0; //primero lo regreso a cero
+            tiempoInicio = System.currentTimeMillis(); // tome el tiempo actual
+            porcentajeAciertosLeccion = 0 ;
 
             // Inicializar la secuencia de ejercicios
             leccionActual = leccionAMostrar;
@@ -41,20 +69,13 @@ public class LeccionUIController {
             rutaFXMLVentanaFinal = rutaFXML;
 
             // Verifica si el usuario tiene al menos una vida
-            Usuario usuarioActual = SesionManager.getInstancia().getUsuarioAutenticado();
-            if (usuarioActual != null) {
-                // Sincronizar antes de verificar las vidas para obtener datos actualizados
-                usuarioActual.sincronizarVidasDesdeArchivo();
-                System.out.println("🔍 Verificando vidas para lección - Usuario: " + usuarioActual.getUsername() + ", Vidas: " + usuarioActual.getVidasSincronizadas());
-                
-                if (usuarioActual.getVidasSincronizadas() > 0) {
-                    ventanaActual.close();
-                    mostrarSiguienteEjercicio();
-                } else {
-                    MetodosFrecuentes.mostrarAlerta("No tienes suficientes vidas", "Debes tener al menos una vida para acceder a los ejercicios. Vidas actuales: " + usuarioActual.getVidasSincronizadas());
-                }
+            if (SesionManager.getInstancia().getUsuarioAutenticado().getVidas() > 0) {
+                ventanaActual.close();
+                mostrarSiguienteEjercicio();
             } else {
-                MetodosFrecuentes.mostrarAlerta("Error de sesión", "No hay usuario autenticado.");
+                MetodosFrecuentes.mostrarAlerta("No tienes suficientes vidas", "Debes tener más de una vida para acceder a los ejercicios.");
+
+
             }
 
         } catch (Exception e) {
@@ -156,18 +177,20 @@ public class LeccionUIController {
                 Consumer<ResultadoDeEvaluacion> onResultado = (res) -> {
                     if (res == null) return;
                     boolean fallo = res.getPorcentajeDeAcerto() < 100.0;
+                    //Ingresar hasta aqui
+                    porcentajeAciertosLeccion += res.getPorcentajeDeAcerto();
+                    System.out.println(" EL POCENTAJE SUMA +=  ES DE : " + porcentajeAciertosLeccion);
                     if (fallo) {
-                        Usuario usuarioActual = SesionManager.getInstancia().getUsuarioAutenticado();
-                        if (usuarioActual != null) {
-                            usuarioActual.quitarVida();
-                            usuarioActual.sincronizarVidasDesdeArchivo();
-                            System.out.println("💔 Vida perdida en lección - Vidas restantes: " + usuarioActual.getVidasSincronizadas());
-                        }
+                        SesionManager.getInstancia().getUsuarioAutenticado().quitarVida();
                     }
                 };
                 metodo.invoke(ctrl, onResultado);
             } catch (NoSuchMethodException nsme) {
             }
+
+            // Registrar la ventana y limpiar cuando se cierre
+            ventanasEjercicio.add(stage);
+            stage.setOnHidden(e -> ventanasEjercicio.remove(stage));
 
             stage.show();
         } catch (Exception e) {
@@ -179,8 +202,49 @@ public class LeccionUIController {
 
     private static void mostrarLeccionCompletada() {
         try {
+            // xp que se le asignará :
+            int xp_ganada;
+            //Porcentaje de aciertos totales, es decir de cada ejercicio la suma y el total
+            double porcertajeAciertoTotal = porcentajeAciertosLeccion/ leccionActual.getNumEjercicios();
+            //tiempo final para calcular el transcurrido:
+            tiempoFin = System.currentTimeMillis();
+            tiempoTranscurridoLeccion = tiempoFin - tiempoInicio;
+            //Calculo en minutos y segundos:
+            long segundos = (tiempoTranscurridoLeccion / 1000) % 60;
+            long minutos = (tiempoTranscurridoLeccion / (1000 * 60)) % 60;
+
+            //Definir la XP que ha ganado según algún criterio, es decir, cuál es la estrategia de cálculo:
+            if (porcertajeAciertoTotal == 100){
+                //Quiere decir que no tuvo errores: wow xd
+                 xp_ganada = leccionActual.getXPcalculada(new CalculoXPSinErrores(tiempoTranscurridoLeccion));
+            }else{
+                //Fer estuvo aquí 3:)
+                 xp_ganada = leccionActual.getXPcalculada(new CalculoXPBasico(tiempoTranscurridoLeccion));
+            }
+            // Dar al usuario actual su xp correspondiente:
+            SesionManager.getInstancia().getUsuarioAutenticado().agregarXP(xp_ganada);
+
+
+            // Cerrar cualquier ventana de ejercicio que quede abierta
+            cerrarVentanasEjercicioAbiertas();
+
             FXMLLoader loader = new FXMLLoader(LeccionUIController.class.getResource("/Nuevo_Modulo_Leccion/views/ResumenLeccionCompletada.fxml"));
             Parent root = loader.load();
+
+            //Pasar como parámetros los recursos para que se muestre en el resumen de la leccion, le paso al controlador
+            ResumenLeccionController controller = loader.getController(); // obtengo el controlador
+            //Marcar leccion como completada si el valor del porcentaje de aciertos total es mayor o igual al 50%
+            if(porcertajeAciertoTotal >= porcentajeParaCompletarUnaLeccion){
+                leccionActual.setCompletada(true);
+                AprendizajeManager.getInstancia().onLeccionCompletada(SesionManager.getInstancia().getUsuarioAutenticado(), leccionActual);
+            }
+            //Le paso los datos jeje
+            controller.inicializarDatos(minutos, segundos, xp_ganada,
+                    porcertajeAciertoTotal,
+                    SesionManager.getInstancia().getNombreUsuarioActual(),
+                    leccionActual.getCompletada());
+
+
 
             Stage resumenStage = new Stage();
             resumenStage.setTitle("Resumen de la Lección");
@@ -190,7 +254,8 @@ public class LeccionUIController {
             resumenStage.showAndWait();
 
             if (rutaFXMLVentanaFinal != null && !rutaFXMLVentanaFinal.isEmpty()) {
-                MetodosFrecuentes.mostrarVentana(rutaFXMLVentanaFinal, "Menú de Lecciones");
+                String ruta = rutaFXMLVentanaFinal;
+                MetodosFrecuentes.mostrarVentana(ruta, "Menú de Lecciones");
             }
 
         } catch (Exception e) {
@@ -199,6 +264,81 @@ public class LeccionUIController {
         }
     }
 
+    /**
+     * Reemplaza la escena del ejercicio por la vista "se acabaron vidas".
+     * La navegación a la ruta final se realiza desde el botón OK de esa vista.
+     */
+    public static void mostrarSeAcabaronVidasYVolver(Stage currentStage) {
+        try {
+            // se quedó sin vidas démosle 2 minutos de regeneración:
+            if (SesionManager.getInstancia().getUsuarioAutenticado().getVidas() <= 0) {
+                System.out.println("Iniciando regeneracion de vidas en dos minutos");
+                iniciarRecuperacionVidas();
+            }
 
+            //Porcentaje de acierto total en lección:
+            System.out.println(" EL PORCENTAJE DE ACIERTOS LA SUMA TOTAL ES : " + porcentajeAciertosLeccion + " EL NUMERO DE JERCICIOS EN LA LECCIONES ES:  " + leccionActual.getNumEjercicios());
+            double porcertajeAciertoTotal = porcentajeAciertosLeccion/ leccionActual.getNumEjercicios();
+            //tiempo final para calcular el transcurrido:
+            tiempoFin = System.currentTimeMillis();
+            tiempoTranscurridoLeccion = tiempoFin - tiempoInicio;
+            //Calculo en minutos y segundos:
+            long segundos = (tiempoTranscurridoLeccion / 1000) % 60;
+            long minutos = (tiempoTranscurridoLeccion / (1000 * 60)) % 60;
+
+            int xpCasoPerdida = leccionActual.getXPcalculada(new CalculoXPQuedasteSinVidas(tiempoTranscurridoLeccion));
+            //Dar al usuario esa xp:
+            SesionManager.getInstancia().getUsuarioAutenticado().agregarXP(xpCasoPerdida);
+
+            FXMLLoader loader = new FXMLLoader(LeccionUIController.class.getResource("/Nuevo_Modulo_Leccion/views/seAcabaronVidasLeccion.fxml"));
+            Parent root = loader.load();
+            //Pasar como parámetros los recursos para que se muestre en el resumen de la leccion, le paso al controlador
+            seAcabaronVidasLeccionController controller = loader.getController(); // obtengo el controlador
+            //Marcar leccion como completada si el valor del porcentaje de aciertos total es mayor o igual al 50%
+            if(porcertajeAciertoTotal >= porcentajeParaCompletarUnaLeccion){
+                leccionActual.setCompletada(true);
+                AprendizajeManager.getInstancia().onLeccionCompletada(SesionManager.getInstancia().getUsuarioAutenticado(), leccionActual);
+
+            }
+            //Le paso los datos jeje
+            controller.inicializarDatos(minutos, segundos,
+                    xpCasoPerdida,porcertajeAciertoTotal,
+                    SesionManager.getInstancia().getNombreUsuarioActual(),
+                    leccionActual.getCompletada());
+
+
+            if (currentStage != null) {
+                currentStage.setScene(new Scene(root));
+                currentStage.setTitle("Sin vidas");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            MetodosFrecuentes.mostrarAlerta("Error", "No se pudo abrir la pantalla de fin de vidas: " + e.getMessage());
+        }
+    }
+
+    private static void cerrarVentanasEjercicioAbiertas() {
+        // Cierra todas las ventanas de ejercicios aún abiertas para evitar que queden detrás del resumen
+        for (Stage s : new ArrayList<>(ventanasEjercicio)) {
+            try {
+                if (s != null && s.isShowing()) {
+                    s.close();
+                }
+            } catch (Exception ignored) { }
+        }
+        ventanasEjercicio.clear();
+    }
+
+
+    private static void iniciarRecuperacionVidas() {
+        Timeline timeline = new Timeline(
+                new KeyFrame(Duration.minutes(2), e -> {
+                    SesionManager.getInstancia().getUsuarioAutenticado().setVidas(3);
+                    System.out.println("¡Vidas restauradas a 3!");
+                })
+        );
+        timeline.setCycleCount(1);
+        timeline.play();
+    }
 
 }

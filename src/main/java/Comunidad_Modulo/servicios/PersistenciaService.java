@@ -1,8 +1,8 @@
 package Comunidad_Modulo.servicios;
 
 import Comunidad_Modulo.modelo.*;
-import Modulo_Usuario.Clases.NivelAprendizaje;
 import Modulo_Usuario.Clases.UsuarioComunidad;
+import Modulo_Usuario.Clases.NivelJava;
 import Comunidad_Modulo.enums.TipoTema;
 import Comunidad_Modulo.enums.TipoSolucion;
 import Comunidad_Modulo.enums.EstadoHilo;
@@ -249,13 +249,13 @@ public class PersistenciaService {
                         int reputacion = Integer.parseInt(partes[4]);
 
                         // Convertir descripción a enum
-                        NivelAprendizaje nivel;
+                        NivelJava nivel;
                         try {
                             // Primero intentar como nombre del enum
-                            nivel = NivelAprendizaje.valueOf(nivelDescripcion);
+                            nivel = NivelJava.valueOf(nivelDescripcion);
                         } catch (IllegalArgumentException e) {
                             // Si falla, intentar como descripción
-                            nivel = NivelAprendizaje.fromDescripcion(nivelDescripcion);
+                            nivel = NivelJava.fromDescripcion(nivelDescripcion);
                         }
 
                         // Crear usuario
@@ -284,7 +284,7 @@ public class PersistenciaService {
      * Formato: nombreComunidad;tipoGrupo;titulo;nivelJava;tipoTema;creador
      */
     public void guardarGrupoForo(String nombreComunidad, String tipoGrupo, String titulo,
-                                 NivelAprendizaje nivel, TipoTema tema, String creador) {
+                                 NivelJava nivel, TipoTema tema, String creador) {
         try {
             String linea = String.format("%s;%s;%s;%s;%s;%s%n",
                     nombreComunidad,
@@ -323,15 +323,15 @@ public class PersistenciaService {
                         // String creador = partes[5]; // Para futuras funcionalidades
 
                         // Convertir descripciones a enums de forma robusta
-                        NivelAprendizaje nivel;
+                        NivelJava nivel;
                         TipoTema tema;
 
                         try {
                             // Intentar primero como nombre del enum
-                            nivel = NivelAprendizaje.valueOf(nivelDesc);
+                            nivel = NivelJava.valueOf(nivelDesc);
                         } catch (IllegalArgumentException e) {
                             // Si falla, intentar como descripción
-                            nivel = NivelAprendizaje.fromDescripcion(nivelDesc);
+                            nivel = NivelJava.fromDescripcion(nivelDesc);
                         }
 
                         try {
@@ -598,6 +598,10 @@ public class PersistenciaService {
      * Formato: nombreComunidad;tituloGrupo;idSolucion;titulo;contenido;autor;fechaCreacion;tipoSolucion;votosUsuarios
      */
     public static String guardarSolucionCompartida(String nombreComunidad, String tituloGrupo, String titulo, String contenido, String autor, String tipoSolucion, Map<String, Integer> votosUsuarios) {
+        return guardarSolucionCompartida(nombreComunidad, tituloGrupo, titulo, contenido, autor, tipoSolucion, votosUsuarios, null);
+    }
+
+    public static String guardarSolucionCompartida(String nombreComunidad, String tituloGrupo, String titulo, String contenido, String autor, String tipoSolucion, Map<String, Integer> votosUsuarios, String archivo) {
         String idSolucion = generarIdUnico("SOL"); // Generar ID aquí
         System.out.println("📝 Guardando solución compartida: " + titulo + " (ID: " + idSolucion + ")");
 
@@ -607,7 +611,9 @@ public class PersistenciaService {
                     .map(entry -> entry.getKey() + ":" + entry.getValue())
                     .collect(Collectors.joining(","));
 
-            String linea = String.join(";", nombreComunidad, tituloGrupo, idSolucion, titulo, contenido, autor, fechaCreacion, tipoSolucion, votosStr);
+            // Incluir archivo en el formato: nombreComunidad;tituloGrupo;idSolucion;titulo;contenido;autor;fechaCreacion;tipoSolucion;votosStr;archivo
+            String archivoStr = (archivo != null) ? archivo : "";
+            String linea = String.join(";", nombreComunidad, tituloGrupo, idSolucion, titulo, contenido, autor, fechaCreacion, tipoSolucion, votosStr, archivoStr);
             writer.write(linea);
             writer.newLine();
             System.out.println("✅ Solución guardada exitosamente con ID: " + idSolucion);
@@ -640,7 +646,8 @@ public class PersistenciaService {
                     solucion.getAutor().getUsername(),
                     solucion.getFechaPublicacion().format(FORMATO_FECHA),
                     solucion.getTipoSolucion().getDescripcion(),
-                    votosStr);
+                    votosStr,
+                    (solucion.getArchivo() != null) ? solucion.getArchivo() : "");
 
             for (String linea : lineas) {
                 String[] datos = linea.split(";");
@@ -1265,6 +1272,7 @@ public class PersistenciaService {
                     String fechaCreacionStr = datos[6];
                     String tipoSolucionStr = datos[7];
                     String votosUsuariosStr = (datos.length > 8) ? datos[8] : ""; // Leer votos si existen, sino cadena vacía
+                    String archivo = (datos.length > 9) ? datos[9] : null; // Leer archivo si existe
 
                     if (comunidad.equals(nombreComunidad)) {
                         // Buscar el grupo de compartir correspondiente
@@ -1294,7 +1302,7 @@ public class PersistenciaService {
                                         }
 
                                         // Crear la solución usando el constructor de carga
-                                        Solucion solucion = new Solucion(idSolucion, titulo, contenido, autor, tipo, null, fecha, votosUsuarios, null);
+                                        Solucion solucion = new Solucion(idSolucion, titulo, contenido, autor, tipo, archivo, fecha, votosUsuarios, null);
 
                                         // Acceder directamente a la lista privada de soluciones usando reflexión
                                         try {
@@ -1427,7 +1435,7 @@ public class PersistenciaService {
 
                 // Si no se encuentra, crear un usuario temporal para mantener la referencia
                 UsuarioComunidad usuarioTemp = new UsuarioComunidad(username, "temp", username, username + "@temp.com");
-                usuarioTemp.setNivelJava(NivelAprendizaje.PRINCIPIANTE);
+                usuarioTemp.setNivelJava(NivelJava.PRINCIPIANTE);
                 return usuarioTemp;
             }
         } catch (Exception e) {
@@ -1436,7 +1444,7 @@ public class PersistenciaService {
 
         // Crear usuario temporal si no se encuentra
         UsuarioComunidad usuarioTemp = new UsuarioComunidad(username, "temp", username, username + "@temp.com");
-        usuarioTemp.setNivelJava(NivelAprendizaje.PRINCIPIANTE);
+        usuarioTemp.setNivelJava(NivelJava.PRINCIPIANTE);
         return usuarioTemp;
     }
 

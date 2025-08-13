@@ -2,13 +2,22 @@ package Comunidad_Modulo.Controladores_GUI;
 
 import Comunidad_Modulo.controladores.ContextoSistema;
 import Comunidad_Modulo.modelo.*;
+import Comunidad_Modulo.enums.TipoSolucion;
 import Conexion.MetodosFrecuentes;
 import Modulo_Usuario.Clases.UsuarioComunidad;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.Scene;
+import javafx.scene.layout.StackPane;
+import javafx.scene.input.MouseEvent;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.geometry.Pos;
 
+import java.io.File;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -117,6 +126,46 @@ public class Moderador_Controller implements Initializable {
         txtUsuarioSancion.setPromptText("Username para sancionar");
         txtRazonSancion.setPromptText("Razón de la sanción");
         txtDuracionSancion.setPromptText("Duración en minutos");
+        
+        // Configurar listeners para clics en las áreas de texto (para ver imágenes)
+        txtAreaGruposCompartir.setOnMouseClicked(this::manejarClicEnAreaTexto);
+        txtAreaHistorial.setOnMouseClicked(this::manejarClicEnAreaTexto);
+        txtAreaInformacion.setOnMouseClicked(this::manejarClicEnAreaTexto);
+        
+        // 🔄 CARGAR DATOS PERSISTIDOS PARA EL MODERADOR
+        System.out.println("🔄 Moderador: Iniciando carga de datos persistidos...");
+        cargarDatosPersistidosParaModerador();
+    }
+    
+    /**
+     * Carga datos persistidos específicamente para que el moderador pueda ver toda la información
+     */
+    private void cargarDatosPersistidosParaModerador() {
+        try {
+            System.out.println("🔄 Moderador: Cargando datos persistidos...");
+            
+            // Cargar datos para todas las comunidades
+            for (Comunidad comunidad : contexto.getComunidades()) {
+                if (comunidad.getForoGeneral() != null) {
+                    System.out.println("🔄 Cargando datos de foro para: " + comunidad.getNombre());
+                    
+                    // Usar PersistenciaService para cargar todos los datos
+                    Comunidad_Modulo.servicios.PersistenciaService.cargarTodosLosDatosPersistidos(
+                        comunidad.getForoGeneral(), 
+                        comunidad.getNombre()
+                    );
+                    
+                    System.out.println("✅ Datos cargados para " + comunidad.getNombre() + 
+                                     " - Grupos de compartir: " + comunidad.getForoGeneral().getGruposCompartir().size());
+                }
+            }
+            
+            System.out.println("✅ Moderador: Todos los datos persistidos cargados correctamente");
+            
+        } catch (Exception e) {
+            System.err.println("❌ Error al cargar datos persistidos para moderador: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     /* Eliminación de un Usuario de una Comunidad */
@@ -485,11 +534,21 @@ public class Moderador_Controller implements Initializable {
         }
         
         Comunidad comunidad = comunidadOpt.get();
+        
+        // 🔄 REFRESCAR DATOS PERSISTIDOS ANTES DE MOSTRAR
+        if (comunidad.getForoGeneral() != null) {
+            System.out.println("🔄 Moderador: Refrescando datos para " + nombreComunidad);
+            Comunidad_Modulo.servicios.PersistenciaService.cargarTodosLosDatosPersistidos(
+                comunidad.getForoGeneral(), 
+                nombreComunidad
+            );
+        }
+        
         cargarGruposDiscusion(comunidad);
         cargarGruposCompartir(comunidad);
         cargarChatsPrivados(comunidad);
         
-        mostrarMensajeExito("📋 Contenido de '" + nombreComunidad + "' cargado exitosamente");
+        mostrarMensajeExito("📋 Contenido de '" + nombreComunidad + "' cargado exitosamente (datos actualizados desde persistencia)");
     }
     
     private void cargarGruposDiscusion(Comunidad comunidad) {
@@ -508,6 +567,24 @@ public class Moderador_Controller implements Initializable {
                 grupos.append("📚 Nivel: ").append(grupo.getNivelJava()).append("\n");
                 grupos.append("🎯 Tema: ").append(grupo.getTipoTema()).append("\n");
                 grupos.append("👥 Miembros: ").append(grupo.getMiembros().size()).append("\n");
+                grupos.append("📑 Hilos: ").append(grupo.getHilos().size()).append("\n");
+                
+                // Mostrar hilos de discusión
+                if (!grupo.getHilos().isEmpty()) {
+                    grupos.append("📋 Hilos de discusión:\n");
+                    for (HiloDiscusion hilo : grupo.getHilos()) {
+                        grupos.append("  🔸 ").append(hilo.getTitulo())
+                               .append(" por ").append(hilo.getAutor().getUsername())
+                               .append(" [").append(hilo.getEstado()).append("]\n");
+                        grupos.append("    👍").append(hilo.getVotosPositivos())
+                               .append(" 👎").append(hilo.getVotosNegativos()).append("\n");
+                        
+                        // Mostrar respuestas si las hay
+                        if (!hilo.getRespuestas().isEmpty()) {
+                            grupos.append("    💬 ").append(hilo.getRespuestas().size()).append(" respuestas\n");
+                        }
+                    }
+                }
                 
                 // Mostrar miembros
                 if (!grupo.getMiembros().isEmpty()) {
@@ -549,7 +626,28 @@ public class Moderador_Controller implements Initializable {
                     grupos.append("📋 Soluciones compartidas:\n");
                     for (Solucion solucion : grupo.getSoluciones()) {
                         grupos.append("  🔹 ").append(solucion.getTitulo())
-                               .append(" por ").append(solucion.getAutor().getUsername()).append("\n");
+                               .append(" por ").append(solucion.getAutor().getUsername())
+                               .append(" (").append(solucion.getTipoSolucion()).append(")\n");
+                        
+                        // Si es una imagen, mostrar información específica
+                        if (solucion.getTipoSolucion() == TipoSolucion.IMAGEN && solucion.getArchivo() != null) {
+                            if (esImagenValida(solucion.getArchivo())) {
+                                String vistaPrevia = crearVistaPreviaImagen(solucion.getArchivo());
+                                grupos.append("    📸 ").append(vistaPrevia).append("\n");
+                                grupos.append("    📁 Ruta: ").append(solucion.getArchivo()).append("\n");
+                            } else {
+                                grupos.append("    ❌ Imagen no válida: ").append(solucion.getArchivo()).append("\n");
+                            }
+                        }
+                        
+                        // Mostrar likes/dislikes
+                        grupos.append("    👍").append(solucion.getLikes())
+                               .append(" 👎").append(solucion.getDislikes()).append("\n");
+                        
+                        // Mostrar comentarios si los hay
+                        if (!solucion.getComentarios().isEmpty()) {
+                            grupos.append("    💬 ").append(solucion.getComentarios().size()).append(" comentarios\n");
+                        }
                     }
                 }
                 grupos.append("─".repeat(40)).append("\n");
@@ -736,6 +834,19 @@ public class Moderador_Controller implements Initializable {
         }
         
         try {
+            // 🔄 REFRESCAR DATOS PERSISTIDOS ANTES DE MOSTRAR HISTORIAL
+            Optional<Comunidad> comunidadParaRefresh = contexto.getComunidades().stream()
+                    .filter(c -> c.getNombre().equals(nombreComunidad))
+                    .findFirst();
+            
+            if (comunidadParaRefresh.isPresent() && comunidadParaRefresh.get().getForoGeneral() != null) {
+                System.out.println("🔄 Moderador: Refrescando datos para historial de " + nombreComunidad);
+                Comunidad_Modulo.servicios.PersistenciaService.cargarTodosLosDatosPersistidos(
+                    comunidadParaRefresh.get().getForoGeneral(), 
+                    nombreComunidad
+                );
+            }
+            
             StringBuilder historial = new StringBuilder();
             historial.append("📜 Historial de la Comunidad\n\n");
             historial.append("🌐 Comunidad: ").append(nombreComunidad).append("\n");
@@ -814,8 +925,29 @@ public class Moderador_Controller implements Initializable {
                 
                 historial.append("\n💡 Soluciones Compartidas:\n");
                 for (Solucion solucion : grupo.getSoluciones()) {
-                    historial.append("  👤 Autor: ").append(solucion.getAutor().getUsername()).append("\n");
-                    historial.append("  👍 Likes: ").append(solucion.getLikes()).append("\n\n");
+                    historial.append("  � Título: ").append(solucion.getTitulo()).append("\n");
+                    historial.append("  �👤 Autor: ").append(solucion.getAutor().getUsername()).append("\n");
+                    historial.append("  🏷️ Tipo: ").append(solucion.getTipoSolucion()).append("\n");
+                    
+                    // Si es una imagen, mostrar información específica
+                    if (solucion.getTipoSolucion() == TipoSolucion.IMAGEN && solucion.getArchivo() != null) {
+                        if (esImagenValida(solucion.getArchivo())) {
+                            String vistaPrevia = crearVistaPreviaImagen(solucion.getArchivo());
+                            historial.append("  📸 ").append(vistaPrevia).append("\n");
+                            historial.append("  📁 Ruta: ").append(solucion.getArchivo()).append("\n");
+                        } else {
+                            historial.append("  ❌ Imagen no válida: ").append(solucion.getArchivo()).append("\n");
+                        }
+                    }
+                    
+                    historial.append("  👍 Likes: ").append(solucion.getLikes())
+                               .append(" 👎 Dislikes: ").append(solucion.getDislikes()).append("\n");
+                    
+                    // Mostrar comentarios si los hay
+                    if (!solucion.getComentarios().isEmpty()) {
+                        historial.append("  💬 Comentarios: ").append(solucion.getComentarios().size()).append("\n");
+                    }
+                    historial.append("\n");
                 }
             }
             
@@ -824,5 +956,162 @@ public class Moderador_Controller implements Initializable {
         } catch (Exception e) {
             mostrarMensajeError("Error al cargar el historial: " + e.getMessage());
         }
+    }
+    
+    // ========== MÉTODOS PARA MANEJO DE IMÁGENES (MODERACIÓN) ==========
+    
+    /**
+     * Método para mostrar una ventana emergente con la imagen completa
+     */
+    private void mostrarImagenCompleta(String rutaArchivo) {
+        try {
+            File archivo = new File(rutaArchivo);
+            if (!archivo.exists()) {
+                mostrarMensajeError("El archivo de imagen no existe: " + rutaArchivo);
+                return;
+            }
+
+            // Crear nueva ventana para mostrar la imagen
+            Stage ventanaImagen = new Stage();
+            ventanaImagen.setTitle("Moderador - Visor de Imagen: " + archivo.getName());
+            ventanaImagen.initModality(Modality.APPLICATION_MODAL);
+
+            // Cargar la imagen
+            Image imagen = new Image(archivo.toURI().toString());
+            ImageView imageView = new ImageView(imagen);
+
+            // Configurar el ImageView para que se ajuste al tamaño de la ventana
+            imageView.setPreserveRatio(true);
+            imageView.setSmooth(true);
+            imageView.setCache(true);
+
+            // Establecer tamaño máximo para la imagen
+            double maxWidth = 800;
+            double maxHeight = 600;
+            
+            if (imagen.getWidth() > maxWidth || imagen.getHeight() > maxHeight) {
+                imageView.setFitWidth(maxWidth);
+                imageView.setFitHeight(maxHeight);
+            }
+
+            // Crear contenedor para la imagen
+            StackPane contenedor = new StackPane();
+            contenedor.getChildren().add(imageView);
+            contenedor.setAlignment(Pos.CENTER);
+            contenedor.setStyle("-fx-background-color: #f0f0f0; -fx-padding: 20;");
+
+            // Crear escena y mostrar ventana
+            Scene escena = new Scene(contenedor);
+            ventanaImagen.setScene(escena);
+            ventanaImagen.setResizable(true);
+            ventanaImagen.show();
+
+        } catch (Exception e) {
+            System.err.println("Error al mostrar imagen: " + e.getMessage());
+            mostrarMensajeError("Error al cargar la imagen: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Método para crear una miniatura de imagen clickeable
+     */
+    private String crearVistaPreviaImagen(String rutaArchivo) {
+        try {
+            File archivo = new File(rutaArchivo);
+            if (!archivo.exists()) {
+                return "❌ [Imagen no encontrada]";
+            }
+
+            // Crear texto clickeable que simule un botón
+            String nombreArchivo = archivo.getName();
+            return "🖼️ [" + nombreArchivo + "] (Click para ver)";
+
+        } catch (Exception e) {
+            System.err.println("Error al crear vista previa: " + e.getMessage());
+            return "❌ [Error al cargar imagen]";
+        }
+    }
+
+    /**
+     * Método para validar si un archivo es una imagen válida
+     */
+    private boolean esImagenValida(String rutaArchivo) {
+        if (rutaArchivo == null || rutaArchivo.trim().isEmpty()) {
+            return false;
+        }
+
+        try {
+            File archivo = new File(rutaArchivo);
+            if (!archivo.exists()) {
+                return false;
+            }
+
+            String extension = rutaArchivo.toLowerCase();
+            return extension.endsWith(".png") || extension.endsWith(".jpg") || 
+                   extension.endsWith(".jpeg") || extension.endsWith(".gif") || 
+                   extension.endsWith(".bmp");
+        } catch (Exception e) {
+            return false;
+        }
+    }
+    
+    /**
+     * Método para manejar clics en las áreas de texto y detectar si se hace clic en una imagen
+     */
+    private void manejarClicEnAreaTexto(MouseEvent event) {
+        TextArea areaTexto = (TextArea) event.getSource();
+        String texto = areaTexto.getText();
+        
+        // Obtener la posición del clic
+        int posicionClic = areaTexto.getCaretPosition();
+        
+        // Buscar líneas que contengan imágenes cerca de la posición del clic
+        String[] lineas = texto.split("\n");
+        int posicionActual = 0;
+        
+        for (String linea : lineas) {
+            int inicioLinea = posicionActual;
+            int finLinea = posicionActual + linea.length();
+            
+            // Si el clic está en esta línea
+            if (posicionClic >= inicioLinea && posicionClic <= finLinea) {
+                // Verificar si la línea contiene una imagen clickeable
+                if (linea.contains("🖼️") && linea.contains("(Click para ver)")) {
+                    // Extraer la ruta del archivo de las líneas siguientes
+                    String rutaImagen = extraerRutaImagenDesdeLista(lineas, texto, inicioLinea);
+                    if (rutaImagen != null && esImagenValida(rutaImagen)) {
+                        mostrarImagenCompleta(rutaImagen);
+                        return;
+                    }
+                }
+            }
+            
+            posicionActual = finLinea + 1; // +1 por el \n
+        }
+    }
+
+    /**
+     * Extrae la ruta de la imagen de las líneas de texto
+     */
+    private String extraerRutaImagenDesdeLista(String[] lineas, String textoCompleto, int posicionLinea) {
+        // Buscar la línea que contiene "📁 Ruta:" después de la línea clickeada
+        for (int i = 0; i < lineas.length; i++) {
+            String linea = lineas[i];
+            
+            // Si encontramos la línea con la imagen clickeable
+            if (linea.contains("🖼️") && linea.contains("(Click para ver)")) {
+                // Buscar la siguiente línea que contenga "📁 Ruta:"
+                for (int j = i + 1; j < lineas.length && j < i + 3; j++) {
+                    if (lineas[j].contains("📁 Ruta:")) {
+                        String lineaRuta = lineas[j];
+                        int inicioRuta = lineaRuta.indexOf("📁 Ruta:") + "📁 Ruta:".length();
+                        if (inicioRuta < lineaRuta.length()) {
+                            return lineaRuta.substring(inicioRuta).trim();
+                        }
+                    }
+                }
+            }
+        }
+        return null;
     }
 }

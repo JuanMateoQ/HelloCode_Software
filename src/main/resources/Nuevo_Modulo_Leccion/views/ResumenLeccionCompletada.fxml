@@ -54,30 +54,31 @@
       </HBox>
       <Label layoutX="256.0" layoutY="328.0" style="-fx-text-fill: #424874; -fx-font-size: 16px; -fx-font-weight: bold;" text="Tiempo" />
       <Label layoutX="149.0" layoutY="421.0" style="-fx-text-fill: #424874; -fx-font-size: 16px; -fx-font-weight: bold;" text="Aciertos" />
-      <Text layoutX="264.0" layoutY="376.0" strokeType="OUTSIDE" strokeWidth="0.0" text="00:00">
+      <Text fx:id="Tiempo_Text" layoutX="264.0" layoutY="376.0" strokeType="OUTSIDE" strokeWidth="0.0" text="00:00">
          <font>
             <Font name="System Bold" size="17.0" />
          </font>
       </Text>
-      <Text layoutX="166.0" layoutY="470.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0%">
+      <Text fx:id="PorcentajeAciertos_Text" layoutX="166.0" layoutY="470.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0%">
          <font>
             <Font name="System Bold" size="17.0" />
          </font>
       </Text>
-      <Text layoutX="58.0" layoutY="373.0" strokeType="OUTSIDE" strokeWidth="0.0" text="000">
+      <Text fx:id="XP_Text" layoutX="58.0" layoutY="373.0" strokeType="OUTSIDE" strokeWidth="0.0" text="000">
          <font>
             <Font name="System Bold" size="17.0" />
          </font>
       </Text>
       <Label layoutX="62.0" layoutY="329.0" style="-fx-text-fill: #424874; -fx-font-size: 16px; -fx-font-weight: bold;" text="XP" />
-      <Pane layoutX="54.0" layoutY="72.0" prefHeight="51.0" prefWidth="248.0">
+      <Pane layoutX="54.0" layoutY="72.0" prefHeight="23.0" prefWidth="248.0">
          <children>
             <Label layoutX="83.0" layoutY="2.0" style="-fx-text-fill: #424874; -fx-font-size: 16px; -fx-font-weight: bold;" text="Fecilicidades " />
-            <Label layoutX="74.0" layoutY="25.0" style="-fx-text-fill: #424874; -fx-font-size: 16px; -fx-font-weight: bold;" text="nombreUsuario" />
          </children>
       </Pane>
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#a6b1e1" height="23.0" layoutX="41.0" layoutY="286.0" stroke="TRANSPARENT" strokeType="INSIDE" width="70.0" />
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#a6b1e1" height="23.0" layoutX="131.0" layoutY="119.0" stroke="TRANSPARENT" strokeType="INSIDE" width="212.0" />
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#a6b1e1" height="80.0" layoutX="37.0" layoutY="142.0" stroke="TRANSPARENT" strokeType="INSIDE" width="76.0" />
+      <HBox layoutX="87.0" layoutY="132.0" prefHeight="26.0" prefWidth="120.0" />
+      <Label fx:id="nombreUsuaio_text" alignment="CENTER" contentDisplay="CENTER" layoutX="128.0" layoutY="95.0" style="-fx-text-fill: #424874; -fx-font-size: 16px; -fx-font-weight: bold;" text="nombreUsuario" />
     </children>
 </AnchorPane>

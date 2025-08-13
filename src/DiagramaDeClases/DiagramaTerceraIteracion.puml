@@ -604,11 +604,99 @@ package "GestionDeAprendizaje"{
     Ruta --> NodoRuta
     NodoRuta *-- RecursoAprendizaje
 }
-
 package Modulo_Leccion{
-class Leccion{
-    - listEjercicio<EjercicioBase> : EjercicioBase
+
+    class Leccion{
+        - listEjercicio<EjercicioBase> : EjercicioBase
+        - xpQueOtorga : int
+        - completada : boolean
+        - tema : TemaLeccion
+        - calculoXP : CalculoXPStrategy
+        + agregarEjercicio(Ejercicio nuevoEjercicio) : void
+        + agregarEjerciciosLista(List<EjercicioBase>)
+        + getNumeroEjercicios() : int
+        + getListaEjercicios() : List<EjercicioBase>
+        + setCompletada() : void
+        + getXPcalculada(metodo : CalculoXPStrategy)
     }
+
+    abstract class LeccionRepository{
+    - filtroEjercicio : FiltroEjercicio
+    + getLecciones(Lenguaje, NivelDificultad, TemaLeccion, nunEjercicios)
+    }
+    abstract class FiltroEjercicio{
+    - siguiente : FiltroEjercicio
+    + cambiarSiguiente : (siguiente : FiltroEjercicio)
+    + filtrarEjercicio(Ejercicio ejercicio)
+    # {abstract} filtrar(Ejercicio ejercicio)
+    }
+
+
+    enum TemaLeccion {
+        CONTROL_DE_FLUJO
+        TIPOS_Y_OPERADORES
+        FUNCIONES_Y_METODOS
+        CLASES_Y_ESTRUCTURAS
+        ENTRADA_Y_SALIDA
+        OTRO
+    }
+
+    interface CalculoXPStrategy <<Interface>>{
+    + {abstract} calcularXP()
+    }
+
+    class CalculoBasico{
+    + calcularXP()
+    }
+    class CalculoLeccionSinErrores{
+    + calcularXP()
+    }
+    class CalculoLeccionSinVidas{
+
+    + calcularXP()
+    }
+
+
+    class FiltroPorTema{
+    + filtrar(Ejercicio ejercicio)
+    }
+    class FiltroPorDificultad{
+    + filtrar(Ejercicio ejercicio)
+    }
+
+    class FiltroPorLenguaje{
+    + filtrar(Ejercicio ejercicio)
+    }
+
+    abstract class CalculoXPBase{
+        # TIEMPO_MAXIMO
+        # TIEMPO_OPTIMO
+        # XP_MAXIMA
+        # XP_MINIMA
+        + {abstract}calcularXP()
+    }
+
+      'Refactor
+      CalculoXPBase ..U|> CalculoXPStrategy
+
+    'Relaciones :
+    LeccionRepository o--U> Leccion
+    LeccionRepository --> FiltroEjercicio : "Usa"
+    'Leccion --> TemaLeccion
+    'Patron ChainOfResponsibility
+    FiltroPorTema --U|> FiltroEjercicio
+    FiltroPorDificultad --U|> FiltroEjercicio
+    FiltroPorLenguaje --U|> FiltroEjercicio
+    'Patron Strategy
+    Leccion o--R> CalculoXPStrategy
+    CalculoBasico --u|> CalculoXPBase
+    CalculoLeccionSinErrores --u|> CalculoXPBase
+    CalculoLeccionSinVidas --u|> CalculoXPBase
+
+
+
+
+
 }
 
 

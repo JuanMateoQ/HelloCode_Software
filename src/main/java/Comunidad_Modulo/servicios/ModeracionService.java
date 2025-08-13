@@ -14,18 +14,26 @@ import java.util.stream.Collectors;
  * Servicio para gestionar la moderación automática y manual de contenido.
  */
 public class ModeracionService {
-    
+
+    // Instancia única y estática
+    private static ModeracionService instancia = new ModeracionService();
+
     // Mapa de usuario -> lista de sanciones
     private Map<String, List<SancionUsuario>> sancionesPorUsuario;
     
     // Lista de todas las sanciones activas
     private List<SancionUsuario> sancionesActivas;
     
-    public ModeracionService() {
+    private ModeracionService() {
         this.sancionesPorUsuario = new HashMap<>();
         this.sancionesActivas = new ArrayList<>();
     }
-    
+
+    // Método público para obtener la instancia única
+    public static ModeracionService getInstance() {
+        return instancia;
+    }
+
     /**
      * Modera un mensaje automáticamente
      */

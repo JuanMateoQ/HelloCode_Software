@@ -3,4 +3,13 @@
 # lenguajes: separados por comas (Java,Python,C)
 # niveles: separados por comas en el mismo orden que los lenguajes (Básico,Intermedio,Avanzado)
 # primeraVez: true = necesita configuración inicial, false = ya configurado
-tarek;Java,Python;Avanzado,Básico;false
+pruebita;Python;Básico;false
+Prueba;Java;Básico;false
+Fernando Huilca;Java;Intermedio;false
+juan1;Java,PHP;Básico,Intermedio;false
+Jordy ENP;Java;Básico;false
+l2;Java;Básico;false
+tarek;Java;Básico;false
+t;Java;Intermedio;false
+j;Java;Intermedio;false
+d;Java;Básico;false

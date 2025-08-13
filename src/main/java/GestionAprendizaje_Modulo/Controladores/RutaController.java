@@ -408,6 +408,12 @@ public class RutaController {
         // Asegurar que los recursos estén cargados desde el archivo TXT
         RecursoRepository.getInstancia().cargarRecursosDesdeTXT();
         cargarDatosIniciales();
+        // Sincronizar banderas de Leccion con el .txt para el usuario actual antes de dibujar
+        try {
+            if (usuarioActual != null) {
+                AprendizajeManager.getInstancia().sincronizarBanderasParaUsuario(usuarioActual.getUsername());
+            }
+        } catch (Exception ignored) {}
         construirContenedoresVisuales();
         configurarListenersBotones();
     }
@@ -452,7 +458,7 @@ public class RutaController {
         this.usuarioActual = SesionManager.getInstancia().getUsuarioAutenticado();
         if (this.usuarioActual == null || this.rutaActual == null) return;
 
-        System.out.println("[RutaController] Redibujando. Vidas actuales del usuario: " + this.usuarioActual.getVidasSincronizadas());
+        System.out.println("[RutaController] Redibujando. Vidas actuales del usuario: " + this.usuarioActual.getVidas());
 
         contenidoVBox.getChildren().clear();
         contenidoVBox.setSpacing(20);
@@ -490,7 +496,7 @@ public class RutaController {
             nodoBoton.setUserData(nodo);
 
             boolean estaCompletado = AprendizajeManager.getInstancia().isNodoCompletadoParaUsuario(usuarioActual, nodo);
-            boolean tieneVidas = usuarioActual.getVidasSincronizadas() > 0;
+            boolean tieneVidas = usuarioActual.getVidas() > 0;
 
             // Variable que define si el botón DEBERÍA ser clickeable.
             boolean puedeInteractuar = estaCompletado || (temaDesbloqueado && tieneVidas);
@@ -516,9 +522,6 @@ public class RutaController {
             // Si el botón está deshabilitado, este código nunca se ejecuta.
             nodoBoton.setOnAction(e -> {
                 NodoRuta nodoClicado = (NodoRuta) ((Button) e.getSource()).getUserData();
-                if (!AprendizajeManager.getInstancia().isNodoCompletadoParaUsuario(usuarioActual, nodoClicado)) {
-                    AprendizajeManager.getInstancia().marcarNodoComoCompletado(usuarioActual, nodoClicado);
-                }
                 Stage stage = (Stage) contenidoVBox.getScene().getWindow();
                 LeccionUIController.mostrarUnaLeccion(nodoClicado.getLeccion(), stage, "/GestionAprendizaje_Modulo/Vistas/Ruta.fxml");
                 construirContenedoresVisuales();

@@ -3,5 +3,11 @@
 Java Principiantes;DISCUSION;PRUEBA2;erick;2025-07-25 05:07:05
 Java Principiantes;COMPARTIR;Prueba4;erick;2025-07-25 05:08:34
 Java Principiantes;COMPARTIR;prueba6;churito;2025-07-25 05:27:39
-Java prueba 2;DISCUSION;esta es una prueba;medardito;2025-07-27 15:10:54
-Holaa;DISCUSION;Holaasasjdfkas;hola;2025-07-29 18:19:36
+Comunidad para PHP;DISCUSION;Discusion PHP;Luis;2025-08-11 22:03:31
+Comunidad para PHP;DISCUSION;PHP para principiantes;Luis;2025-08-11 22:04:01
+Comunidad para PHP;COMPARTIR;PHP Solutions;Luis;2025-08-11 22:10:50
+Comunidad para PHP;DISCUSION;Discusion PHP;JuanMateo;2025-08-11 22:17:00
+Comunidad para PHP;DISCUSION;PHP no merece su propia comunidad, borrenla;JuanMateo;2025-08-11 22:20:21
+Comunidad para PHP;COMPARTIR;PHP Solutions;JuanMateo;2025-08-11 22:22:31
+Comunidad para PHP;COMPARTIR;Compartiendo hacks de PHP para estafar gente;JuanMateo;2025-08-11 22:24:20
+Python is life;DISCUSION;Python GOD;JuanMateo;2025-08-11 22:27:23

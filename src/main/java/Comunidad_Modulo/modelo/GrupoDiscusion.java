@@ -1,7 +1,7 @@
 package Comunidad_Modulo.modelo;
 
-import Modulo_Usuario.Clases.NivelAprendizaje;
 import Modulo_Usuario.Clases.UsuarioComunidad;
+import Modulo_Usuario.Clases.NivelJava;
 import Comunidad_Modulo.enums.TipoTema;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,15 +10,15 @@ import java.util.UUID;
 public class GrupoDiscusion {
     private String idGrupo;
     private String titulo;
-    private NivelAprendizaje nivelAprendizaje;
+    private NivelJava nivelJava;
     private TipoTema tipoTema;
     private List<UsuarioComunidad> miembros;
     private List<HiloDiscusion> hilos;
 
-    public GrupoDiscusion(String titulo, NivelAprendizaje nivelAprendizaje, TipoTema tipoTema) {
+    public GrupoDiscusion(String titulo, NivelJava nivelJava, TipoTema tipoTema) {
         this.idGrupo = UUID.randomUUID().toString();
         this.titulo = titulo;
-        this.nivelAprendizaje = nivelAprendizaje;
+        this.nivelJava = nivelJava;
         this.tipoTema = tipoTema;
         this.miembros = new ArrayList<>();
         this.hilos = new ArrayList<>();
@@ -37,12 +37,12 @@ public class GrupoDiscusion {
         this.titulo = titulo;
     }
 
-    public NivelAprendizaje getNivelJava() {
-        return nivelAprendizaje;
+    public NivelJava getNivelJava() {
+        return nivelJava;
     }
 
-    public void setNivelJava(NivelAprendizaje nivelAprendizaje) {
-        this.nivelAprendizaje = nivelAprendizaje;
+    public void setNivelJava(NivelJava nivelJava) {
+        this.nivelJava = nivelJava;
     }
 
     public TipoTema getTipoTema() {
@@ -80,7 +80,7 @@ public class GrupoDiscusion {
     }
 
     public boolean esApropiado(UsuarioComunidad usuario) {
-        return usuario.getNivelJava() == nivelAprendizaje;
+        return usuario.getNivelJava() == nivelJava;
     }
 
     public int getHilosActivos() {
@@ -98,6 +98,6 @@ public class GrupoDiscusion {
     @Override
     public String toString() {
         return String.format("Grupo: %s [%s - %s] (%d miembros, %d hilos)",
-                titulo, nivelAprendizaje, tipoTema, miembros.size(), hilos.size());
+                titulo, nivelJava, tipoTema, miembros.size(), hilos.size());
     }
 }

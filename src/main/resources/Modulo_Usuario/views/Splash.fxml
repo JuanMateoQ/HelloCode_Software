@@ -28,7 +28,7 @@
             <VBox alignment="CENTER" spacing="10" style="-fx-padding: 30 0 0 0;">
                 <Label style="-fx-text-fill: #DCD6F7; -fx-font-size: 28px; -fx-font-weight: bold;" text="Hello Code Software" />
                 
-                <Label style="-fx-text-fill: #A6B1E1; -fx-font-size: 15px; -fx-font-style: italic;" text="Versión 3.0" />
+                <Label style="-fx-text-fill: #A6B1E1; -fx-font-size: 15px; -fx-font-style: italic;" text="Versión Final" />
             </VBox>
 
             <!-- Barra de progreso simple -->

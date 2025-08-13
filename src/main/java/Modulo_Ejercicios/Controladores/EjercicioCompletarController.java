@@ -1,6 +1,7 @@
 package Modulo_Ejercicios.Controladores;
 
 import Conexion.MetodosFrecuentes;
+import Conexion.SesionManager;
 import Modulo_Ejercicios.logic.EjercicioCompletarCodigo;
 import Modulo_Ejercicios.logic.Respuesta;
 import Modulo_Ejercicios.logic.RespuestaString;
@@ -18,11 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
-
-
-// Usar la clase Usuario principal del sistema con persistencia de datos
-import Modulo_Usuario.Clases.Usuario;
-import Conexion.SesionManager;
 
 public class EjercicioCompletarController implements Initializable {
 
@@ -114,6 +110,9 @@ public class EjercicioCompletarController implements Initializable {
             Ejercicio.setText(ejercicio.obtenerCodigoIncompleto());
         }
 
+        if(txtLenguaje != null) {
+            txtLenguaje.setText(ejercicio.getLenguajeEjercicio());
+        }
         if (textEntrada != null) {
             textEntrada.clear();
         }
@@ -192,7 +191,11 @@ public class EjercicioCompletarController implements Initializable {
 
         if (ejercicioIndividual != null) {
             ResultadoDeEvaluacion resultado = ejercicioIndividual.evaluarRespuestas(respuestasUsuario);
-
+            
+            if (onResultado != null) {
+                onResultado.accept(resultado);
+            }
+            
             if (resultado.getPorcentajeDeAcerto() == 100) {
                 // Respuesta correcta
                 respuestasCorrectasUsuario.add(true);
@@ -200,24 +203,21 @@ public class EjercicioCompletarController implements Initializable {
             } else {
                 // Respuesta incorrecta
                 respuestasCorrectasUsuario.add(false);
-                // Notificar primero a Lección para que gestione vidas
-                if (onResultado != null) {
-                    onResultado.accept(resultado);
-                } else {
-                    // Fallback por si no se inyecta el callback - usar el usuario actual
-                    Usuario usuarioActual = SesionManager.getInstancia().getUsuarioAutenticado();
-                    if (usuarioActual != null) {
-                        usuarioActual.quitarVida();
-                    }
-                }
-
                 actualizarVidasUI();
+                // Mostrar SIEMPRE el feedback de incorrecto (aunque se hayan acabado las vidas)
+                mostrarFeedbackIncorrecto(ejercicioIndividual);
 
-                Usuario usuarioActual = SesionManager.getInstancia().getUsuarioAutenticado();
-                if (usuarioActual != null && usuarioActual.getVidasSincronizadas() > 0) {
-                    mostrarFeedbackIncorrecto(ejercicioIndividual);
-                } else {
-                    mostrarGameOver();
+                // Si no hay vidas, ocultar botones y tras 3s ir a "se acabaron vidas"
+                if (getVidasActuales() <= 0) {
+                    if (btnSiguiente != null) { btnSiguiente.setDisable(true); btnSiguiente.setOpacity(0.0); }
+                    if (btnComprobar != null) { btnComprobar.setDisable(true); btnComprobar.setVisible(false); }
+
+                    PauseTransition pauseAvisos = new PauseTransition(Duration.seconds(3));
+                    pauseAvisos.setOnFinished(event -> {
+                        Stage stage = (Stage) btnComprobar.getScene().getWindow();
+                        Nuevo_Modulo_Leccion.controllers.LeccionUIController.mostrarSeAcabaronVidasYVolver(stage);
+                    });
+                    pauseAvisos.play();
                     return;
                 }
             }
@@ -237,16 +237,14 @@ public class EjercicioCompletarController implements Initializable {
      */
     private void actualizarVidasUI() {
         if (TexVida != null) {
-            Usuario usuarioActual = SesionManager.getInstancia().getUsuarioAutenticado();
-            if (usuarioActual != null) {
-                // Recargar datos del archivo para asegurar sincronización
-                usuarioActual.recargarDatosDesdeArchivo();
-                TexVida.setText(String.valueOf(usuarioActual.getVidasSincronizadas()));
-            } else {
-                TexVida.setText("3"); // Valor por defecto
-            }
+            TexVida.setText(String.valueOf(getVidasActuales()));
         }
     }
+
+    private int getVidasActuales() {
+        return SesionManager.getInstancia().getUsuarioAutenticado().getVidas();
+    }
+
 
     //Muestra feedback para respuesta correcta
     private void mostrarFeedbackCorrecto() {
@@ -312,17 +310,7 @@ public class EjercicioCompletarController implements Initializable {
         }
     }
 
-    private void mostrarGameOver() {
-        Avisos.setText("¡Se han agotado tus vidas!");
-        Avisos.setVisible(true);
-
-        PauseTransition pauseAvisos = new PauseTransition(Duration.seconds(3));
-        pauseAvisos.setOnFinished(event -> {
-            Avisos.setVisible(false);
-            terminarEjecucion();
-        });
-        pauseAvisos.play();
-    }
+    // Eliminado: ahora se muestra feedback incorrecto y se navega tras pausa cuando no hay vidas
 
     private void mostrarMensajeError(String mensaje) {
         Avisos.setText(mensaje);

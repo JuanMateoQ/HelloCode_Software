@@ -142,12 +142,15 @@ public class Comunidad {
     }
     
     public void conectarUsuario(UsuarioComunidad usuario) {
-        // Para conectarse, debe ser miembro primero
-        if (!usuariosMiembros.contains(usuario)) {
-            unirUsuario(usuario); // Automáticamente se une a la comunidad
+        boolean esMiembro = usuariosMiembros.stream()
+                .anyMatch(u -> u.getUsername().equalsIgnoreCase(usuario.getUsername()));
+        if (!esMiembro) {
+            System.out.println("MIEMBROS: " + usuariosMiembros);
+            System.out.println("El usuario " + usuario.getUsername() + " no es miembro, uniéndolo automáticamente.");
+            unirUsuario(usuario);
         }
-        
         if (!usuariosConectados.contains(usuario)) {
+            System.out.println("El usuario " + usuario.getUsername() + " se ha conectado a la comunidad.");
             usuariosConectados.add(usuario);
         }
     }

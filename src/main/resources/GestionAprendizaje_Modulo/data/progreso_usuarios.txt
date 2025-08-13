@@ -1,1 +1,5 @@
-tarek;ruta-java-nodo-5,ruta-java-nodo-2,ruta-java-nodo-1,ruta-python-nodo-1
+Prueba;ruta-java-nodo-17,ruta-java-nodo-5,ruta-java-nodo-4,ruta-java-nodo-3,ruta-java-nodo-2,ruta-java-nodo-1
+Fernando Huilca;ruta-java-nodo-2,ruta-java-nodo-1,ruta-java-nodo-9,ruta-java-nodo-18,ruta-java-nodo-17,ruta-java-nodo-8,ruta-java-nodo-7,ruta-java-nodo-16,ruta-java-nodo-6,ruta-java-nodo-5,ruta-java-nodo-4,ruta-java-nodo-3,ruta-java-nodo-11,ruta-java-nodo-10,ruta-java-nodo-15,ruta-java-nodo-14,ruta-java-nodo-13,ruta-java-nodo-12
+juan1;ruta-java-nodo-2,ruta-java-nodo-1,ruta-java-nodo-9,ruta-java-nodo-17,ruta-java-nodo-8,ruta-java-nodo-7,ruta-java-nodo-6,ruta-java-nodo-5,ruta-java-nodo-4,ruta-java-nodo-3,ruta-php-nodo-2,ruta-java-nodo-15,ruta-php-nodo-1,ruta-java-nodo-14,ruta-java-nodo-13
+Jordy ENP;ruta-java-nodo-1
+pruebita;ruta-python-nodo-1,ruta-python-nodo-2,ruta-python-nodo-3,ruta-python-nodo-4

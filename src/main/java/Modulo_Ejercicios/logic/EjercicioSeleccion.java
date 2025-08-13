@@ -1,7 +1,8 @@
 package Modulo_Ejercicios.logic;
 
-import java.util.ArrayList;
 import Nuevo_Modulo_Leccion.logic.TemaLeccion;
+
+import java.util.ArrayList;
 
 
 public class EjercicioSeleccion extends EjercicioBase {
@@ -30,6 +31,10 @@ public class EjercicioSeleccion extends EjercicioBase {
      */
     public ArrayList<String> obtenerRespuestasCorrectas() {
         return respuestasCorrectas;
+    }
+
+    public String getLenguajeEjercicio() {
+        return lenguaje.name();
     }
 
     @Override
@@ -63,7 +68,7 @@ public class EjercicioSeleccion extends EjercicioBase {
                 restantes.remove(idx);
             }
         }
-
+    
 
         // Porcentaje basado en el máximo entre correctas y seleccionadas
         int seleccionadas = respuestasUsuarioStrings.size();

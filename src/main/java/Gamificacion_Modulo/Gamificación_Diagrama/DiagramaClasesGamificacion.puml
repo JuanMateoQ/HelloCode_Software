@@ -7,18 +7,32 @@ package Modulo_Usuario {
             - usuario : String
             - exp : Integer
             + Usuario(nombre: String, email: String, usuario: String, exp: Integer)
+            + agregarXp(cantidad: int)
         }
 
 }
 
+package Conexiones{
+    class LeccionesCompletadas{
+    -ran: Ranking
+    -usr: SesionManager
+    -progresoActual: ProgresoEstudiante
+    + LeccionesCompletadas()
+    +set(cantidad:int)
+    +aumentarXp(cantidad:int)
+    }
+}
 package "Gamificacion_Modulo" {
 
     class Logro {
         - nombre : String
         - descripcion : String
-        + Logro(nombre: String, descripcion: String, criterios: String, umbral: Integer)
+        - logrosDisponibles : List<Logro>
+        - inicializado : Boolean
+        + Logro(nombre: String, descripcion: String)
+        + getLogrosDisponibles()
         + agregarLogro(logro: Logro)):void
-
+        + inicializarLogro() : void
     }
 
     abstract class Desafio {
@@ -27,43 +41,49 @@ package "Gamificacion_Modulo" {
         - logrosDisponibles : List<Logro>
         - fechaInicio : LocalDateTime
         - fechaFin : LocalDateTime
-        - leccionesCompletadas : Integer
+        - leccionesCompletadas : int
         - meta : Integer
-        'Cual es la diferencia entre verificarComplecion y estaCompletado?
-        + Desafio(logros: List<Logro>)
+        - desafiosDisponibles : List<Desafio>
+
+        + Desafio(logros: List<Logro>, recompensa:int, meta:int)
         + activar() : void
         + desactivar() : void
         + verificarComplecion(estudiante: ProgresoEstudiante) : Boolean
         + desbloquearLogro(logro: Logro, estudiante: ProgresoEstudiante) : Boolean
         + completarDesafio(estudiante: ProgresoEstudiante) : void
+        + actualizarAvance(cantidad:int)
         + estaCompletado() : Boolean
-        +agregarDesafio(desafio: Desafio) : void
+        + agregarDesafio(desafio: Desafio) : void
+        + getAvanceDesafio()
     }
 
     class DesafioSemanal {
 
         + DesafioSemanal(metaSemanal: Integer, logros: List<Logro>)
+        + DesafioSemanal(desafio: Desafio)
         + activar()
     }
 
     class DesafioMensual {
 
         + DesafioMensual(objetivoMensual: Integer, logros: List<Logro>)
+        + DesafioMensual(desafio: Desafio)
         + activar()
     }
 
-    class ProgresoUsuario {
+    class ProgresoEstudiante {
         - usuario : Usuario
         - logrosDesbloqueados : List<Logro>
         - puntosTotal : Integer
-        - listaDesafios : List<Desafio>
         - desafiosCompletados : Integer
         - desafiosActivos : Lista<Desafio>
-
         + ProgresoUsuario (usuario: Usuario)
+        + actualizarLogro(logro: Logro)
+        + verificarDesafios()
+        + actualizarDesafios(desafio: Desafio)
         + actualizarProgreso(desafio: Desafio) : void
-        + actualizarLogro(logro: Logro) : void
-        + getExp() : Integer
+        + getProgresoUsuarioLogueado()
+        + sumarPuntos(puntos: Integer)
     }
 
     class Ranking {
@@ -71,10 +91,10 @@ package "Gamificacion_Modulo" {
         -INSTANCE
         - Ranking()
         + getInstance() : Ranking
+        + getTotalProgreso()
         + actualizarRanking(estudiante: ProgresoEstudiante) : void
         + obtenerRankingGeneral() : List<ProgresoEstudiante>
         + calcularPosicion(estudiante: ProgresoEstudiante) : Integer
-        + calcularPosicion(ProgresoUsuario: ProgresoUsuario) : Integer
     }
     Ranking ->Ranking: getInstance()
     ' Relaciones de Herencia
@@ -82,14 +102,15 @@ package "Gamificacion_Modulo" {
     Desafio <|-- DesafioMensual
 
     ' Relaciones de Composición
-    ProgresoUsuario *-- Usuario : "contiene"
+    ProgresoEstudiante *-- Usuario : "contiene"
 
 
     ' Relaciones de Dependencia
-    Logro <.. ProgresoUsuario
-    Desafio <. ProgresoUsuario : "completarDesafio()"
-    Ranking --> ProgresoUsuario : "actualizarRanking()"
+    Logro <.. ProgresoEstudiante
+    Desafio <. ProgresoEstudiante : "completarDesafio()"
+    Ranking --> ProgresoEstudiante : "actualizarRanking()"
     Desafio -> Logro
+    LeccionesCompletadas -> Desafio
 }
 
 @enduml

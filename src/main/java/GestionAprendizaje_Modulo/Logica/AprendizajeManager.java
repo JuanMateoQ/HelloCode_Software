@@ -204,8 +204,10 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import Conexion.LeccionesCompletadas;
@@ -222,10 +224,10 @@ import Nuevo_Modulo_Leccion.logic.TemaLeccion;
  * =================================================================================
  * Esta clase es el cerebro operacional del módulo. Sus responsabilidades son:
  * 1. Construir la estructura completa de Rutas, pidiendo lecciones específicas
- *    al otro módulo para cada tema y nivel.
- * 2. Cargar y Guardar de forma permanente el progreso de CADA usuario en un archivo.
- * 3. Proveer métodos para que la UI pueda consultar y actualizar dicho progreso.
- * 4. Notificar al módulo de Gamificación cada vez que el progreso de un usuario se actualiza.
+ *    al repositorio de lecciones por lenguaje, nivel y tema.
+ * 2. Gestionar y persistir el progreso por usuario en un archivo plano.
+ * 3. Exponer métodos de consulta/actualización del progreso e integrar con
+ *    el módulo de Gamificación.
  */
 public class AprendizajeManager {
 
@@ -233,6 +235,24 @@ public class AprendizajeManager {
     private final List<Ruta> rutasPlantilla;
     private final Map<String, Map<String, Boolean>> progresoPorUsuario;
     private final Path RUTA_ARCHIVO_PROGRESO = Paths.get("src/main/resources/GestionAprendizaje_Modulo/data/progreso_usuarios.txt");
+
+    /**
+     * Política configurable para validar si una lección/nodo está "completado".
+     * Por defecto se mantiene la lógica actual (solo progreso por usuario),
+     * asegurando compatibilidad con el comportamiento existente.
+     */
+    public enum CompletionPolicy {
+        /** Solo utiliza el mapa de progreso por usuario (compatibilidad total). */
+        NODE_PROGRESS_ONLY,
+        /** Solo utiliza la bandera interna de la Leccion: leccion.getCompletada(). */
+        LECCION_FLAG_ONLY,
+        /** Se considera completado si EITHER (cualquiera) es true. */
+        EITHER,
+        /** Se considera completado si BOTH (ambos) son true. */
+        BOTH
+    }
+
+    private CompletionPolicy completionPolicy = CompletionPolicy.NODE_PROGRESS_ONLY;
 
     private AprendizajeManager() {
         this.rutasPlantilla = new ArrayList<>();
@@ -245,6 +265,21 @@ public class AprendizajeManager {
             instancia = new AprendizajeManager();
         }
         return instancia;
+    }
+
+    /**
+     * Permite configurar en tiempo de ejecución cómo validar la "completitud".
+     * Por defecto es NODE_PROGRESS_ONLY (comportamiento actual).
+     */
+    public void setCompletionPolicy(CompletionPolicy policy) {
+        if (policy != null) this.completionPolicy = policy;
+    }
+
+    /**
+     * Devuelve la política de completitud actualmente activa.
+     */
+    public CompletionPolicy getCompletionPolicy() {
+        return this.completionPolicy;
     }
 
     /**
@@ -380,9 +415,9 @@ public class AprendizajeManager {
 
         if (!rutaJava.getNodos().isEmpty()) {
             this.rutasPlantilla.add(rutaJava);
-            System.out.println("    -> Ruta de Java finalizada con " + rutaJava.getNodos().size() + " nodos.");
+            System.out.println("[AprendizajeManager] -> Ruta de Java finalizada con " + rutaJava.getNodos().size() + " nodos.");
         } else {
-            System.err.println("    -> No se pudieron cargar lecciones para la Ruta de Java.");
+            System.err.println("[AprendizajeManager] -> No se pudieron cargar lecciones para la Ruta de Java.");
         }
     }
 
@@ -390,7 +425,7 @@ public class AprendizajeManager {
      * Lógica específica para construir la ruta de Python.
      */
     private void construirRutaPython() {
-        System.out.println(" -> Construyendo Ruta de Python...");
+        System.out.println("[AprendizajeManager] -> Construyendo Ruta de Python...");
         Ruta rutaPython = new Ruta("ruta-python", "Python", "PYTHON");
         int ordenGlobalNodo = 1;
         // --- Nivel Básico ---
@@ -490,9 +525,9 @@ public class AprendizajeManager {
 
         if (!rutaPython.getNodos().isEmpty()) {
             this.rutasPlantilla.add(rutaPython);
-            System.out.println("    -> Ruta de Python finalizada con " + rutaPython.getNodos().size() + " nodos.");
+            System.out.println("[AprendizajeManager] -> Ruta de Python finalizada con " + rutaPython.getNodos().size() + " nodos.");
         } else {
-            System.err.println("    -> No se pudieron cargar lecciones para la Ruta de Python.");
+            System.err.println("[AprendizajeManager] -> No se pudieron cargar lecciones para la Ruta de Python.");
         }
     }
 
@@ -500,7 +535,7 @@ public class AprendizajeManager {
      * Lógica específica para construir la ruta de php.
      */
     private void construirRutaPhp() {
-        System.out.println(" -> Construyendo Ruta de Python...");
+        System.out.println("[AprendizajeManager] -> Construyendo Ruta de PHP...");
         Ruta rutaPhp = new Ruta("ruta-php", "PHP", "PHP");
         int ordenGlobalNodo = 1;
         // --- Nivel Básico ---
@@ -600,9 +635,9 @@ public class AprendizajeManager {
 
         if (!rutaPhp.getNodos().isEmpty()) {
             this.rutasPlantilla.add(rutaPhp);
-            System.out.println("    -> Ruta de PHP finalizada con " + rutaPhp.getNodos().size() + " nodos.");
+            System.out.println("[AprendizajeManager] -> Ruta de PHP finalizada con " + rutaPhp.getNodos().size() + " nodos.");
         } else {
-            System.err.println("    -> No se pudieron cargar lecciones para la Ruta de PHP.");
+            System.err.println("[AprendizajeManager] -> No se pudieron cargar lecciones para la Ruta de PHP.");
         }
     }
 
@@ -610,7 +645,7 @@ public class AprendizajeManager {
      * Lógica específica para construir la ruta de C.
      */
     private void construirRutaC() {
-        System.out.println(" -> Construyendo Ruta de Python...");
+        System.out.println("[AprendizajeManager] -> Construyendo Ruta de C...");
         Ruta rutaC = new Ruta("ruta-c", "C", "C");
         int ordenGlobalNodo = 1;
         // --- Nivel Básico ---
@@ -731,42 +766,150 @@ public class AprendizajeManager {
 
     public void marcarNodoComoCompletado(Usuario usuario, NodoRuta nodo) {
         if (usuario == null || nodo == null) return;
+        // Solo persistimos/progresamos si, de acuerdo a la política actual,
+        // el nodo ya está realmente completado (p. ej., la lección marcó getCompletada() = true).
+        if (!isNodoCompletadoParaUsuario(usuario, nodo)) {
+            return;
+        }
         String username = usuario.getUsername();
         Map<String, Boolean> progresoDelUsuario = progresoPorUsuario.computeIfAbsent(username, k -> new HashMap<>());
         if (progresoDelUsuario.getOrDefault(nodo.getId(), false)) return;
         progresoDelUsuario.put(nodo.getId(), true);
+        // No marcamos la Lección como completada aquí para evitar marcar al solo entrar.
+        // La bandera interna de Leccion debe actualizarse desde el flujo real de completado en la UI/controlador.
         guardarProgresoEnArchivo();
         int totalCompletadas = getLeccionesCompletadasParaUsuario(usuario);
         System.out.println("[AprendizajeManager] Notificando a Gamificación. Total completadas: " + totalCompletadas);
         LeccionesCompletadas.set(totalCompletadas);
     }
 
+    /**
+     * Debe llamarse cuando una Leccion se marca como completada desde la UI/controlador.
+     * Sincroniza el progreso con el archivo y notifica a Gamificación basándose en la política actual.
+     */
+    public void onLeccionCompletada(Usuario usuario, Leccion leccion) {
+        if (usuario == null || leccion == null) return;
+        // Intentar ubicar el nodo asociado a esta lección (instancia en memoria)
+        NodoRuta nodoEncontrado = null;
+        for (Ruta ruta : rutasPlantilla) {
+            for (NodoRuta nodo : ruta.getNodos()) {
+                if (nodo.getLeccion() == leccion) { // misma instancia cargada en memoria
+                    nodoEncontrado = nodo;
+                    break;
+                }
+            }
+            if (nodoEncontrado != null) break;
+        }
+
+        // Si encontramos el nodo, opcionalmente marcamos en mapa para compatibilidad
+        if (nodoEncontrado != null) {
+            String username = usuario.getUsername();
+            Map<String, Boolean> progresoDelUsuario = progresoPorUsuario.computeIfAbsent(username, k -> new HashMap<>());
+            // Para facilitar el conteo y compatibilidad con políticas mixtas, marcamos el mapa también
+            progresoDelUsuario.put(nodoEncontrado.getId(), true);
+        }
+
+        // Guardar según la política activa y notificar
+        guardarProgresoEnArchivo();
+        int totalCompletadas = getLeccionesCompletadasParaUsuario(usuario);
+        System.out.println("[AprendizajeManager] (onLeccionCompletada) Total completadas: " + totalCompletadas);
+        LeccionesCompletadas.set(totalCompletadas);
+    }
+
     public boolean isNodoCompletadoParaUsuario(Usuario usuario, NodoRuta nodo) {
         if (usuario == null || nodo == null) return false;
+        boolean progressMap = false;
         Map<String, Boolean> progresoDelUsuario = progresoPorUsuario.get(usuario.getUsername());
-        if (progresoDelUsuario == null) return false;
-        return progresoDelUsuario.getOrDefault(nodo.getId(), false);
+        if (progresoDelUsuario != null) {
+            progressMap = progresoDelUsuario.getOrDefault(nodo.getId(), false);
+        }
+        boolean leccionFlag = false;
+        try {
+            // Usa la bandera interna de la lección SIN modificar otros módulos
+            leccionFlag = (nodo.getLeccion() != null) && nodo.getLeccion().getCompletada();
+        } catch (Exception ignored) { /* seguridad defensiva */ }
+
+        switch (completionPolicy) {
+            case NODE_PROGRESS_ONLY:
+                return progressMap;
+            case LECCION_FLAG_ONLY:
+                return leccionFlag;
+            case EITHER:
+                return progressMap || leccionFlag;
+            case BOTH:
+                return progressMap && leccionFlag;
+            default:
+                return progressMap; // fallback seguro
+        }
     }
 
     public int getLeccionesCompletadasParaUsuario(Usuario usuario) {
         if (usuario == null) return 0;
-        Map<String, Boolean> progresoDelUsuario = progresoPorUsuario.get(usuario.getUsername());
-        return (progresoDelUsuario == null) ? 0 : progresoDelUsuario.size();
+        // Mantener compatibilidad: si la política es la original, se usa el conteo por mapa
+        if (completionPolicy == CompletionPolicy.NODE_PROGRESS_ONLY) {
+            Map<String, Boolean> progresoDelUsuario = progresoPorUsuario.get(usuario.getUsername());
+            return (progresoDelUsuario == null) ? 0 : progresoDelUsuario.size();
+        }
+
+        // Para políticas que consideran la bandera de la Leccion, contamos por nodos que
+        // resulten "completados" según la política activa. Esto no persiste ningún cambio
+        // fuera de este módulo y mantiene la flexibilidad solicitada.
+        int count = 0;
+        for (Ruta ruta : rutasPlantilla) {
+            for (NodoRuta nodo : ruta.getNodos()) {
+                if (isNodoCompletadoParaUsuario(usuario, nodo)) count++;
+            }
+        }
+        return count;
     }
 
     public List<Ruta> getRutas() {
         return rutasPlantilla;
     }
 
+    /**
+     * Sincroniza la bandera interna de Leccion (setCompletada) para el usuario dado,
+     * tomando como referencia los nodos marcados en el archivo/mapa de progreso.
+     * Útil cuando la política activa es LECCION_FLAG_ONLY o combinaciones que la usan.
+     */
+    public void sincronizarBanderasParaUsuario(String username) {
+        if (username == null || username.isEmpty()) return;
+        Map<String, Boolean> progreso = progresoPorUsuario.get(username);
+        if (progreso == null || progreso.isEmpty()) return;
+        Set<String> ids = progreso.keySet();
+        for (Ruta ruta : rutasPlantilla) {
+            for (NodoRuta nodo : ruta.getNodos()) {
+                if (ids.contains(nodo.getId()) && nodo.getLeccion() != null) {
+                    try { nodo.getLeccion().setCompletada(true); } catch (Exception ignored) {}
+                }
+            }
+        }
+    }
+
     // --- MÉTODOS DE PERSISTENCIA ---
 
     private void guardarProgresoEnArchivo() {
         List<String> lineas = new ArrayList<>();
-        for (Map.Entry<String, Map<String, Boolean>> entry : progresoPorUsuario.entrySet()) {
-            String username = entry.getKey();
-            String nodosCompletados = String.join(",", entry.getValue().keySet());
-            if (!nodosCompletados.isEmpty()) lineas.add(username + ";" + nodosCompletados);
+
+        // Guardar únicamente el progreso explícito por usuario (mapa)
+        // para evitar contaminación entre usuarios por banderas globales en Leccion
+        Set<String> usuarios = new HashSet<>(progresoPorUsuario.keySet());
+
+        for (String username : usuarios) {
+            Set<String> aGuardar;
+            Map<String, Boolean> mapa = progresoPorUsuario.get(username);
+            if (mapa == null || mapa.isEmpty()) {
+                aGuardar = new HashSet<>();
+            } else {
+                aGuardar = new HashSet<>(mapa.keySet());
+            }
+
+            if (!aGuardar.isEmpty()) {
+                String nodosCompletados = String.join(",", aGuardar);
+                lineas.add(username + ";" + nodosCompletados);
+            }
         }
+
         try {
             Files.write(RUTA_ARCHIVO_PROGRESO, lineas);
         } catch (IOException e) {
@@ -785,6 +928,19 @@ public class AprendizajeManager {
                     List<String> nodosCompletados = Arrays.asList(partes[1].split(","));
                     Map<String, Boolean> progreso = nodosCompletados.stream().collect(Collectors.toMap(id -> id, id -> true));
                     progresoPorUsuario.put(username, progreso);
+
+                    // Si la política es basada en bandera de Leccion, sincronizamos las banderas al cargar
+                    if (completionPolicy == CompletionPolicy.LECCION_FLAG_ONLY || completionPolicy == CompletionPolicy.EITHER || completionPolicy == CompletionPolicy.BOTH) {
+                        for (String nodoId : nodosCompletados) {
+                            for (Ruta ruta : rutasPlantilla) {
+                                for (NodoRuta nodo : ruta.getNodos()) {
+                                    if (nodo.getId().equals(nodoId) && nodo.getLeccion() != null) {
+                                        try { nodo.getLeccion().setCompletada(true); } catch (Exception ignored) {}
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         } catch (IOException e) {

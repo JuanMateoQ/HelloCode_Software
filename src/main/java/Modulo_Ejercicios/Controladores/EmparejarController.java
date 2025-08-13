@@ -1,11 +1,10 @@
 package Modulo_Ejercicios.Controladores;
 
+import Conexion.SesionManager;
 import Modulo_Ejercicios.logic.EjercicioEmparejar;
 import Modulo_Ejercicios.logic.Respuesta;
 import Modulo_Ejercicios.logic.RespuestaString;
 import Modulo_Ejercicios.logic.ResultadoDeEvaluacion;
-import Modulo_Usuario.Clases.Usuario;
-import Conexion.SesionManager;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -18,6 +17,7 @@ import javafx.scene.text.Text;
 
 import java.net.URL;
 import java.util.*;
+import java.util.function.Consumer;
 
 public class EmparejarController implements Initializable {
 
@@ -33,6 +33,7 @@ public class EmparejarController implements Initializable {
     @FXML private ProgressBar progressBar;
 
     // Elementos principales
+    @FXML private Text txtLenguaje;
     @FXML private Label lblPregunta;
     @FXML private Label lblInstruccion;
     @FXML private VBox columnIzquierda;
@@ -52,13 +53,10 @@ public class EmparejarController implements Initializable {
     @FXML private Text textPuntuacion;
     @FXML private Text textIncorrecto;
     @FXML private Text textIncorrectoDetalle;
-    @FXML private Text textGameOver;
-    @FXML private Text textGameOverDetalle;
     @FXML private Button btnSiguienteCompleto;
 
     // Variables del juego
     private EjercicioEmparejar ejercicioActual;
-    private int totalEjercicios = 0;
     private Button opcionSeleccionadaIzquierda;
     private Button opcionSeleccionadaDerecha;
     private Map<String, String> emparejamientosCorrectos;
@@ -66,10 +64,14 @@ public class EmparejarController implements Initializable {
     private List<Button> botonesIzquierda;
     private List<Button> botonesDerecha;
     private int emparejamientosCompletados = 0;
+    private int emparejamientosIncorrectos = 0;
     private boolean ejercicioCompletado = false;
 
     // Lista para almacenar si cada respuesta fue correcta
     private List<Boolean> respuestasCorrectasUsuario = new ArrayList<>();
+
+    // Callback para notificar el resultado a Lección (quien gestionará vidas/navegación)
+    private Consumer<ResultadoDeEvaluacion> onResultado;
 
     // Estilos inline
     private static final String ESTILO_NORMAL =
@@ -133,17 +135,9 @@ public class EmparejarController implements Initializable {
 
         // Inicializar contador de vidas
         if (txtLiveCount != null) {
-            Usuario usuarioActual = SesionManager.getInstancia().getUsuarioAutenticado();
-            if (usuarioActual != null) {
-                // Sincronizar vidas desde archivo para asegurar datos actualizados
-                usuarioActual.sincronizarVidasDesdeArchivo();
-                int vidasActuales = usuarioActual.getVidasSincronizadas();
-                txtLiveCount.setText(String.valueOf(vidasActuales));
-                System.out.println("🔄 UI Emparejar inicializada - Vidas: " + vidasActuales);
-            } else {
-                txtLiveCount.setText("3"); // Valor por defecto
-            }
+            actualizarVidasUI();
         }
+        
     }
 
     /**
@@ -151,9 +145,17 @@ public class EmparejarController implements Initializable {
      */
     public void setEjercicio(EjercicioEmparejar ejercicio) {
         this.ejercicioActual = ejercicio;
-        this.totalEjercicios = 1;
         cargarEjercicio(ejercicio);
         actualizarProgressBar();
+
+        if(txtLenguaje != null) {
+            txtLenguaje.setText(ejercicio.getLenguajeEjercicio());
+        }
+    }
+
+    // Inyectado por LeccionUIController: Lección escuchará el resultado para manejar vidas
+    public void setOnResultado(Consumer<ResultadoDeEvaluacion> onResultado) {
+        this.onResultado = onResultado;
     }
 
     /**
@@ -327,24 +329,22 @@ public class EmparejarController implements Initializable {
             emparejamientosCompletados++;
 
             respuestasCorrectasUsuario.add(true);
+            
 
         } else {
             // Emparejamiento incorrecto
             aplicarEstiloIncorrecto(opcionSeleccionadaIzquierda);
             aplicarEstiloIncorrecto(opcionSeleccionadaDerecha);
 
-            // Reducir vidas usando el sistema principal de usuario
-            Usuario usuarioActual = SesionManager.getInstancia().getUsuarioAutenticado();
-            if (usuarioActual != null) {
-                usuarioActual.quitarVida();
-                // Sincronizar y actualizar UI con las vidas actuales después de la pérdida
-                usuarioActual.sincronizarVidasDesdeArchivo();
-                if (txtLiveCount != null) {
-                    int vidasActuales = usuarioActual.getVidasSincronizadas();
-                    txtLiveCount.setText(String.valueOf(vidasActuales));
-                    System.out.println("💔 Vida perdida - Vidas restantes: " + vidasActuales);
-                }
+            // Notificar a Lección para que gestione la resta de vidas
+            if (onResultado != null) {
+                onResultado.accept(new ResultadoDeEvaluacion(0)); // Cualquier <100 indica fallo
+                emparejamientosIncorrectos++;
+            } else {
+                // Fallback: decrementar directamente si no hay callback
+                //SesionManager.getInstancia().getUsuarioAutenticado().quitarVida();
             }
+            actualizarVidasUI();
 
             respuestasCorrectasUsuario.add(false);
 
@@ -408,22 +408,20 @@ public class EmparejarController implements Initializable {
     }
 
     private void verificarEstadoDelJuego() {
-        Usuario usuarioActual = SesionManager.getInstancia().getUsuarioAutenticado();
-        
-        // Sincronizar datos antes de verificar vidas
-        if (usuarioActual != null) {
-            usuarioActual.sincronizarVidasDesdeArchivo();
-        }
-        
-        if (usuarioActual != null && usuarioActual.getVidasSincronizadas() <= 0) {
+        if (getVidasActuales() <= 0) {
             // Game Over - Se agotaron las vidas
-            System.out.println("🔴 Game Over (Emparejar) - Vidas: " + usuarioActual.getVidasSincronizadas());
             ejercicioCompletado = true;
             mostrarFeedback(TipoRespuesta.INCORRECTO, "Se han agotado las vidas.", null);
         } else if (emparejamientosCompletados >= emparejamientosCorrectos.size()) {
             // Ejercicio completado exitosamente - Se completaron todos los emparejamientos
             ejercicioCompletado = true;
             validarRespuestasFinal();
+            if (onResultado != null) {
+                onResultado.accept(new ResultadoDeEvaluacion(100.0 - (double)emparejamientosIncorrectos/emparejamientosCompletados * 100)); // Porcentaje de acierto
+            }
+            System.out.println("Emparejamientos completados: " + emparejamientosCompletados);
+            System.out.println("Emparejamientos correctos: " + emparejamientosCorrectos.size());
+            System.out.println("Emparejamientos incorrectos: " + emparejamientosIncorrectos);
         }
         // Si aún tiene vidas y no ha completado todos los emparejamientos, continúa el juego
     }
@@ -440,7 +438,10 @@ public class EmparejarController implements Initializable {
             double porcentajeAcierto = resultado.getPorcentajeDeAcerto();
 
             // Determinar el mensaje basado en el rendimiento usando el ResultadoDeEvaluacion
+            
+            
             String mensaje;
+
             if (porcentajeAcierto == 100.0) {
                 mensaje = "¡Perfecto! Has emparejado todos los elementos correctamente sin errores.";
             } else if (porcentajeAcierto >= 80.0) {
@@ -460,14 +461,14 @@ public class EmparejarController implements Initializable {
         // Ocultar todos los paneles primero
         ocultarTodosPanelesFeedback();
 
-        // Solo dos casos posibles: CORRECTO (completó todos los emparejamientos) o GAME_OVER (sin vidas)
+    // Solo dos casos posibles: CORRECTO (completó todos los emparejamientos) o INCORRECTO (sin vidas u error)
         switch (tipo) {
             case CORRECTO:
                 mostrarPanelCorrecto(mensaje);
                 break;
             case INCORRECTO:
-                // Solo mostrar Game Over cuando se agotan las vidas
-                mostrarPanelGameOver();
+        // Mostrar SIEMPRE feedback de incorrecto (también cuando se agotan las vidas)
+        mostrarPanelIncorrecto(mensaje);
                 break;
             default:
                 mostrarPanelCorrecto(mensaje);
@@ -480,6 +481,34 @@ public class EmparejarController implements Initializable {
         // Mostrar el panel de feedback
         if (feedbackPanel != null) {
             feedbackPanel.setVisible(true);
+        }
+
+        // Si es game over, tras una breve pausa abrir modal y volver a la vista final
+        if (tipo == TipoRespuesta.INCORRECTO && getVidasActuales() <= 0) {
+            // Asegurar que el botón no se muestre en Game Over
+            if (btnSiguienteCompleto != null) {
+                btnSiguienteCompleto.setDisable(true);
+                btnSiguienteCompleto.setVisible(false);
+                btnSiguienteCompleto.setManaged(false);
+            }
+
+            javafx.animation.PauseTransition pause = new javafx.animation.PauseTransition(javafx.util.Duration.seconds(3));
+            pause.setOnFinished(e -> {
+                javafx.stage.Stage stage = null;
+                if (feedbackPanel != null && feedbackPanel.getScene() != null) {
+                    stage = (javafx.stage.Stage) feedbackPanel.getScene().getWindow();
+                } else if (progressBar != null && progressBar.getScene() != null) {
+                    stage = (javafx.stage.Stage) progressBar.getScene().getWindow();
+                } else if (btnSiguiente != null && btnSiguiente.getScene() != null) {
+                    stage = (javafx.stage.Stage) btnSiguiente.getScene().getWindow();
+                } else if (btnSiguienteCompleto != null && btnSiguienteCompleto.getScene() != null) {
+                    stage = (javafx.stage.Stage) btnSiguienteCompleto.getScene().getWindow();
+                }
+                if (stage != null) {
+                    Nuevo_Modulo_Leccion.controllers.LeccionUIController.mostrarSeAcabaronVidasYVolver(stage);
+                }
+            });
+            pause.play();
         }
     }
 
@@ -502,20 +531,7 @@ public class EmparejarController implements Initializable {
         }
     }
 
-    private void mostrarPanelParcial(String mensaje, String puntuacion) {
-        if (panelParcial != null) {
-            panelParcial.setVisible(true);
-            if (textParcial != null) {
-                textParcial.setText("¡Buen intento!");
-            }
-            if (textParcialDetalle != null) {
-                textParcialDetalle.setText(mensaje != null ? mensaje : "Algunos emparejamientos son correctos, pero otros necesitan ajuste.");
-            }
-            if (textPuntuacion != null && puntuacion != null) {
-                textPuntuacion.setText("Puntuación: " + puntuacion);
-            }
-        }
-    }
+    // Eliminado: no se usa flujo parcial en emparejar actualmente
 
     private void mostrarPanelIncorrecto(String mensaje) {
         if (panelIncorrecto != null) {
@@ -529,42 +545,19 @@ public class EmparejarController implements Initializable {
         }
     }
 
-    private void mostrarPanelGameOver() {
-        if (panelGameOver != null) {
-            panelGameOver.setVisible(true);
-            
-            Usuario usuarioActual = SesionManager.getInstancia().getUsuarioAutenticado();
-            if (usuarioActual != null) {
-                usuarioActual.sincronizarVidasDesdeArchivo();
-            }
-            
-            if (textGameOver != null) {
-                // Mensaje dinámico basado en las vidas reales del usuario
-                if (usuarioActual != null && usuarioActual.getVidasSincronizadas() <= 0) {
-                    textGameOver.setText("¡Se agotaron las vidas!");
-                } else {
-                    textGameOver.setText("¡Ejercicio fallido!");
-                }
-            }
-            if (textGameOverDetalle != null) {
-                String detalle = "No te preocupes, puedes intentarlo nuevamente.";
-                if (usuarioActual != null) {
-                    detalle += "\nVidas actuales: " + usuarioActual.getVidasSincronizadas();
-                }
-                textGameOverDetalle.setText(detalle);
-            }
-        }
-    }
+    // Eliminado: se usa panelIncorrecto también para game over y se navega tras pausa
 
     private void configurarBotonSiguiente() {
         if (btnSiguienteCompleto != null) {
-            btnSiguienteCompleto.setDisable(false);
-            btnSiguienteCompleto.setVisible(true);
-
-            Usuario usuarioActual = SesionManager.getInstancia().getUsuarioAutenticado();
-            if (usuarioActual != null && usuarioActual.getVidasSincronizadas() <= 0) {
-                btnSiguienteCompleto.setText("SALIR");
+            if (getVidasActuales() <= 0) {
+                // Game Over: no mostrar botón, se manejará con pausa y modal
+                btnSiguienteCompleto.setDisable(true);
+                btnSiguienteCompleto.setVisible(false);
+                btnSiguienteCompleto.setManaged(false);
             } else {
+                btnSiguienteCompleto.setDisable(false);
+                btnSiguienteCompleto.setVisible(true);
+                btnSiguienteCompleto.setManaged(true);
                 btnSiguienteCompleto.setText("SIGUIENTE");
             }
         }
@@ -617,5 +610,15 @@ public class EmparejarController implements Initializable {
                 progressBar.setProgress(progreso);
             }
         }
+    }
+
+    private void actualizarVidasUI() {
+        if (txtLiveCount != null) {
+            txtLiveCount.setText(String.valueOf(getVidasActuales()));
+        }
+    }
+
+    private int getVidasActuales() {
+        return SesionManager.getInstancia().getUsuarioAutenticado().getVidas();
     }
 }

@@ -21,9 +21,8 @@ public class Moderador extends ModeradorBase {
         System.out.println("⚠️ AVISO: Usando clase Moderador deprecated. Considere usar ModeradorManual o ModeradorAutomatico.");
     }
 
-    // Constructor existente para mantener compatibilidad
     public Moderador(String nombre) {
-        this(nombre, "mod"); // Por defecto, el username será "mod"
+        super(nombre, "mod");  // usa username por defecto
     }
 
     // === MÉTODOS LEGACY MANTENIDOS PARA COMPATIBILIDAD ===

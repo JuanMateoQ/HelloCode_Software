@@ -1,7 +1,7 @@
 package Comunidad_Modulo.integracion;
 
 import Modulo_Usuario.Clases.UsuarioComunidad;
-import Modulo_Usuario.Clases.NivelAprendizaje;
+import Modulo_Usuario.Clases.NivelJava;
 
 /**
  * Interfaz para la integración con el módulo de usuarios principal.
@@ -36,7 +36,7 @@ public interface IModuloUsuarios {
      * @param idUsuario ID del usuario
      * @return Nivel de Java basado en su progreso en el módulo de aprendizaje
      */
-    NivelAprendizaje obtenerNivelProgreso(String idUsuario);
+    NivelJava obtenerNivelProgreso(String idUsuario);
     
     /**
      * Notifica al módulo de usuarios que el usuario participó en la comunidad.

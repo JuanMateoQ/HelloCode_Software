@@ -154,7 +154,7 @@ public class GestorGamificacion {
                         if (!existeProgreso) {
                             ProgresoEstudiante nuevoProgreso = new ProgresoEstudiante(usuario);
                             // Asignar automáticamente los puntos totales basándose en la experiencia del usuario
-                            nuevoProgreso.setPuntosTotal(usuario.getXpSincronizado());
+                            nuevoProgreso.setPuntosTotal(usuario.getXp());
                             Ranking.getProgresos().add(nuevoProgreso);
                             System.out.println(">>> Progreso creado para nuevo usuario: " + usuario.getNombre() + " con " + usuario.getXp() + " puntos de experiencia");
                         }

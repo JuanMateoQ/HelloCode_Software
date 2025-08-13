@@ -1,6 +1,6 @@
 package Comunidad_Modulo.modelo;
 
-import Modulo_Usuario.Clases.NivelAprendizaje;
+import Modulo_Usuario.Clases.NivelJava;
 import Modulo_Usuario.Clases.UsuarioComunidad;
 import Comunidad_Modulo.enums.TipoTema;
 import java.util.ArrayList;
@@ -33,25 +33,25 @@ public class ForoGeneral {
     }
     
     // Métodos de negocio
-    public GrupoDiscusion crearGrupoDiscusion(String titulo, NivelAprendizaje nivel, TipoTema tema) {
+    public GrupoDiscusion crearGrupoDiscusion(String titulo, NivelJava nivel, TipoTema tema) {
         GrupoDiscusion grupo = new GrupoDiscusion(titulo, nivel, tema);
         gruposDiscusion.add(grupo);
         return grupo;
     }
     
-    public GrupoCompartir crearGrupoCompartir(String titulo, NivelAprendizaje nivel, TipoTema tema) {
+    public GrupoCompartir crearGrupoCompartir(String titulo, NivelJava nivel, TipoTema tema) {
         GrupoCompartir grupo = new GrupoCompartir(titulo, nivel, tema);
         gruposCompartir.add(grupo);
         return grupo;
     }
     
-    public List<GrupoDiscusion> buscarGruposDiscusionPorNivel(NivelAprendizaje nivel) {
+    public List<GrupoDiscusion> buscarGruposDiscusionPorNivel(NivelJava nivel) {
         return gruposDiscusion.stream()
                              .filter(g -> g.getNivelJava() == nivel)
                              .collect(Collectors.toList());
     }
     
-    public List<GrupoCompartir> buscarGruposCompartirPorNivel(NivelAprendizaje nivel) {
+    public List<GrupoCompartir> buscarGruposCompartirPorNivel(NivelJava nivel) {
         return gruposCompartir.stream()
                              .filter(g -> g.getNivelJava() == nivel)
                              .collect(Collectors.toList());

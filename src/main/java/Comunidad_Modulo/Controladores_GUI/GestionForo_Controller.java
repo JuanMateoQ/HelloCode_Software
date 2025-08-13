@@ -1,6 +1,5 @@
 package Comunidad_Modulo.Controladores_GUI;
 
-import Modulo_Usuario.Clases.NivelAprendizaje;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -9,15 +8,26 @@ import javafx.scene.effect.ColorAdjust;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.stage.FileChooser;
 import javafx.collections.FXCollections;
 import javafx.animation.Timeline;
 import javafx.animation.KeyFrame;
 import javafx.util.Duration;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.Scene;
+import javafx.stage.Modality;
+import javafx.geometry.Pos;
+import javafx.scene.layout.StackPane;
+import javafx.scene.input.MouseEvent;
+import java.io.File;
 import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 import Comunidad_Modulo.controladores.ContextoSistema;
 import Comunidad_Modulo.modelo.*;
+import Modulo_Usuario.Clases.NivelJava;
 import Modulo_Usuario.Clases.UsuarioComunidad;
 import Comunidad_Modulo.enums.TipoTema;
 import Comunidad_Modulo.enums.TipoSolucion;
@@ -36,7 +46,7 @@ public class GestionForo_Controller implements Initializable {
 
     // Referencias FXML a los elementos de la interfaz
     @FXML private TextField txtTituloGrupo;
-    @FXML private ComboBox<NivelAprendizaje> comboNivelJava;
+    @FXML private ComboBox<NivelJava> comboNivelJava;
     @FXML private ComboBox<TipoTema> comboTema;
 
     @FXML private ComboBox<String> comboAccionHilo;
@@ -146,8 +156,8 @@ public class GestionForo_Controller implements Initializable {
      */
     private void configurarInterfaz() {
         // Configurar ComboBox de niveles de Java
-        comboNivelJava.setItems(FXCollections.observableArrayList(NivelAprendizaje.values()));
-        comboNivelJava.setValue(NivelAprendizaje.PRINCIPIANTE); // Valor por defecto
+        comboNivelJava.setItems(FXCollections.observableArrayList(NivelJava.values()));
+        comboNivelJava.setValue(NivelJava.PRINCIPIANTE); // Valor por defecto
 
         // Configurar ComboBox de temas
         comboTema.setItems(FXCollections.observableArrayList(TipoTema.values()));
@@ -202,6 +212,10 @@ public class GestionForo_Controller implements Initializable {
 
         txtInformacionDiscusion.setStyle(textAreaStyle);
         txtInformacionCompartir.setStyle(textAreaStyle);
+
+        // Configurar listeners para clics en las áreas de texto (para ver imágenes)
+        txtInformacionCompartir.setOnMouseClicked(this::manejarClicEnAreaTexto);
+        txtInformacionDiscusion.setOnMouseClicked(this::manejarClicEnAreaTexto);
 
         // Configurar el formulario overlay
         formCrearGrupo.setVisible(false);
@@ -315,7 +329,7 @@ public class GestionForo_Controller implements Initializable {
             }
 
             String titulo = txtTituloGrupo.getText().trim();
-            NivelAprendizaje nivel = comboNivelJava.getValue();
+            NivelJava nivel = comboNivelJava.getValue();
             TipoTema tema = comboTema.getValue();
 
             // Crear el grupo directamente usando el foro
@@ -369,7 +383,7 @@ public class GestionForo_Controller implements Initializable {
             }
 
             String titulo = txtTituloGrupo.getText().trim();
-            NivelAprendizaje nivel = comboNivelJava.getValue();
+            NivelJava nivel = comboNivelJava.getValue();
             TipoTema tema = comboTema.getValue();
 
             // Crear el grupo directamente usando el foro
@@ -1047,6 +1061,18 @@ public class GestionForo_Controller implements Initializable {
                 hilosInfo.append("   ────────────────────────────────\n");
             }
 
+            Moderador moderador = contexto.getComunidadActual().getModerador();
+
+            if (moderador.usuarioEstaSancionado(autor)) {
+                SancionUsuario sancion = moderador.getSancionActiva(autor);
+                mostrarMensajeError(String.format(
+                        "🚫 No puedes responder en este hilo porque tienes una sanción activa por %d minutos. Razón: %s",
+                        sancion.getMinutosRestantes(),
+                        sancion.getRazon()
+                ), txtInformacionDiscusion);
+                return;
+            }
+
             // Seleccionar hilo
             TextInputDialog hiloDialog = crearTextInputDialog("Responder Hilo", hilosInfo.toString(), "Seleccione el hilo (número):");
 
@@ -1078,8 +1104,6 @@ public class GestionForo_Controller implements Initializable {
 
             String contenido = respuestaResult.get().trim();
 
-            // Procesar la respuesta con moderación
-            Moderador moderador = contexto.getComunidadActual().getModerador();
             // La respuesta se crea con un ID temporal, que será reemplazado al guardar
             Respuesta tempRespuesta = new Respuesta(UUID.randomUUID().toString(), contenido, autor);
             boolean respuestaEnviada = hilo.responder(contenido, autor, moderador);
@@ -1350,19 +1374,68 @@ public class GestionForo_Controller implements Initializable {
             }
             TipoSolucion tipoSolucion = tipoSolucionResult.get();
 
+            String archivoRuta = null;
+            
+            // Si el tipo es IMAGEN, solicitar selección de archivo
+            if (tipoSolucion == TipoSolucion.IMAGEN) {
+                FileChooser fileChooser = new FileChooser();
+                fileChooser.setTitle("Seleccionar Imagen");
+                fileChooser.getExtensionFilters().addAll(
+                    new FileChooser.ExtensionFilter("Imágenes", "*.png", "*.jpg", "*.jpeg", "*.gif", "*.bmp"),
+                    new FileChooser.ExtensionFilter("Todos los archivos", "*.*")
+                );
+                
+                File archivoSeleccionado = fileChooser.showOpenDialog(btnListarGruposCompartir.getScene().getWindow());
+                if (archivoSeleccionado == null) {
+                    mostrarMensajeError("❌ Debe seleccionar un archivo de imagen.", txtInformacionCompartir);
+                    return;
+                }
+                
+                archivoRuta = archivoSeleccionado.getAbsolutePath();
+                
+                // Validar que el archivo sea una imagen válida
+                if (!esImagenValida(archivoRuta)) {
+                    mostrarMensajeError("❌ El archivo seleccionado no es una imagen válida.", txtInformacionCompartir);
+                    return;
+                }
+                
+                // Verificar que el archivo sea accesible
+                try {
+                    Image imagenTest = new Image(archivoSeleccionado.toURI().toString());
+                    if (imagenTest.isError()) {
+                        mostrarMensajeError("❌ No se puede cargar la imagen seleccionada.", txtInformacionCompartir);
+                        return;
+                    }
+                } catch (Exception e) {
+                    mostrarMensajeError("❌ Error al validar la imagen: " + e.getMessage(), txtInformacionCompartir);
+                    return;
+                }
+            }
+
 
             String titulo = tituloResult.get().trim();
             String contenido = contenidoResult.get().trim();
 
             // Guardar la solución en persistencia primero para obtener el ID
             String nombreComunidad = ContextoSistema.getInstance().getComunidadActual().getNombre();
-            String idSolucion = PersistenciaService.guardarSolucionCompartida(nombreComunidad, grupo.getTitulo(), titulo, contenido, autor.getUsername(), tipoSolucion.getDescripcion(), new HashMap<>());
+            String idSolucion = PersistenciaService.guardarSolucionCompartida(nombreComunidad, grupo.getTitulo(), titulo, contenido, autor.getUsername(), tipoSolucion.getDescripcion(), new HashMap<>(), archivoRuta);
 
             // Crear la solución con el ID generado y añadirla al grupo
             Solucion solucion = new Solucion(idSolucion, titulo, contenido, autor, tipoSolucion);
+            
+            // Si hay un archivo seleccionado, asignarlo a la solución
+            if (archivoRuta != null) {
+                solucion.setArchivo(archivoRuta);
+            }
+            
             comunidadService.procesarSolucionEnGrupo(grupo, solucion);
 
-            mostrarMensajeExito("✅ Solución '" + titulo + "' compartida exitosamente por " + autor.getNombre() + " en '" + grupo.getTitulo() + "' (ID: " + idSolucion + ")", txtInformacionCompartir);
+            String mensajeExito = "✅ Solución '" + titulo + "' compartida exitosamente por " + autor.getNombre() + " en '" + grupo.getTitulo() + "' (ID: " + idSolucion + ")";
+            if (tipoSolucion == TipoSolucion.IMAGEN && archivoRuta != null) {
+                mensajeExito += "\n� Imagen adjunta: " + archivoRuta;
+                mensajeExito += "\n💡 Tip: Puedes hacer clic en la imagen en la lista para verla completa";
+            }
+            mostrarMensajeExito(mensajeExito, txtInformacionCompartir);
             actualizarInformacion();
 
         } catch (NumberFormatException e) {
@@ -1397,9 +1470,27 @@ public class GestionForo_Controller implements Initializable {
                     info.append(String.format("   %d. %s\n", (i + 1), solucion.getTitulo()));
                     info.append(String.format("      Autor: %s | Tipo: %s | 👍%d 👎%d\n",
                             solucion.getAutor().getNombre(), solucion.getTipoSolucion(), solucion.getLikes(), solucion.getDislikes()));
-                    info.append(String.format("      Contenido: %.50s%s\n",
-                            solucion.getContenido(),
-                            solucion.getContenido().length() > 50 ? "..." : ""));
+                    
+                    // Mostrar contenido o archivo según el tipo
+                    if (solucion.getTipoSolucion() == TipoSolucion.IMAGEN && solucion.getArchivo() != null) {
+                        if (esImagenValida(solucion.getArchivo())) {
+                            String vistaPrevia = crearVistaPreviaImagen(solucion.getArchivo());
+                            info.append(String.format("      📸 %s\n", vistaPrevia));
+                            info.append(String.format("      📁 Ruta: %s\n", solucion.getArchivo()));
+                        } else {
+                            info.append(String.format("      ❌ Imagen no válida: %s\n", solucion.getArchivo()));
+                        }
+                        if (solucion.getContenido() != null && !solucion.getContenido().trim().isEmpty()) {
+                            info.append(String.format("      Descripción: %.50s%s\n",
+                                    solucion.getContenido(),
+                                    solucion.getContenido().length() > 50 ? "..." : ""));
+                        }
+                    } else {
+                        info.append(String.format("      Contenido: %.50s%s\n",
+                                solucion.getContenido(),
+                                solucion.getContenido().length() > 50 ? "..." : ""));
+                    }
+                    
                     // Mostrar comentarios
                     if (!solucion.getComentarios().isEmpty()) {
                         info.append("      Comentarios:\n");
@@ -1542,6 +1633,17 @@ public class GestionForo_Controller implements Initializable {
         Solucion solucionSeleccionada = seleccionarSolucion(soluciones, txtInformacionCompartir);
         if (solucionSeleccionada == null) return;
 
+        // Validar si el usuario está sancionado antes de permitir comentar
+        Moderador moderador = ContextoSistema.getInstance().getComunidadActual().getModerador();
+
+        if (moderador.usuarioEstaSancionado(autorComentario)) {
+            SancionUsuario sancion = moderador.getSancionActiva(autorComentario);
+            mostrarMensajeError(String.format("🚫 No puedes comentar, tienes una sanción activa por %d minutos. Razón: %s",
+                    sancion.getMinutosRestantes(), sancion.getRazon()), txtInformacionCompartir);
+            return;
+        }
+
+        // Si pasa la validación, sigue con el TextInputDialog y el guardado
         TextInputDialog comentarioDialog = crearTextInputDialog("Comentar Solución", "Comentando la solución: '" + solucionSeleccionada.getTitulo() + "'", "Escriba su comentario:");
 
         Optional<String> result = comentarioDialog.showAndWait();
@@ -2071,6 +2173,161 @@ public class GestionForo_Controller implements Initializable {
         }
 
         lblEstadoSistema.setText(estado.toString());
+    }
+
+    /**
+     * Método para manejar clics en las áreas de texto y detectar si se hace clic en una imagen
+     */
+    private void manejarClicEnAreaTexto(MouseEvent event) {
+        TextArea areaTexto = (TextArea) event.getSource();
+        String texto = areaTexto.getText();
+        
+        // Obtener la posición del clic
+        int posicionClic = areaTexto.getCaretPosition();
+        
+        // Buscar líneas que contengan imágenes cerca de la posición del clic
+        String[] lineas = texto.split("\n");
+        int posicionActual = 0;
+        
+        for (String linea : lineas) {
+            int inicioLinea = posicionActual;
+            int finLinea = posicionActual + linea.length();
+            
+            // Si el clic está en esta línea
+            if (posicionClic >= inicioLinea && posicionClic <= finLinea) {
+                // Verificar si la línea contiene una imagen clickeable
+                if (linea.contains("🖼️") && linea.contains("(Click para ver)")) {
+                    // Extraer la ruta del archivo de las líneas siguientes
+                    String rutaImagen = extraerRutaImagenDesdeLista(lineas, texto, inicioLinea);
+                    if (rutaImagen != null && esImagenValida(rutaImagen)) {
+                        mostrarImagenCompleta(rutaImagen);
+                        return;
+                    }
+                }
+            }
+            
+            posicionActual = finLinea + 1; // +1 por el \n
+        }
+    }
+
+    /**
+     * Extrae la ruta de la imagen de las líneas de texto
+     */
+    private String extraerRutaImagenDesdeLista(String[] lineas, String textoCompleto, int posicionLinea) {
+        // Buscar la línea que contiene "📁 Ruta:" después de la línea clickeada
+        for (int i = 0; i < lineas.length; i++) {
+            String linea = lineas[i];
+            
+            // Si encontramos la línea con la imagen clickeable
+            if (linea.contains("🖼️") && linea.contains("(Click para ver)")) {
+                // Buscar la siguiente línea que contenga "📁 Ruta:"
+                for (int j = i + 1; j < lineas.length && j < i + 3; j++) {
+                    if (lineas[j].contains("📁 Ruta:")) {
+                        String lineaRuta = lineas[j];
+                        int inicioRuta = lineaRuta.indexOf("📁 Ruta:") + "📁 Ruta:".length();
+                        if (inicioRuta < lineaRuta.length()) {
+                            return lineaRuta.substring(inicioRuta).trim();
+                        }
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Método para mostrar una ventana emergente con la imagen completa
+     */
+    private void mostrarImagenCompleta(String rutaArchivo) {
+        try {
+            File archivo = new File(rutaArchivo);
+            if (!archivo.exists()) {
+                mostrarMensajeError("❌ El archivo de imagen no existe: " + rutaArchivo, txtInformacionCompartir);
+                return;
+            }
+
+            // Crear nueva ventana para mostrar la imagen
+            Stage ventanaImagen = new Stage();
+            ventanaImagen.setTitle("Visor de Imagen - " + archivo.getName());
+            ventanaImagen.initModality(Modality.APPLICATION_MODAL);
+
+            // Cargar la imagen
+            Image imagen = new Image(archivo.toURI().toString());
+            ImageView imageView = new ImageView(imagen);
+
+            // Configurar el ImageView para que se ajuste al tamaño de la ventana
+            imageView.setPreserveRatio(true);
+            imageView.setSmooth(true);
+            imageView.setCache(true);
+
+            // Establecer tamaño máximo para la imagen
+            double maxWidth = 800;
+            double maxHeight = 600;
+            
+            if (imagen.getWidth() > maxWidth || imagen.getHeight() > maxHeight) {
+                imageView.setFitWidth(maxWidth);
+                imageView.setFitHeight(maxHeight);
+            }
+
+            // Crear contenedor para la imagen
+            StackPane contenedor = new StackPane();
+            contenedor.getChildren().add(imageView);
+            contenedor.setAlignment(Pos.CENTER);
+            contenedor.setStyle("-fx-background-color: #f0f0f0; -fx-padding: 20;");
+
+            // Crear escena y mostrar ventana
+            Scene escena = new Scene(contenedor);
+            ventanaImagen.setScene(escena);
+            ventanaImagen.setResizable(true);
+            ventanaImagen.show();
+
+        } catch (Exception e) {
+            System.err.println("Error al mostrar imagen: " + e.getMessage());
+            mostrarMensajeError("❌ Error al cargar la imagen: " + e.getMessage(), txtInformacionCompartir);
+        }
+    }
+
+    /**
+     * Método para crear una miniatura de imagen clickeable
+     */
+    private String crearVistaPreviaImagen(String rutaArchivo) {
+        try {
+            File archivo = new File(rutaArchivo);
+            if (!archivo.exists()) {
+                return "❌ [Imagen no encontrada]";
+            }
+
+            // Crear texto clickeable que simule un botón
+            String nombreArchivo = archivo.getName();
+            return "🖼️ [" + nombreArchivo + "] (Click para ver)";
+
+        } catch (Exception e) {
+            System.err.println("Error al crear vista previa: " + e.getMessage());
+            return "❌ [Error al cargar imagen]";
+        }
+    }
+
+    /**
+     * Método para validar si un archivo es una imagen válida
+     */
+    private boolean esImagenValida(String rutaArchivo) {
+        if (rutaArchivo == null || rutaArchivo.trim().isEmpty()) {
+            return false;
+        }
+
+        try {
+            File archivo = new File(rutaArchivo);
+            if (!archivo.exists()) {
+                return false;
+            }
+
+            String extension = rutaArchivo.toLowerCase();
+            return extension.endsWith(".png") || extension.endsWith(".jpg") || 
+                   extension.endsWith(".jpeg") || extension.endsWith(".gif") || 
+                   extension.endsWith(".bmp");
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     /**

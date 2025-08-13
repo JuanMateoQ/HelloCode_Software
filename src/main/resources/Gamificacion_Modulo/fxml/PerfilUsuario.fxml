@@ -44,7 +44,7 @@
             
             <!-- Información del perfil -->
             <Label fx:id="userName" text="Cargando..." styleClass="profile-name" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 18px;"/>
-            <Label fx:id="userEmail" text="@cargando..." styleClass="profile-username" style="-fx-text-fill: #DCD6F7; -fx-font-size: 14px;"/>
+            <Label fx:id="userEmail" text="cargando..." styleClass="profile-username" style="-fx-text-fill: #DCD6F7; -fx-font-size: 14px;"/>
 
             <Label text="RESUMEN" styleClass="section-title" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 16px;"/>
 

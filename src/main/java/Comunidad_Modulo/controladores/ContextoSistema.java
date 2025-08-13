@@ -1,11 +1,11 @@
 package Comunidad_Modulo.controladores;
 
-import Modulo_Usuario.Clases.NivelAprendizaje;
 import Modulo_Usuario.Clases.UsuarioComunidad;
 import Comunidad_Modulo.modelo.*;
 import Comunidad_Modulo.integracion.IModuloUsuarios;
 import Comunidad_Modulo.servicios.PersistenciaService;
 import Comunidad_Modulo.enums.TipoTema;
+import Modulo_Usuario.Clases.NivelJava;
 
 import java.util.*;
 
@@ -299,7 +299,7 @@ public class ContextoSistema {
     /**
      * Guarda un grupo de foro en persistencia
      */
-    public void guardarGrupoForo(Comunidad comunidad, String tipoGrupo, String titulo, NivelAprendizaje nivel, TipoTema tema, String creador) {
+    public void guardarGrupoForo(Comunidad comunidad, String tipoGrupo, String titulo, NivelJava nivel, TipoTema tema, String creador) {
         if (persistenciaService != null) {
             persistenciaService.guardarGrupoForo(comunidad.getNombre(), tipoGrupo, titulo, nivel, tema, creador);
         }

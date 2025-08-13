@@ -30,6 +30,10 @@ public class ProgresoEstudiante {
        Ranking.getInstance().actualizarRanking(this);
     }
 
+    public void verificarDesafios(){
+        this.desafiosActivos.removeIf(desafio -> !desafio.estaActivo);
+    }
+
     public void setPuntosTotal(Integer puntosTotal) {
         this.puntosTotal = puntosTotal;
         // Actualizar automáticamente el ranking cuando cambian los puntos
@@ -53,15 +57,15 @@ public class ProgresoEstudiante {
             // Actualizar progreso parcial
             Double progreso = 0.0;
             if (desafio instanceof DesafioSemanal) {
-                progreso = ((DesafioSemanal) desafio).getProgreso();
+                progreso = ((DesafioSemanal) desafio).getAvanceDesafio();
             } else if (desafio instanceof DesafioMensual) {
-                progreso = ((DesafioMensual) desafio).getProgreso();
+                progreso = ((DesafioMensual) desafio).getAvanceDesafio();
             }
             listaDesafios.put("xd", progreso);
         }
     }
 
-    public void agregarLogro(Logro logro) {
+    public void actualizarLogro(Logro logro) {
         if (!logrosDesbloqueados.contains(logro)) {
             logrosDesbloqueados.add(logro);
                 System.out.println("*** Logro desbloqueado: " + logro.getNombre());
@@ -71,7 +75,7 @@ public class ProgresoEstudiante {
     public List<Desafio> getDesafiosActivos() {
         return desafiosActivos;
     }
-    public void agregarDesafio(Desafio desafio) {
+    public void actualizarDesafios(Desafio desafio) {
         desafiosActivos.add(desafio);
     }
 
@@ -80,7 +84,11 @@ public class ProgresoEstudiante {
         // Actualizar automáticamente el ranking cuando cambian los puntos
         Ranking.getInstance().actualizarRanking(this);
     }
-
+    public void aumentarDesafiosCompletados() {
+        this.desafiosCompletados++;
+        // Actualizar automáticamente el ranking cuando cambian los desafíos completados
+        Ranking.getInstance().actualizarRanking(this);
+    }
     // Getters
     public List<Logro> getLogros() { return logrosDesbloqueados; }
     public Integer getPuntosTotal() { return puntosTotal; }
@@ -89,9 +97,6 @@ public class ProgresoEstudiante {
     public HashMap<String, Double> getListaDesafios() { return listaDesafios; }
 
     // Métodos estáticos para gestionar la lista de progresos
-
-
-
 
     public static ProgresoEstudiante getProgresoUsuarioLogueado() {
         try {

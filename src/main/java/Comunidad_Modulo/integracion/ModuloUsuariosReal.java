@@ -2,7 +2,7 @@ package Comunidad_Modulo.integracion;
 
 import Modulo_Usuario.Clases.Usuario;
 import Modulo_Usuario.Clases.UsuarioComunidad;
-import Modulo_Usuario.Clases.NivelAprendizaje;
+import Modulo_Usuario.Clases.NivelJava;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -70,7 +70,7 @@ public class ModuloUsuariosReal implements IModuloUsuarios {
         
         // Configurar propiedades adicionales
         usuarioComunidad.setIdUsuario(usuario.getUsername());
-        usuarioComunidad.setNivelJava(NivelAprendizaje.PRINCIPIANTE); // Por defecto, se puede mejorar con lógica de progreso
+        usuarioComunidad.setNivelJava(NivelJava.PRINCIPIANTE); // Por defecto, se puede mejorar con lógica de progreso
         usuarioComunidad.setReputacion(100); // Reputación inicial para nuevos usuarios
         
         return usuarioComunidad;
@@ -104,15 +104,15 @@ public class ModuloUsuariosReal implements IModuloUsuarios {
     }
     
     @Override
-    public NivelAprendizaje obtenerNivelProgreso(String idUsuario) {
+    public NivelJava obtenerNivelProgreso(String idUsuario) {
         // Por ahora retornamos un nivel basado en el nombre de usuario
         // En un sistema real, esto consultaría el progreso del usuario
         if (idUsuario.toLowerCase().contains("admin")) {
-            return NivelAprendizaje.AVANZADO;
+            return NivelJava.AVANZADO;
         } else if (idUsuario.toLowerCase().contains("user")) {
-            return NivelAprendizaje.INTERMEDIO;
+            return NivelJava.INTERMEDIO;
         } else {
-            return NivelAprendizaje.PRINCIPIANTE;
+            return NivelJava.PRINCIPIANTE;
         }
     }
     

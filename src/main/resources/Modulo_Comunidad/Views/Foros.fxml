@@ -205,7 +205,7 @@
             <TextField fx:id="txtTituloGrupo" prefHeight="32.0" prefWidth="300.0" promptText="Título del grupo" style="-fx-background-radius: 10;" />
 
             <HBox alignment="CENTER_LEFT" spacing="8.0">
-               <Label style="-fx-font-weight: bold; -fx-text-fill: #424874;" text="☕ Nivel Java:" />
+               <Label style="-fx-font-weight: bold; -fx-text-fill: #424874;" text="☕ Nivel:" />
                <ComboBox fx:id="comboNivelJava" prefWidth="110.0" promptText="Seleccione" style="-fx-background-radius: 10;" />
             </HBox>
 

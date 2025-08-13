@@ -1,4 +1,11 @@
-# Formato: nombreComunidad;usernameUsuario;nombreUsuario;nivelAprendizaje;reputacion
+# Formato: nombreComunidad;usernameUsuario;nombreUsuario;nivelJava;reputacion
 Programadores Avanzados;medardito;medardo;Principiante;0
 Programadores Avanzados;churito;churo;Principiante;0
-sefefsefs;Luis;luis23;Principiante;0
+Java Principiantes;Luis;luis23;Principiante;0
+Programadores Avanzados;Luis;luis23;Principiante;0
+Comunidad para PHP;Luis;luis23;Principiante;0
+Java Principiantes;Prueba;Prueba;Principiante;0
+Comunidad para PHP;Prueba;Prueba;Principiante;0
+Comunidad para PHP;JuanMateo;Juan Mateo;Principiante;0
+Python is life;JuanMateo;Juan Mateo;Principiante;0
+Python is life;Luis;luis23;Principiante;0

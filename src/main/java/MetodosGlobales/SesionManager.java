@@ -1,8 +1,8 @@
 package MetodosGlobales;
 
-import Modulo_Usuario.Clases.NivelAprendizaje;
 import Modulo_Usuario.Clases.Usuario;
 import Modulo_Usuario.Clases.UsuarioComunidad;
+import Modulo_Usuario.Clases.NivelJava;
 
 import java.util.List;
 
@@ -109,7 +109,7 @@ public class SesionManager {
             nombreDisplay,
             emailDisplay,
             usuario.getUsername(), // usar username como ID
-            NivelAprendizaje.PRINCIPIANTE, // nivel por defecto
+            NivelJava.PRINCIPIANTE, // nivel por defecto
             0 // reputación inicial
         );
         
@@ -119,7 +119,7 @@ public class SesionManager {
     /**
      * Actualiza el nivel Java del usuario en la sesión
      */
-    public void actualizarNivelJava(NivelAprendizaje nuevoNivel) {
+    public void actualizarNivelJava(NivelJava nuevoNivel) {
         if (usuarioComunidad != null) {
             usuarioComunidad.setNivelJava(nuevoNivel);
         }

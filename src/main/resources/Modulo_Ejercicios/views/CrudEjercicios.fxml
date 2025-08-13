@@ -77,6 +77,13 @@
                          style="-fx-background-color: #DCD6F7; -fx-text-fill: #424874; -fx-background-radius: 8; -fx-padding: 8;"/>
             </VBox>
 
+            <!-- Tema de la lección -->
+            <VBox spacing="8" maxWidth="320">
+                <Label text="Tema de la Lección" style="-fx-text-fill: #DCD6F7; -fx-font-size: 14px; -fx-font-weight: bold;"/>
+                <ComboBox fx:id="comboTema" prefWidth="320" promptText="Selecciona el tema"
+                         style="-fx-background-color: #DCD6F7; -fx-text-fill: #424874; -fx-background-radius: 8; -fx-padding: 8;"/>
+            </VBox>
+
             <!-- Sección específica para ejercicios de selección -->
             <VBox fx:id="seccionSeleccion" spacing="16" maxWidth="320" visible="false" managed="false">
                 <Label text="Opciones de Selección" style="-fx-text-fill: #DCD6F7; -fx-font-size: 16px; -fx-font-weight: bold;"/>
@@ -115,6 +122,35 @@
                     <Label text="Respuestas para los espacios (separadas por comas)" style="-fx-text-fill: #DCD6F7; -fx-font-size: 14px;"/>
                     <TextField fx:id="txtRespuestasEspacios" prefWidth="320"
                               promptText="Ejemplo: static void,System.out.println"
+                              style="-fx-background-color: #DCD6F7; -fx-text-fill: #424874; -fx-background-radius: 8; -fx-padding: 8;"/>
+                </VBox>
+            </VBox>
+
+            <!-- Sección específica para ejercicios de emparejar -->
+            <VBox fx:id="seccionEmparejar" spacing="16" maxWidth="320" visible="false" managed="false">
+                <Label text="Emparejar Opciones" style="-fx-text-fill: #DCD6F7; -fx-font-size: 16px; -fx-font-weight: bold;"/>
+                
+                <!-- Columna izquierda -->
+                <VBox spacing="8">
+                    <Label text="Columna Izquierda (separadas por comas)" style="-fx-text-fill: #DCD6F7; -fx-font-size: 14px;"/>
+                    <TextArea fx:id="txtColumnaIzquierda" prefRowCount="3" prefWidth="320" wrapText="true"
+                             promptText="Ejemplo: Variable,Función,Clase"
+                             style="-fx-background-color: #DCD6F7; -fx-text-fill: #424874; -fx-background-radius: 8; -fx-padding: 8;"/>
+                </VBox>
+
+                <!-- Columna derecha -->
+                <VBox spacing="8">
+                    <Label text="Columna Derecha (separadas por comas)" style="-fx-text-fill: #DCD6F7; -fx-font-size: 14px;"/>
+                    <TextArea fx:id="txtColumnaDerecha" prefRowCount="3" prefWidth="320" wrapText="true"
+                             promptText="Ejemplo: Almacena datos,Ejecuta código,Define objeto"
+                             style="-fx-background-color: #DCD6F7; -fx-text-fill: #424874; -fx-background-radius: 8; -fx-padding: 8;"/>
+                </VBox>
+
+                <!-- Emparejamientos correctos -->
+                <VBox spacing="8">
+                    <Label text="Emparejamientos Correctos (formato: izq|der, separados por comas)" style="-fx-text-fill: #DCD6F7; -fx-font-size: 14px;"/>
+                    <TextField fx:id="txtEmparejamientosCorrectos" prefWidth="320"
+                              promptText="Ejemplo: Variable|Almacena datos,Función|Ejecuta código"
                               style="-fx-background-color: #DCD6F7; -fx-text-fill: #424874; -fx-background-radius: 8; -fx-padding: 8;"/>
                 </VBox>
             </VBox>

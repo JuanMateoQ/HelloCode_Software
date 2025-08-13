@@ -250,7 +250,7 @@ public class AsignarDesafioController implements Initializable {
 
         // Activar y agregar el desafío
         desafio.activar();
-        progreso.agregarDesafio(desafio);
+        progreso.actualizarDesafios(desafio);
 
         String tipoDesafio = desafio instanceof DesafioSemanal ? "Semanal" : "Mensual";
         System.out.println(">>> Desafío " + tipoDesafio + " asignado a " + usuario.getNombre());

@@ -1,2 +1,4 @@
 # Archivo de soluciones compartidas
 # Formato: nombreComunidad;tituloGrupo;idSolucion;titulo;contenido;autor;fechaCreacion;tipoSolucion
+Comunidad para PHP;PHP Solutions;SOL_1754968409872_678;Usando PHP + HTML + XAMPP para proyecto local;Aqui colocar el tutorial de como crear una interfaz con PHP y XAMPP desde cero usando bdd;Luis;2025-08-11 22:13:29;Código;;
+Comunidad para PHP;Compartiendo hacks de PHP para estafar gente;SOL_1754969125940_911;Hack one;Contenido hack usser JuanMateo;JuanMateo;2025-08-11 22:25:25;Código;;

@@ -3,4 +3,8 @@ Java Principiantes;PRUEBA2;HILO_1753638454395_423;HIJUC;asc;erick;2025-07-27 12:
 Java Principiantes;PRUEBA2;e8c0dd31-08ef-43b2-a378-0188c99b1976;HIJUC;asc;erick;2025-07-27 12:47:34;Resuelto;erick:1
 Java Principiantes;PRUEBA2;HILO_1753645699348_497;HILOS;SD;erick;2025-07-27 14:48:19;Abierto;
 Java Principiantes;PRUEBA2;cf1151f2-25f0-43f0-81ee-8cb4affe690c;HILOS;SD;erick;2025-07-27 14:48:19;Abierto;erick:-1
-Java prueba 2;esta es una prueba;HILO_1753647087562_149;su perra madre llamen a dios;nada que hacer;medardito;2025-07-27 15:11:27;Abierto;
+Comunidad para PHP;Discusion PHP;HILO_1754967907693_158;¿La sintaxis de PHP es compleja?;Opiniones sobre la complejidad de usar PHP;Luis;2025-08-11 22:05:07;Abierto;JuanMateo:-1
+Comunidad para PHP;Discusion PHP;HILO_1754968084109_2;¿Merece PHP ser popular aún?;Discutamos sobre popularidad de PHP en estos tiempos;Luis;2025-08-11 22:08:04;Abierto;
+Comunidad para PHP;PHP para principiantes;HILO_1754968202874_404;¿Realmente PHP es la mejor opción para empezar a programar?;Experiencia de principiantes usando PHP como su inicio para programar;Luis;2025-08-11 22:10:02;Abierto;
+Comunidad para PHP;PHP no merece su propia comunidad, borrenla;HILO_1754968850813_448;Apoyen;Apoyen pls;JuanMateo;2025-08-11 22:20:50;Abierto;
+Python is life;Python GOD;HILO_1754969263667_103;Hablemos de Python;Hablen;JuanMateo;2025-08-11 22:27:43;Abierto;
